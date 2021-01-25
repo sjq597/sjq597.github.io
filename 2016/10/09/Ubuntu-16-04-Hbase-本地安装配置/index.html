@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","images":"/images","scheme":"Pisces","version":"8.2.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="单机安装OLAP Kylin多维数据分析工具,Kylin依赖Hadoop,Hive,Hbase这三个，之前安装过前面两个，所以只用装一个Hbase就可以了，也是单机&#x2F;伪分布式这种模式 系统环境12345OS: Ubuntu 16.04 LTS 64bitJDK: 1.7.0_40Hadoop:hadoop-2.6.4➜  Blog git:(master) ✗ whoami anonymous 安">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Ubuntu 16.04 Hbase 本地安装配置">
+<meta property="og:url" content="http://example.com/2016/10/09/Ubuntu-16-04-Hbase-%E6%9C%AC%E5%9C%B0%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="单机安装OLAP Kylin多维数据分析工具,Kylin依赖Hadoop,Hive,Hbase这三个，之前安装过前面两个，所以只用装一个Hbase就可以了，也是单机&#x2F;伪分布式这种模式 系统环境12345OS: Ubuntu 16.04 LTS 64bitJDK: 1.7.0_40Hadoop:hadoop-2.6.4➜  Blog git:(master) ✗ whoami anonymous 安">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2016-10-09T10:15:04.000Z">
+<meta property="article:modified_time" content="2021-01-13T13:21:06.077Z">
+<meta property="article:author" content="LittleQ">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="大数据">
+<meta property="article:tag" content="Hbase">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2016/10/09/Ubuntu-16-04-Hbase-%E6%9C%AC%E5%9C%B0%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>Ubuntu 16.04 Hbase 本地安装配置 | Hexo</title>
+  
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">Hexo</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B3%BB%E7%BB%9F%E7%8E%AF%E5%A2%83"><span class="nav-number">1.</span> <span class="nav-text">系统环境</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E6%AD%A5%E9%AA%A4"><span class="nav-number">2.</span> <span class="nav-text">安装步骤</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8D%95%E6%9C%BA%E7%89%88"><span class="nav-number">2.1.</span> <span class="nav-text">单机版</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BC%AA%E5%88%86%E5%B8%83%E5%BC%8F"><span class="nav-number">2.2.</span> <span class="nav-text">伪分布式</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">LittleQ</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">145</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">51</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2016/10/09/Ubuntu-16-04-Hbase-%E6%9C%AC%E5%9C%B0%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="LittleQ">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Ubuntu 16.04 Hbase 本地安装配置
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2016-10-09 18:15:04" itemprop="dateCreated datePublished" datetime="2016-10-09T18:15:04+08:00">2016-10-09</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-01-13 21:21:06" itemprop="dateModified" datetime="2021-01-13T21:21:06+08:00">2021-01-13</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83/" itemprop="url" rel="index"><span itemprop="name">开发环境</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>单机安装OLAP Kylin多维数据分析工具,Kylin依赖<code>Hadoop</code>,<code>Hive</code>,<code>Hbase</code>这三个，之前安装过前面两个，所以只用装一个Hbase就可以了，也是单机/伪分布式这种模式</p>
+<h3 id="系统环境"><a href="#系统环境" class="headerlink" title="系统环境"></a>系统环境</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">OS: Ubuntu 16.04 LTS 64bit</span><br><span class="line">JDK: 1.7.0_40</span><br><span class="line">Hadoop:hadoop-2.6.4</span><br><span class="line">➜  Blog git:(master) ✗ whoami </span><br><span class="line">anonymous</span><br></pre></td></tr></table></figure>
+<h3 id="安装步骤"><a href="#安装步骤" class="headerlink" title="安装步骤"></a>安装步骤</h3><p>首先去官网<a target="_blank" rel="noopener" href="http://apache.fayea.com/hbase/stable/">Hbase下载地址</a>，可以下载编译好的<code>hbase-1.2.3-bin.tar.gz</code>,也可以下载源码自己编译，我下载源码版<code>hbase-1.2.3-src.tar.gz</code>自己编译的,其他的应该都一样,下载之后解压编译:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">tar -xvf hbase-1.2.3-src.tar.gz -C &#x2F;usr&#x2F;dev</span><br><span class="line">cd &#x2F;user&#x2F;dev&#x2F;hbase-1.2.3</span><br><span class="line">mvn package -Dmaven.test.skip&#x3D;true	# 跳过单元测试，不然测试时间会非常长</span><br></pre></td></tr></table></figure>
+<p>配置hbase,当前目录默认是<code>/usr/dev/hbase-1.2.3</code>.</p>
+<h4 id="单机版"><a href="#单机版" class="headerlink" title="单机版"></a>单机版</h4><p>先编辑<code>conf/hbase-site.xml</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;configuration&gt;</span><br><span class="line">  &lt;property&gt;</span><br><span class="line">    &lt;name&gt;hbase.rootdir&lt;&#x2F;name&gt;</span><br><span class="line">    &#x2F;&#x2F;这里设置让HBase存储文件的地方</span><br><span class="line">    &lt;value&gt;file:&#x2F;&#x2F;&#x2F;tmp&#x2F;hbase&lt;&#x2F;value&gt;</span><br><span class="line">  &lt;&#x2F;property&gt;</span><br><span class="line">  &lt;property&gt;</span><br><span class="line">    &lt;name&gt;hbase.zookeeper.property.dataDir&lt;&#x2F;name&gt;</span><br><span class="line">    &#x2F;&#x2F;这里设置让HBase存储内建zookeeper文件的地方</span><br><span class="line">    &lt;value&gt;&#x2F;tmp&#x2F;zookeeper&lt;&#x2F;value&gt;</span><br><span class="line">  &lt;&#x2F;property&gt;</span><br><span class="line">&lt;&#x2F;configuration&gt;</span><br></pre></td></tr></table></figure>
+<p>然后启动hbase:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">.&#x2F;bin&#x2F;start-hbase.sh</span><br></pre></td></tr></table></figure>
+<p>看看是否成功启动:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">➜  hbase-1.2.3 jps</span><br><span class="line">22228 Jps</span><br><span class="line">2738 Main</span><br><span class="line">21914 HMaster</span><br></pre></td></tr></table></figure>
+<p>如果有<code>HMaster</code>就说明启动成功了，然后可以访问web界面了:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http:&#x2F;&#x2F;127.0.0.1:16010&#x2F;</span><br></pre></td></tr></table></figure>
+<p>**注:**不同的版本可能端口号不一致，具体的如果访问不了，网上查一下看看你的版本是那个端口号.</p>
+<h4 id="伪分布式"><a href="#伪分布式" class="headerlink" title="伪分布式"></a>伪分布式</h4><p>先把hbase停掉<code>./bin/stop-hbase.sh</code>,然后修改<code>conf/hbase-env.sh</code>文件:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">HBASE_MANAGE_XK&#x3D;true</span><br></pre></td></tr></table></figure>
+<p>然后重新修改<code>conf/hbase-site.xml</code>文件:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">&lt;configuration&gt;</span><br><span class="line">  &lt;property&gt;</span><br><span class="line">    &lt;name&gt;hbase.rootdir&lt;&#x2F;name&gt;</span><br><span class="line">    &#x2F;&#x2F;这里设置让HBase存储文件的地方</span><br><span class="line">    &lt;value&gt;hdfs:&#x2F;&#x2F;localhost:9000&#x2F;hbase&lt;&#x2F;value&gt;</span><br><span class="line">  &lt;&#x2F;property&gt;</span><br><span class="line">  &lt;property&gt;</span><br><span class="line">    &lt;name&gt;hbase.zookeeper.property.dataDir&lt;&#x2F;name&gt;</span><br><span class="line">    &#x2F;&#x2F;这里设置让HBase存储内建zookeeper文件的地方</span><br><span class="line">    &lt;value&gt;&#x2F;tmp&#x2F;zookeeper&lt;&#x2F;value&gt;</span><br><span class="line">  &lt;&#x2F;property&gt;</span><br><span class="line">  &lt;property&gt;</span><br><span class="line">    &lt;name&gt;hbase.cluster.distributed&lt;&#x2F;name&gt;</span><br><span class="line">    &lt;value&gt;true&lt;&#x2F;value&gt;</span><br><span class="line">  &lt;&#x2F;property&gt;</span><br><span class="line">&lt;&#x2F;configuration&gt;</span><br></pre></td></tr></table></figure>
+<p>**注:**上面的<code>hbase.rootdir</code>配置的hdfs路径以及端口要和<code>/usr/dev/hadoop-2.6.4/etc/hadoop/core-site.xml</code>一致:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;property&gt;</span><br><span class="line">    &lt;name&gt;fs.defaultFS&lt;&#x2F;name&gt;</span><br><span class="line">    &lt;value&gt;hdfs:&#x2F;&#x2F;localhost:9000&lt;&#x2F;value&gt;</span><br><span class="line">&lt;&#x2F;property&gt;</span><br></pre></td></tr></table></figure>
+<p>然后再次启动hbase,出现如下报错情况:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">localhost: +&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;+</span><br><span class="line">localhost: |                    Error: JAVA_HOME is not set                       |</span><br><span class="line">localhost: +----------------------------------------------------------------------+</span><br><span class="line">localhost: | Please download the latest Sun JDK from the Sun Java web site        |</span><br><span class="line">localhost: |     &gt; http:&#x2F;&#x2F;www.oracle.com&#x2F;technetwork&#x2F;java&#x2F;javase&#x2F;downloads        |</span><br><span class="line">localhost: |                                                                      |</span><br><span class="line">localhost: | HBase requires Java 1.7 or later.                                    |</span><br><span class="line">localhost: +&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;+</span><br><span class="line">starting master, logging to &#x2F;usr&#x2F;dev&#x2F;hbase-1.2.3&#x2F;bin&#x2F;..&#x2F;logs&#x2F;hbase-anonymous-master-anonymous.out</span><br><span class="line">starting regionserver, logging to &#x2F;usr&#x2F;dev&#x2F;hbase-1.2.3&#x2F;bin&#x2F;..&#x2F;logs&#x2F;hbase-anonymous-1-regionserver-anonymous.out</span><br></pre></td></tr></table></figure>
+<p>出现这个问题一般是配置的问题，可以直接在环境变量文件里面强制配置一下，编辑<code>conf/hbase-env.sh</code>文件，把原来的注释解解掉，改成下面这样:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">export JAVA_HOME&#x3D;&#x2F;usr&#x2F;dev&#x2F;jdk1.7.0_40</span><br></pre></td></tr></table></figure>
+<p>然后记得得先把本机的hadoop伪分布式集群启动:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">cd &#x2F;usr&#x2F;dev&#x2F;hadoop-2.6.4</span><br><span class="line">.&#x2F;sbin&#x2F;start-dfs.sh</span><br><span class="line">.&#x2F;sbin&#x2F;start-yarn.sh</span><br><span class="line">.&#x2F;sbin&#x2F;mr-jobhistory-daemon.sh start historyserver</span><br></pre></td></tr></table></figure>
+<p>然后才能启动hbase</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd &#x2F;usr&#x2F;dev&#x2F;hbase-1.2.3</span><br><span class="line">.&#x2F;bin&#x2F;start-hbase.sh</span><br></pre></td></tr></table></figure>
+<p>查看一下是否启动成功:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">➜  hbase-1.2.3 jps</span><br><span class="line">26874 HRegionServer</span><br><span class="line">24854 SecondaryNameNode</span><br><span class="line">26087 HQuorumPeer</span><br><span class="line">25125 NodeManager</span><br><span class="line">24529 NameNode</span><br><span class="line">26160 HMaster</span><br><span class="line">24671 DataNode</span><br><span class="line">2738 Main</span><br><span class="line">25312 JobHistoryServer</span><br><span class="line">25008 ResourceManager</span><br><span class="line">27040 Jps</span><br></pre></td></tr></table></figure>
+<p>看到如果有HMaster以及HRegionServer说明启动成功.<br>**注:**如果又类似这种提示:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">regionserver running as process 23997. Stop it first.</span><br></pre></td></tr></table></figure>
+<p>可以直接先kill掉:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo kill -9 23997</span><br></pre></td></tr></table></figure>
+<p>启动成功之后也会看到hdfs目录:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hdfs dfs -ls &#x2F;hbase</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Linux/" rel="tag"># Linux</a>
+              <a href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/" rel="tag"># 大数据</a>
+              <a href="/tags/Hbase/" rel="tag"># Hbase</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2016/10/01/DataTables%E4%BD%BF%E7%94%A8%E6%A0%B7%E4%BE%8B/" rel="prev" title="DataTables使用样例">
+                  <i class="fa fa-chevron-left"></i> DataTables使用样例
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2016/10/23/Ubuntu-16-04-%E5%AE%89%E8%A3%85Apache-Kylin/" rel="next" title="Ubuntu 16.04 安装Apache Kylin">
+                  Ubuntu 16.04 安装Apache Kylin <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">LittleQ</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1.7.0/dist/gitalk.css">
+
+<script>
+NexT.utils.loadComments('.gitalk-container', () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1.7.0/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '6b766b4ecf283156c4bd',
+      clientSecret: 'c346ad81bb9e0d7021fe6e8936a83bf781215bea',
+      repo        : 'Blog',
+      owner       : 'sjq597',
+      admin       : ['sjq597'],
+      id          : 'fa7db2691f54004f29f64ffb98464dcc',
+        language: 'zh-CN',
+      distractionFreeMode: true
+    });
+    gitalk.render(document.querySelector('.gitalk-container'));
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>
