@@ -17,7 +17,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
-<script class="next-config" data-name="main" type="application/json">{"hostname":"sjq597.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.18.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+<script class="next-config" data-name="main" type="application/json">{"hostname":"sjq597.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.18.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
     <meta name="description" content="数据开发工程师的成长历程">
 <meta property="og:type" content="website">
@@ -78,6 +78,7 @@
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -86,11 +87,37 @@
 
 <nav class="site-nav">
   <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
   </ul>
 </nav>
 
 
 
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
 
 </header>
         
@@ -122,7 +149,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">145</span>
+          <span class="site-state-item-count">146</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -150,6 +177,168 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://sjq597.github.io/2016/07/14/D3-js-%E7%AC%94%E8%AE%B002/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="LittleQ">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LittleQ">
+      <meta itemprop="description" content="数据开发工程师的成长历程">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | LittleQ">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2016/07/14/D3-js-%E7%AC%94%E8%AE%B002/" class="post-title-link" itemprop="url">D3 js 笔记02</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2016-07-14 14:34:39" itemprop="dateCreated datePublished" datetime="2016-07-14T14:34:39+08:00">2016-07-14</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-10-07 14:54:54" itemprop="dateModified" datetime="2023-10-07T14:54:54+08:00">2023-10-07</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/JScript/" itemprop="url" rel="index"><span itemprop="name">JScript</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>1.4k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>5 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>常用的操作:选择，插入，删除，前面已经讲了选择元素的相关操作，这里还是简单记一下。</p>
+<h2 id="元素操作"><a href="#元素操作" class="headerlink" title="元素操作"></a>元素操作</h2><h3 id="选择元素"><a href="#选择元素" class="headerlink" title="选择元素"></a>选择元素</h3><p>假设有三个元素</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;p&gt;test1&lt;/p&gt;</span><br><span class="line">&lt;p&gt;test2&lt;/p&gt;</span><br><span class="line">&lt;p&gt;test3&lt;/p&gt;</span><br></pre></td></tr></table></figure>
+<p>下面的操作都是基于这三个的元素的操作</p>
+<h4 id="选择第一个p元素"><a href="#选择第一个p元素" class="headerlink" title="选择第一个p元素"></a>选择第一个p元素</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">var p1 = body.sellect(&quot;p&quot;);</span><br><span class="line">p1.style(&quot;color&quot;, &quot;red&quot;);</span><br></pre></td></tr></table></figure>
+
+<h4 id="全选"><a href="#全选" class="headerlink" title="全选"></a>全选</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">var p = body.sellectAll(&quot;p&quot;);</span><br><span class="line">p.style(&quot;color&quot;, &quot;red&quot;);</span><br></pre></td></tr></table></figure>
+
+<h4 id="选择指定元素"><a href="#选择指定元素" class="headerlink" title="选择指定元素"></a>选择指定元素</h4><ul>
+<li>通过元素id属性</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;p&gt; id=&quot;id_2&quot;&gt;Test 2&lt;/p&gt;</span><br></pre></td></tr></table></figure>
+<p>然后使用下面的代码来改变第二个元素的颜色</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">var p2 = body.select(&quot;#id_2&quot;);</span><br><span class="line">p2.style(&quot;color&quot;,&quot;red&quot;);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>通过元素class属性</li>
+</ul>
+<p>假设有如下内容，把这个内容改一下:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;p class=&quot;c1&quot; id=&quot;id_1&quot;&gt;Apple&lt;/p&gt;</span><br><span class="line">&lt;p class=&quot;c1&quot; id=&quot;id_2&quot;&gt;Pear&lt;/p&gt;</span><br><span class="line">&lt;p class=&quot;c2&quot; id=&quot;id_3&quot;&gt;Banana&lt;/p&gt;</span><br></pre></td></tr></table></figure>
+<p>可以使用下面的方法:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">var p = body.selectAll(&quot;.c1&quot;);</span><br><span class="line">p.style(&quot;color&quot;, &quot;blue&quot;);</span><br></pre></td></tr></table></figure>
+<p><strong>备注:<strong>关于<code>select()</code>和<code>selectAll()</code>的参数，其实是符合<code>CSS</code>选择器的条件的，即用<code>#</code>表示</strong>id</strong>，用<code>.</code>表示<strong>class</strong>.这样可以把前两个内容设置成蓝色。</p>
+<h3 id="插入"><a href="#插入" class="headerlink" title="插入"></a>插入</h3><p>和Python很像，有<code>insert()</code>以及<code>append()</code>方法:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">append():	# 在选择集末尾插入元素</span><br><span class="line">insert():	# 在选择集前面插入元素</span><br></pre></td></tr></table></figure>
+<p>例子:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">body.append(&quot;p&quot;).text(&quot;append p element&quot;);	# 在最后插入一个&lt;p&gt;元素，并且设置文本内容</span><br><span class="line">body.insert(&quot;p&quot;, &quot;#id_2&quot;).text(&quot;insert p element&quot;);	# 在id为id_2的元素前面插入一个元素</span><br></pre></td></tr></table></figure>
+<p>结果如下:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Apple</span><br><span class="line">insert p element</span><br><span class="line">Pear</span><br><span class="line">Banana</span><br><span class="line">append p element</span><br></pre></td></tr></table></figure>
+
+<h3 id="删除"><a href="#删除" class="headerlink" title="删除"></a>删除</h3><p>这个简单，直接使用<code>remove()</code>即可，对于上面的代码:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">var p = body.select(&quot;#id_1&quot;);</span><br><span class="line">p.remove();	# 删除id=id_1的元素</span><br></pre></td></tr></table></figure>
+
+<h2 id="简单图表"><a href="#简单图表" class="headerlink" title="简单图表"></a>简单图表</h2><p>简单介绍一下图表，但是的先明白几个常见的术语:<br>要画图，必须要在一个用来画图的东西，通常我们用画布来画图，常见的画布又两种:<code>SVG</code>和<code>Canvas</code>。</p>
+<ul>
+<li>SVG</li>
+</ul>
+<p>SVG是指可缩放的矢量图形，主要用来描述二维矢量图形，定义图形也很简单，使用<code>xml</code>来定义图形。由于是用<code>xml</code>来定义图形，所以每个元素都可以添加JavaScript事件处理器。</p>
+<ul>
+<li>Canvas</li>
+</ul>
+<p>Canvas是通过JavaScript来绘制2D图形</p>
+<p>**注意:**这里需要说明一下，D3提供的很多画图的函数都是SVG图形生成器，所以建议在学习D3.js的时候使用SVG画布,添加一个<code>SVG</code>也很简单:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">var width = 300;  //画布的宽度</span><br><span class="line">var height = 300;   //画布的高度</span><br><span class="line"> </span><br><span class="line">var svg = d3.select(&quot;body&quot;)     //选择文档中的body元素</span><br><span class="line">    .append(&quot;svg&quot;)          //添加一个svg元素</span><br><span class="line">    .attr(&quot;width&quot;, width)       //设定宽度</span><br><span class="line">    .attr(&quot;height&quot;, height);    //设定高度</span><br></pre></td></tr></table></figure>
+<p>下面就可以在这个svg上画各种图了,先上源码:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">&lt;html&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">    &lt;meta charset=&quot;utf-8&quot;&gt;</span><br><span class="line">    &lt;title&gt;HelloWorld&lt;/title&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">&lt;script src=&quot;js/d3.min.js&quot; charset=&quot;utf-8&quot;&gt;&lt;/script&gt;</span><br><span class="line">&lt;script&gt;</span><br><span class="line">    var width = 300;</span><br><span class="line">    var height = 300;</span><br><span class="line"></span><br><span class="line">    var svg = d3.select(&quot;body&quot;)</span><br><span class="line">            .append(&quot;svg&quot;)</span><br><span class="line">            .attr(&quot;width&quot;, width)</span><br><span class="line">            .attr(&quot;height&quot;, height);</span><br><span class="line"></span><br><span class="line">    var dataSet = [250, 210, 170, 130, 90];</span><br><span class="line">    var rectHeight = 25;</span><br><span class="line"></span><br><span class="line">    svg.selectAll(&quot;rect&quot;)</span><br><span class="line">            .data(dataSet)</span><br><span class="line">            .enter()</span><br><span class="line">            .append(&quot;rect&quot;)</span><br><span class="line">            .attr(&quot;x&quot;, 20)  // 设置举行左上角开始x位置</span><br><span class="line">            .attr(&quot;y&quot;, function(d, i) &#123;     // 设置举行左上角开始y位置</span><br><span class="line">                return i * rectHeight;</span><br><span class="line">            &#125;)</span><br><span class="line">            .attr(&quot;width&quot;, function(d) &#123;    // 设置每个举行的宽度(长度)</span><br><span class="line">                return d;</span><br><span class="line">            &#125;)</span><br><span class="line">            .attr(&quot;height&quot;, rectHeight - 2) // 行之间空出一条间隙</span><br><span class="line">            .attr(&quot;fill&quot;, &quot;steelblue&quot;);</span><br><span class="line">&lt;/script&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+<p>解释一下,<code>&lt;rect&gt;</code>为矩形，它有四个属性:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">x：矩形左上角的 x 坐标</span><br><span class="line">y：矩形左上角的 y 坐标</span><br><span class="line">width：矩形的宽度</span><br><span class="line">height：矩形的高度</span><br></pre></td></tr></table></figure>
+<p>其中x轴正方向为水平向右，y轴正方向为垂直向下:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">var dataSet = [250, 210, 170, 130, 90];</span><br></pre></td></tr></table></figure>
+<p>用来存储几个长方形的长度，即<code>width</code>属性值，添加和<code>dataSet</code>数量相等的矩形，所使用的代码是:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">svg.selectAll(&quot;rect&quot;)</span><br><span class="line">        .data(dataSet)</span><br><span class="line">        .enter()</span><br><span class="line">        .append(&quot;rect&quot;)</span><br></pre></td></tr></table></figure>
+<p>这段代码先记住，可以添加足够多的元素，后面细讲机制，然后就是前面讲过的给元素附属性值了，依次给每个举行设置那四个属性的值，<code>dataSet</code>里面的元素设置成举行的<code>width</code>属性值，最后设置一下颜色，效果如下:<br><img src="https://blog-1254094716.cos.ap-chengdu.myqcloud.com/D3%20js%20%E7%AC%94%E8%AE%B002%20001.jpg" alt="svg图表"></p>
+<h2 id="比例尺"><a href="#比例尺" class="headerlink" title="比例尺"></a>比例尺</h2><p>上面的设置矩形的长度用的是一个数组，里面的值直接设置成了矩形的像素长度，但是这样比较死，有可能太大也有可能太小，所以使用比例尺是个不错的注意，只要设置一种放缩关系，只用设定上下限，中间的值会自动放缩会很方便。<br>简单来说就是一个函数<code>x-&gt;y</code>这样的一种映射关系,x为定义域，y为值域。</p>
+<h3 id="线性比例尺"><a href="#线性比例尺" class="headerlink" title="线性比例尺"></a>线性比例尺</h3><p>这种比例尺比较常用，也比较简单，使用上只用设定上下限即可:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">var dataSet = [1.2, 2.3, 0.9, 1.5, 3.3];</span><br><span class="line">var min = d3.min(dataSet);</span><br><span class="line">var max = d3.max(dataSet);</span><br><span class="line"></span><br><span class="line">var linear = d3.scale.linear()</span><br><span class="line">	.domain([min, max])</span><br><span class="line">	.range([0, 300])</span><br><span class="line"></span><br><span class="line">linear(0.9)</span><br><span class="line">linear(2.3)</span><br><span class="line">linear(3.3)</span><br></pre></td></tr></table></figure>
+<p><code>d3.scale.linear()</code>返回线性比例尺，也可以当函数使用。</p>
+<h3 id="离散比例尺"><a href="#离散比例尺" class="headerlink" title="离散比例尺"></a>离散比例尺</h3><p>有时候需要的并不一定是线性连续的映射关系，可能是把某一批转化成另一类元素，例如:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">var index = [0, 1, 2, 3, 4];</span><br><span class="line">var color = [&quot;red&quot;, &quot;blue&quot;, &quot;green&quot;, &quot;yellow&quot;, &quot;black&quot;];</span><br></pre></td></tr></table></figure>
+<p>需要把对应的序号映射到颜色上去，用序数比例尺就更合适:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">var ordinal = d3.scale.ordinal()</span><br><span class="line">        .domain(index)</span><br><span class="line">        .range(color);</span><br><span class="line"></span><br><span class="line">ordinal(0); //返回 red</span><br><span class="line">ordinal(2); //返回 green</span><br><span class="line">ordinal(4); //返回 black</span><br></pre></td></tr></table></figure>
+<p>所以上面讲的柱形图，我们可以利用比例尺改写一下:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">var rectHeight = 25;   //每个矩形所占的像素高度(包括空白)</span><br><span class="line"></span><br><span class="line">svg.selectAll(&quot;rect&quot;)</span><br><span class="line">    .data(dataset)</span><br><span class="line">    .enter()</span><br><span class="line">    .append(&quot;rect&quot;)</span><br><span class="line">    .attr(&quot;x&quot;,20)</span><br><span class="line">    .attr(&quot;y&quot;,function(d,i)&#123;</span><br><span class="line">         return i * rectHeight;</span><br><span class="line">    &#125;)</span><br><span class="line">    .attr(&quot;width&quot;,function(d)&#123;</span><br><span class="line">         return linear(d);   //在这里用比例尺</span><br><span class="line">    &#125;)</span><br><span class="line">    .attr(&quot;height&quot;,rectHeight-2)</span><br><span class="line">    .attr(&quot;fill&quot;,&quot;steelblue&quot;);</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -1295,144 +1484,6 @@
 
 
 
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://sjq597.github.io/2016/06/21/Spark-%E4%B8%8B%E8%BD%BD%E4%B8%8E%E5%85%A5%E9%97%A8/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="LittleQ">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="LittleQ">
-      <meta itemprop="description" content="数据开发工程师的成长历程">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | LittleQ">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2016/06/21/Spark-%E4%B8%8B%E8%BD%BD%E4%B8%8E%E5%85%A5%E9%97%A8/" class="post-title-link" itemprop="url">Spark 下载与入门</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2016-06-21 23:03:39" itemprop="dateCreated datePublished" datetime="2016-06-21T23:03:39+08:00">2016-06-21</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-10-07 14:54:54" itemprop="dateModified" datetime="2023-10-07T14:54:54+08:00">2023-10-07</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83/" itemprop="url" rel="index"><span itemprop="name">开发环境</span></a>
-        </span>
-    </span>
-
-  
-    <span class="post-meta-break"></span>
-    <span class="post-meta-item" title="本文字数">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">本文字数：</span>
-      <span>1.7k</span>
-    </span>
-    <span class="post-meta-item" title="阅读时长">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>6 分钟</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>开发环境:<br>OS: Ubuntu 16.04 64bit</p>
-<h3 id="安装步骤"><a href="#安装步骤" class="headerlink" title="安装步骤"></a>安装步骤</h3><h4 id="下载解压"><a href="#下载解压" class="headerlink" title="下载解压"></a>下载解压</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo wget http://d3kbcqa49mib13.cloudfront.net/spark-1.6.1-bin-hadoop2.6.tgz</span><br><span class="line">sudo tar -xvf spark-1.6.1-bin-hadoop2.6.tgz -C /usr/dev </span><br><span class="line">sudo chown -R anonymous:anonymous spark-1.6.1-bin-hadoop2.6	# anonymous为当前用户名</span><br></pre></td></tr></table></figure>
-
-<h4 id="运行Spark"><a href="#运行Spark" class="headerlink" title="运行Spark"></a>运行Spark</h4><p>Spark支持多种语言,我们可以通过Python,Scala进入Spark交互式环境。</p>
-<ul>
-<li>Scala Shell</li>
-</ul>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd /usr/dev/spark-1.6.1-bin-hadoop2.6</span><br><span class="line">./bin/spark-shell	# 启动Scala Shell</span><br></pre></td></tr></table></figure>
-<p>**注意:**如果报错:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Tue Jun 21 23:30:04 CST 2016 Thread[main,5,main] java.io.FileNotFoundException: derby.log (权限不够)</span><br><span class="line">16/06/21 23:30:04 WARN Connection: BoneCP specified but not present in CLASSPATH (or one of dependencies)</span><br><span class="line">Tue Jun 21 23:30:04 CST 2016 Thread[main,5,main] Cleanup action starting</span><br><span class="line">ERROR XBM0H: Directory /usr/dev/spark-1.6.1-bin-hadoop2.6/bin/metastore_db cannot be created.</span><br></pre></td></tr></table></figure>
-<p>出现这个问题一般就是没有创建文件的权限,安装的最后一个命令就是起这个作用的</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo chown -R anonymous:anonymous spark-1.6.1-bin-hadoop2.6	# anonymous为当前用户名</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>Python Shell</li>
-</ul>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./bin/pyspark</span><br></pre></td></tr></table></figure>
-<p>为了在Shell里面写Python有补全提示，强烈建议安装<code>ipython</code>,Ubuntu安装也很简单</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install -y ipython</span><br></pre></td></tr></table></figure>
-<p>然后启动的时候可以这样:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">IPYTHON=1 ./bin/pyspark</span><br></pre></td></tr></table></figure>
-<p>进入Shell大概是这样的:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">➜  spark-1.6.1-bin-hadoop2.6 IPYTHON=1 bin/pyspark</span><br><span class="line">Python 2.7.11+ (default, Apr 17 2016, 14:00:29) </span><br><span class="line">Type &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.</span><br><span class="line"></span><br><span class="line">IPython 2.4.1 -- An enhanced Interactive Python.</span><br><span class="line">?         -&gt; Introduction and overview of IPython&#x27;s features.</span><br><span class="line">%quickref -&gt; Quick reference.</span><br><span class="line">help      -&gt; Python&#x27;s own help system.</span><br><span class="line">object?   -&gt; Details about &#x27;object&#x27;, use &#x27;object??&#x27; for extra details.</span><br><span class="line">Using Spark&#x27;s default log4j profile: org/apache/spark/log4j-defaults.properties</span><br><span class="line">16/06/21 23:57:06 INFO SparkContext: Running Spark version 1.6.1</span><br><span class="line">16/06/21 23:57:06 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable</span><br><span class="line">Welcome to</span><br><span class="line">      ____              __</span><br><span class="line">     / __/__  ___ _____/ /__</span><br><span class="line">    _\ \/ _ \/ _ `/ __/  &#x27;_/</span><br><span class="line">   /__ / .__/\_,_/_/ /_/\_\   version 1.6.1</span><br><span class="line">      /_/</span><br><span class="line"></span><br><span class="line">Using Python version 2.7.11+ (default, Apr 17 2016 14:00:29)</span><br><span class="line">SparkContext available as sc, HiveContext available as sqlContext.</span><br><span class="line"></span><br><span class="line">In [1]: lines = sc.textFile(&quot;README.md&quot;)</span><br></pre></td></tr></table></figure>
-<p>如果你觉得这样也有些麻烦,可以在<code>~/.bashrc</code>里面加一行:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">alias ipython=&#x27;IPYTHON=1&#x27;</span><br></pre></td></tr></table></figure>
-<p>然后就可以这么启动:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">➜  ~ cd /usr/dev/spark-1.6.1-bin-hadoop2.6 </span><br><span class="line">➜  spark-1.6.1-bin-hadoop2.6 ipython bin/pyspark </span><br></pre></td></tr></table></figure>
-
-<h4 id="简单样例"><a href="#简单样例" class="headerlink" title="简单样例"></a>简单样例</h4><p>Scala也不熟，就以Python为例吧,注意我的当前目录是在<code>/usr/dev/spark-1.6.1-bin-hadoop2.6</code>:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line">In [1]: lines = sc.textFile(&quot;README.md&quot;)</span><br><span class="line"> n [2]: lines.count()</span><br><span class="line">16/06/21 23:57:41 INFO FileInputFormat: Total input paths to process : 1</span><br><span class="line">16/06/21 23:57:41 INFO SparkContext: Starting job: count at &lt;ipython-input-2-44aeefde846d&gt;:1</span><br><span class="line">16/06/21 23:57:41 INFO DAGScheduler: Got job 0 (count at &lt;ipython-input-2-44aeefde846d&gt;:1) with 2 output partitions</span><br><span class="line">16/06/21 23:57:41 INFO DAGScheduler: Final stage: ResultStage 0 (count at &lt;ipython-input-2-44aeefde846d&gt;:1)</span><br><span class="line">16/06/21 23:57:41 INFO DAGScheduler: Parents of final stage: List()</span><br><span class="line">16/06/21 23:57:41 INFO DAGScheduler: Missing parents: List()</span><br><span class="line">16/06/21 23:57:41 INFO DAGScheduler: Submitting ResultStage 0 (PythonRDD[2] at count at &lt;ipython-input-2-44aeefde846d&gt;:1), which has no missing parents</span><br><span class="line">16/06/21 23:57:41 INFO MemoryStore: Block broadcast_1 stored as values in memory (estimated size 5.6 KB, free 173.1 KB)</span><br><span class="line">16/06/21 23:57:41 INFO MemoryStore: Block broadcast_1_piece0 stored as bytes in memory (estimated size 3.4 KB, free 176.6 KB)</span><br><span class="line">16/06/21 23:57:41 INFO BlockManagerInfo: Added broadcast_1_piece0 in memory on localhost:36609 (size: 3.4 KB, free: 511.5 MB)</span><br><span class="line">16/06/21 23:57:41 INFO SparkContext: Created broadcast 1 from broadcast at DAGScheduler.scala:1006</span><br><span class="line">16/06/21 23:57:41 INFO DAGScheduler: Submitting 2 missing tasks from ResultStage 0 (PythonRDD[2] at count at &lt;ipython-input-2-44aeefde846d&gt;:1)</span><br><span class="line">16/06/21 23:57:41 INFO TaskSchedulerImpl: Adding task set 0.0 with 2 tasks</span><br><span class="line">16/06/21 23:57:41 INFO TaskSetManager: Starting task 0.0 in stage 0.0 (TID 0, localhost, partition 0,PROCESS_LOCAL, 2151 bytes)</span><br><span class="line">16/06/21 23:57:41 INFO TaskSetManager: Starting task 1.0 in stage 0.0 (TID 1, localhost, partition 1,PROCESS_LOCAL, 2151 bytes)</span><br><span class="line">16/06/21 23:57:41 INFO Executor: Running task 0.0 in stage 0.0 (TID 0)</span><br><span class="line">16/06/21 23:57:41 INFO Executor: Running task 1.0 in stage 0.0 (TID 1)</span><br><span class="line">16/06/21 23:57:41 INFO HadoopRDD: Input split: file:/usr/dev/spark-1.6.1-bin-hadoop2.6/README.md:0+1679</span><br><span class="line">16/06/21 23:57:41 INFO HadoopRDD: Input split: file:/usr/dev/spark-1.6.1-bin-hadoop2.6/README.md:1679+1680</span><br><span class="line">16/06/21 23:57:41 INFO deprecation: mapred.tip.id is deprecated. Instead, use mapreduce.task.id</span><br><span class="line">16/06/21 23:57:41 INFO deprecation: mapred.task.id is deprecated. Instead, use mapreduce.task.attempt.id</span><br><span class="line">16/06/21 23:57:41 INFO deprecation: mapred.task.is.map is deprecated. Instead, use mapreduce.task.ismap</span><br><span class="line">16/06/21 23:57:41 INFO deprecation: mapred.task.partition is deprecated. Instead, use mapreduce.task.partition</span><br><span class="line">16/06/21 23:57:41 INFO deprecation: mapred.job.id is deprecated. Instead, use mapreduce.job.id</span><br><span class="line">16/06/21 23:57:42 INFO PythonRunner: Times: total = 283, boot = 268, init = 14, finish = 1</span><br><span class="line">16/06/21 23:57:42 INFO PythonRunner: Times: total = 291, boot = 272, init = 19, finish = 0</span><br><span class="line">16/06/21 23:57:42 INFO Executor: Finished task 0.0 in stage 0.0 (TID 0). 2124 bytes result sent to driver</span><br><span class="line">16/06/21 23:57:42 INFO Executor: Finished task 1.0 in stage 0.0 (TID 1). 2124 bytes result sent to driver</span><br><span class="line">16/06/21 23:57:42 INFO TaskSetManager: Finished task 0.0 in stage 0.0 (TID 0) in 407 ms on localhost (1/2)</span><br><span class="line">16/06/21 23:57:42 INFO TaskSetManager: Finished task 1.0 in stage 0.0 (TID 1) in 393 ms on localhost (2/2)</span><br><span class="line">16/06/21 23:57:42 INFO DAGScheduler: ResultStage 0 (count at &lt;ipython-input-2-44aeefde846d&gt;:1) finished in 0.423 s</span><br><span class="line">16/06/21 23:57:42 INFO TaskSchedulerImpl: Removed TaskSet 0.0, whose tasks have all completed, from pool </span><br><span class="line">16/06/21 23:57:42 INFO DAGScheduler: Job 0 finished: count at &lt;ipython-input-2-44aeefde846d&gt;:1, took 0.489031 s</span><br><span class="line">Out[2]: 95</span><br><span class="line"></span><br><span class="line">In [3]: lines.first()</span><br><span class="line">16/06/21 23:58:15 INFO SparkContext: Starting job: runJob at PythonRDD.scala:393</span><br><span class="line">16/06/21 23:58:15 INFO DAGScheduler: Got job 1 (runJob at PythonRDD.scala:393) with 1 output partitions</span><br><span class="line">16/06/21 23:58:15 INFO DAGScheduler: Final stage: ResultStage 1 (runJob at PythonRDD.scala:393)</span><br><span class="line">16/06/21 23:58:15 INFO DAGScheduler: Parents of final stage: List()</span><br><span class="line">16/06/21 23:58:15 INFO DAGScheduler: Missing parents: List()</span><br><span class="line">16/06/21 23:58:15 INFO DAGScheduler: Submitting ResultStage 1 (PythonRDD[3] at RDD at PythonRDD.scala:43), which has no missing parents</span><br><span class="line">16/06/21 23:58:15 INFO MemoryStore: Block broadcast_2 stored as values in memory (estimated size 4.8 KB, free 181.3 KB)</span><br><span class="line">16/06/21 23:58:15 INFO MemoryStore: Block broadcast_2_piece0 stored as bytes in memory (estimated size 3.0 KB, free 184.3 KB)</span><br><span class="line">16/06/21 23:58:15 INFO BlockManagerInfo: Added broadcast_2_piece0 in memory on localhost:36609 (size: 3.0 KB, free: 511.5 MB)</span><br><span class="line">16/06/21 23:58:15 INFO SparkContext: Created broadcast 2 from broadcast at DAGScheduler.scala:1006</span><br><span class="line">16/06/21 23:58:15 INFO DAGScheduler: Submitting 1 missing tasks from ResultStage 1 (PythonRDD[3] at RDD at PythonRDD.scala:43)</span><br><span class="line">16/06/21 23:58:15 INFO TaskSchedulerImpl: Adding task set 1.0 with 1 tasks</span><br><span class="line">16/06/21 23:58:15 INFO TaskSetManager: Starting task 0.0 in stage 1.0 (TID 2, localhost, partition 0,PROCESS_LOCAL, 2151 bytes)</span><br><span class="line">16/06/21 23:58:15 INFO Executor: Running task 0.0 in stage 1.0 (TID 2)</span><br><span class="line">16/06/21 23:58:15 INFO HadoopRDD: Input split: file:/usr/dev/spark-1.6.1-bin-hadoop2.6/README.md:0+1679</span><br><span class="line">16/06/21 23:58:15 INFO PythonRunner: Times: total = 41, boot = -33244, init = 33285, finish = 0</span><br><span class="line">16/06/21 23:58:15 INFO Executor: Finished task 0.0 in stage 1.0 (TID 2). 2143 bytes result sent to driver</span><br><span class="line">16/06/21 23:58:15 INFO TaskSetManager: Finished task 0.0 in stage 1.0 (TID 2) in 67 ms on localhost (1/1)</span><br><span class="line">16/06/21 23:58:15 INFO DAGScheduler: ResultStage 1 (runJob at PythonRDD.scala:393) finished in 0.068 s</span><br><span class="line">16/06/21 23:58:15 INFO TaskSchedulerImpl: Removed TaskSet 1.0, whose tasks have all completed, from pool </span><br><span class="line">16/06/21 23:58:15 INFO DAGScheduler: Job 1 finished: runJob at PythonRDD.scala:393, took 0.082887 s</span><br><span class="line">Out[3]: u&#x27;# Apache Spark&#x27;</span><br></pre></td></tr></table></figure>
-<p>看看，其实很简单的，但是有个问题，每次输入一个操作，结果搞出这么一大堆的日志，看着确实影响输入，我们可以控制一下Spark的输出日志级别,编辑<code>spark-1.6.1-bin-hadoop2.6/conf/log4j.properties.template</code>文件,为了安全起见，我们直接拷贝一份模板作为我们的日志配置文件:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd conf/</span><br><span class="line">sudo cp log4j.properties.template log4j.properties</span><br></pre></td></tr></table></figure>
-<p>定位到这一行:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">log4j.rootCategory=INFO, console</span><br></pre></td></tr></table></figure>
-<p>改为:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">log4j.rootCategory=WARN, console</span><br></pre></td></tr></table></figure>
-<p>看看之前的操作:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">Using Python version 2.7.11+ (default, Apr 17 2016 14:00:29)</span><br><span class="line">SparkContext available as sc, HiveContext available as sqlContext.</span><br><span class="line"></span><br><span class="line">In [1]: lines = sc.textFile(&quot;README.md&quot;)</span><br><span class="line"></span><br><span class="line">In [2]: lines.count()</span><br><span class="line">Out[2]: 95</span><br><span class="line"></span><br><span class="line">In [3]: lines.first()</span><br><span class="line">Out[3]: u&#x27;# Apache Spark&#x27;</span><br><span class="line"></span><br><span class="line">In [4]: </span><br></pre></td></tr></table></figure>
-<p>这样就只会输出警告及以上的日志了。</p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
   <nav class="pagination">
     <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/page/4/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><span class="space">&hellip;</span><a class="page-number" href="/page/15/">15</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/page/6/"><i class="fa fa-angle-right"></i></a>
   </nav>
@@ -1456,13 +1507,13 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">124k</span>
+    <span title="站点总字数">125k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">7:31</span>
+    <span title="站点阅读时长">7:34</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
@@ -1486,7 +1537,9 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
 <script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
 
-  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
 
 
 

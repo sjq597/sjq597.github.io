@@ -17,7 +17,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
-<script class="next-config" data-name="main" type="application/json">{"hostname":"sjq597.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.18.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+<script class="next-config" data-name="main" type="application/json">{"hostname":"sjq597.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.18.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
     <meta name="description" content="数据开发工程师的成长历程">
 <meta property="og:type" content="website">
@@ -78,6 +78,7 @@
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -86,11 +87,37 @@
 
 <nav class="site-nav">
   <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
   </ul>
 </nav>
 
 
 
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
 
 </header>
         
@@ -122,7 +149,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">145</span>
+          <span class="site-state-item-count">146</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -150,6 +177,112 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://sjq597.github.io/2015/11/11/Hive-count-%E5%92%8Ccount-expr/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="LittleQ">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LittleQ">
+      <meta itemprop="description" content="数据开发工程师的成长历程">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | LittleQ">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2015/11/11/Hive-count-%E5%92%8Ccount-expr/" class="post-title-link" itemprop="url">Hive count(*)和count(expr)</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2015-11-11 00:15:42" itemprop="dateCreated datePublished" datetime="2015-11-11T00:15:42+08:00">2015-11-11</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-10-07 14:54:54" itemprop="dateModified" datetime="2023-10-07T14:54:54+08:00">2023-10-07</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Hive%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">Hive笔记</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>464</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>2 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>最近在给PM做报表时，要统计登陆订单的下单比例，也就是说哪些订单是登陆用户的订单，那些没有用户名，即用户名为<code>null</code>的用户不需要统计到最后的登陆订单中。<br>一开始我想这直接在<code>count</code>函数内写一个条件判断:</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="built_in">count</span>(<span class="keyword">case</span> <span class="keyword">when</span> user_name <span class="keyword">is</span> <span class="keyword">not</span> <span class="keyword">null</span> <span class="keyword">then</span> <span class="number">1</span> <span class="keyword">else</span> <span class="keyword">null</span> <span class="keyword">end</span>) <span class="keyword">as</span> login_order</span><br><span class="line"><span class="keyword">from</span> table_name</span><br></pre></td></tr></table></figure>
+<p>但是后来我在查询Hive里count函数的用法时，发现了网上有人说，其实count在统计行数的时候，会根据使用的用法进行不同的逻辑运算，具体看Hive参考文档：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">count(*) - Returns the total number of retrieved rows, including rows containing NULL values;</span><br><span class="line">count(expr) - Returns the number of rows for which the supplied expression is non-NULL;</span><br><span class="line">count(DISTINCT expr[, expr]) - Returns the number of rows for which the supplied expression(s) are unique and non-NULL.</span><br></pre></td></tr></table></figure>
+<p>上面的意思简单明了，除了<code>count(*)</code>之外，其他的计算的是非空值的条数，并且加上<code>distinct</code>还会合并重复记录到一类里面。<br>看到这里，我才发现，上面的写法有些多余，可以直接就count(user_name)，会自动略过那些user_name为空的记录。但是后面我还是采用了这个多余的写法，为什么？其实还是出于可读性和可维护性，这样写虽然复杂，但是后来维护的人起码知道你没有统计null用户。</p>
+<h3 id="Hive-count高级用法"><a href="#Hive-count高级用法" class="headerlink" title="Hive count高级用法"></a>Hive count高级用法</h3><p>count不是简单只有<code>count(*)</code>用法，下面还有一些更为高级的用法，加上条件语句:</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> type,</span><br><span class="line">	<span class="built_in">count</span>(<span class="operator">*</span>),</span><br><span class="line">	<span class="built_in">count</span>(<span class="keyword">distinct</span> u),</span><br><span class="line">	<span class="built_in">count</span>(<span class="keyword">case</span> <span class="keyword">when</span> plat<span class="operator">=</span><span class="number">1</span> <span class="keyword">then</span> u <span class="keyword">else</span> <span class="keyword">null</span> <span class="keyword">end</span>),</span><br><span class="line">	<span class="built_in">count</span>(<span class="keyword">distinct</span> <span class="keyword">case</span> <span class="keyword">when</span> plat<span class="operator">=</span><span class="number">1</span> <span class="keyword">then</span> u <span class="keyword">else</span> <span class="keyword">null</span> <span class="keyword">end</span>),</span><br><span class="line">	<span class="built_in">count</span>(<span class="keyword">case</span> <span class="keyword">when</span> (type<span class="operator">=</span><span class="number">2</span> <span class="keyword">or</span> type<span class="operator">=</span><span class="number">6</span>) <span class="keyword">then</span> u <span class="keyword">else</span> <span class="keyword">null</span> <span class="keyword">end</span>),</span><br><span class="line">	<span class="built_in">count</span>(<span class="keyword">distinct</span> <span class="keyword">case</span> <span class="keyword">when</span> (type<span class="operator">=</span><span class="number">2</span> <span class="keyword">or</span> type<span class="operator">=</span><span class="number">6</span>) <span class="keyword">then</span> u <span class="keyword">else</span> <span class="keyword">null</span> <span class="keyword">end</span>)</span><br><span class="line"><span class="keyword">from</span> t</span><br><span class="line"><span class="keyword">where</span> dt <span class="keyword">in</span> (<span class="string">&#x27;2015-11-01&#x27;</span>, <span class="string">&#x27;2015-11-01)</span></span><br><span class="line"><span class="string">group by type</span></span><br><span class="line"><span class="string">order by type;</span></span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -1610,125 +1743,6 @@
 
 
 
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://sjq597.github.io/2015/11/03/Shell-%E6%8C%89%E6%97%A5%E6%9C%9F%E5%BE%AA%E7%8E%AF%E6%89%A7%E8%A1%8C/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="LittleQ">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="LittleQ">
-      <meta itemprop="description" content="数据开发工程师的成长历程">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | LittleQ">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2015/11/03/Shell-%E6%8C%89%E6%97%A5%E6%9C%9F%E5%BE%AA%E7%8E%AF%E6%89%A7%E8%A1%8C/" class="post-title-link" itemprop="url">Shell 按日期循环执行</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2015-11-03 20:41:17" itemprop="dateCreated datePublished" datetime="2015-11-03T20:41:17+08:00">2015-11-03</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-10-07 14:54:54" itemprop="dateModified" datetime="2023-10-07T14:54:54+08:00">2023-10-07</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Shell/" itemprop="url" rel="index"><span itemprop="name">Shell</span></a>
-        </span>
-    </span>
-
-  
-    <span class="post-meta-break"></span>
-    <span class="post-meta-item" title="本文字数">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">本文字数：</span>
-      <span>802</span>
-    </span>
-    <span class="post-meta-item" title="阅读时长">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>3 分钟</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>服务器上有些脚本,执行的参数用到了日期,也就是每天执行一次,日期取当天时间作为参数,当有些时候需要把这些脚本过去一段时间的运行结果重新运行一次时,手动指定脚本日期没有办法大批量执行,需要在shell中写循环,让脚本批量执行.</p>
-<h3 id="方法一"><a href="#方法一" class="headerlink" title="方法一"></a>方法一</h3><p>以一个小的例子来说:把指定日期时间段内的日期都输出来,看看下面的代码:</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#! /bin/bash</span></span><br><span class="line"></span><br><span class="line">start_date=20151101</span><br><span class="line">end_date=20151103</span><br><span class="line">start_sec=`<span class="built_in">date</span> -d <span class="string">&quot;<span class="variable">$start_date</span>&quot;</span> <span class="string">&quot;+%s&quot;</span>`</span><br><span class="line">end_sec=`<span class="built_in">date</span> -d <span class="string">&quot;<span class="variable">$end_date</span>&quot;</span> <span class="string">&quot;+%s&quot;</span>`</span><br><span class="line"><span class="keyword">for</span>((i=start_sec;i&lt;=end_sec;i+=<span class="number">86400</span>)); <span class="keyword">do</span></span><br><span class="line">    day=$(<span class="built_in">date</span> -d <span class="string">&quot;@<span class="variable">$i</span>&quot;</span> <span class="string">&quot;+%Y-%m-%d&quot;</span>)</span><br><span class="line">    <span class="built_in">echo</span> <span class="variable">$day</span></span><br><span class="line"><span class="keyword">done</span></span><br></pre></td></tr></table></figure>
-<p>看看输出结果:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">2015-11-01</span><br><span class="line">2015-11-02</span><br><span class="line">2015-11-03</span><br></pre></td></tr></table></figure>
-<p>执行结果是循环输出日期,把需要循环的脚本放在循环里调用,把<code>$day</code>当参数使用即可.如果脚本里面的变量是日期,那就把脚本代码拷贝到循环中间.日期的格式可以按需求自己调整.例如:</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span>((i=start_sec;i&lt;=end_sec;i+=<span class="number">86400</span>)); <span class="keyword">do</span></span><br><span class="line">    day=$(<span class="built_in">date</span> -d <span class="string">&quot;@<span class="variable">$i</span>&quot;</span> <span class="string">&quot;+%Y-%m-%d&quot;</span>)</span><br><span class="line">    <span class="built_in">echo</span> <span class="variable">$day</span></span><br><span class="line">    sudo /usr/python/ /usr/dev/job.py <span class="variable">$day</span></span><br><span class="line"><span class="keyword">done</span></span><br></pre></td></tr></table></figure>
-<p>这样就可以把时间参数批量传入脚本.</p>
-<h3 id="方法二"><a href="#方法二" class="headerlink" title="方法二"></a>方法二</h3><p>但是上面的还是很麻烦，你要记住一天有多少秒，这样也不太容易记住，下面还有另一种方法,注意到时间格式为<code>20151101</code>,这种其实也是一个数字，我们可以让日期按天增加，然后比较日期大小关系:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">#! /bin/bash</span><br><span class="line"></span><br><span class="line">start=20160101</span><br><span class="line">end=20160103</span><br><span class="line"></span><br><span class="line">while [ $&#123;start&#125; -le $&#123;end&#125; ]</span><br><span class="line">do</span><br><span class="line">  echo $&#123;start&#125;</span><br><span class="line">  start=`date -d &quot;1 day $&#123;start&#125;&quot; +%Y%m%d`	# 日期自增</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
-<p>**备注:**Shell里面的数字大小比较:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">-ne	# 不相等</span><br><span class="line">-gt	# 大于</span><br><span class="line">-lt	# 小于</span><br><span class="line">-ge	# 大于或等于</span><br><span class="line">-le	# 小于或等于</span><br></pre></td></tr></table></figure>
-
-<h3 id="方法三"><a href="#方法三" class="headerlink" title="方法三"></a>方法三</h3><p>虽然上面的方法二比方法一要好很多，但是好像有个问题，一般日期都是以字符串的形式传入，多半是<code>2016-01-01</code>这种带间隔的方式，这种情况我们是没办法比较的，当然把上面的改一改也能用,例如:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">#! /bin/bash</span><br><span class="line"></span><br><span class="line"># 先把日期处理成纯数字的格式</span><br><span class="line">start=`date -d &quot;2016-01-01&quot; +%Y%m%d`</span><br><span class="line">end=`date -d &quot;2016-03-01&quot; +%Y%m%d`</span><br><span class="line"></span><br><span class="line">while [ $&#123;start&#125; -le $&#123;end&#125; ]</span><br><span class="line">do</span><br><span class="line">  echo $&#123;start&#125;</span><br><span class="line">  # 假设下面有一个脚本需要2016-01-01格式的日期</span><br><span class="line">  bash xxx.sh `date -d &quot;$&#123;start&#125;&quot; +%Y-%m-%d`</span><br><span class="line">  start=`date -d &quot;1 day $&#123;start&#125;&quot; +%Y%m%d`	# 日期自增</span><br><span class="line">done</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<p>但是这样感觉好麻烦，为啥循环就只能是数字呢?有没有一种比较通用的循环方式,这个当然有，你可以像下面这样:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">#! /bin/bash</span><br><span class="line"></span><br><span class="line">start=&#x27;2016-01-01&#x27;</span><br><span class="line">end=&#x27;2016-01-03&#x27;</span><br><span class="line"></span><br><span class="line">while [ &quot;$&#123;start&#125;&quot; != &quot;$&#123;end&#125;&quot; ]</span><br><span class="line">do</span><br><span class="line">  echo $&#123;start&#125;</span><br><span class="line">  start=`date -d &quot;1 day $&#123;start&#125;&quot; +%Y-%m-%d`	# 日期自增</span><br><span class="line">done</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<p>这样就可以循环了，但是记住，<code>start</code>取不到<code>end</code>值，即最后输出的是<code>[start,end)</code>，好像Shell里面并没有<code>do...while</code>这种循环，所以最好在循环之前，先做一步处理:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">end=`date -d &quot;1 day $&#123;end&#125;&quot; +%Y-%m-%d`	# 日期自增</span><br></pre></td></tr></table></figure>
-<p>然后再就可以取到两边的边界值了。<br>**注意:**这样比较的时候，一定要注意<code>while</code>里面的左右条件一定要用<code>&quot;&quot;</code>引起来，<code>&#39;</code>不行。</p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
   <nav class="pagination">
     <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/page/10/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><span class="page-number current">11</span><a class="page-number" href="/page/12/">12</a><span class="space">&hellip;</span><a class="page-number" href="/page/15/">15</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/page/12/"><i class="fa fa-angle-right"></i></a>
   </nav>
@@ -1752,13 +1766,13 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">124k</span>
+    <span title="站点总字数">125k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">7:31</span>
+    <span title="站点阅读时长">7:34</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
@@ -1782,7 +1796,9 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
 <script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
 
-  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
 
 
 
