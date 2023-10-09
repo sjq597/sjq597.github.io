@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"sjq597.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.18.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="尝鲜使用了一段时间的fedroa,大概使用了一个月吧，之前一直是使用的Ubuntu 16.04,想着和服务器上的CentOS尽量保持一致就装了个Fedroa 25最为日常开发机器，大概用了一个月就放弃了，说句实话，不是很好用,引用一句在stackoverflow上的答案吧，我觉得确实说的很有道理，问题大概是Ubuntu和Fedroa有什么区别，我相信很多同时用过这两个系统的人都可能会问这个问题，那">
+<meta property="og:type" content="article">
+<meta property="og:title" content="fedroa 25 开发常用配置及问题">
+<meta property="og:url" content="http://sjq597.github.io/2017/02/13/fedroa-25-%E5%BC%80%E5%8F%91%E5%B8%B8%E7%94%A8%E9%85%8D%E7%BD%AE%E5%8F%8A%E9%97%AE%E9%A2%98/index.html">
+<meta property="og:site_name" content="LittleQ">
+<meta property="og:description" content="尝鲜使用了一段时间的fedroa,大概使用了一个月吧，之前一直是使用的Ubuntu 16.04,想着和服务器上的CentOS尽量保持一致就装了个Fedroa 25最为日常开发机器，大概用了一个月就放弃了，说句实话，不是很好用,引用一句在stackoverflow上的答案吧，我觉得确实说的很有道理，问题大概是Ubuntu和Fedroa有什么区别，我相信很多同时用过这两个系统的人都可能会问这个问题，那">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2017-02-13T10:04:05.000Z">
+<meta property="article:modified_time" content="2023-10-07T06:54:54.000Z">
+<meta property="article:author" content="LittleQ">
+<meta property="article:tag" content="Linux">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://sjq597.github.io/2017/02/13/fedroa-25-%E5%BC%80%E5%8F%91%E5%B8%B8%E7%94%A8%E9%85%8D%E7%BD%AE%E5%8F%8A%E9%97%AE%E9%A2%98/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://sjq597.github.io/2017/02/13/fedroa-25-%E5%BC%80%E5%8F%91%E5%B8%B8%E7%94%A8%E9%85%8D%E7%BD%AE%E5%8F%8A%E9%97%AE%E9%A2%98/","path":"2017/02/13/fedroa-25-开发常用配置及问题/","title":"fedroa 25 开发常用配置及问题"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>fedroa 25 开发常用配置及问题 | LittleQ</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">LittleQ</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">爱好：写代码</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link"><span class="nav-number">1.</span> <span class="nav-text"></span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#mysqldb-python"><span class="nav-number">1.1.</span> <span class="nav-text">mysqldb-python</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#vim"><span class="nav-number">1.2.</span> <span class="nav-text">vim</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%B3%E9%94%AE%E8%8F%9C%E5%8D%95%E6%89%93%E5%BC%80%E7%BB%88%E7%AB%AF"><span class="nav-number">1.3.</span> <span class="nav-text">右键菜单打开终端</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8%E6%A0%8F%E5%BF%AB%E6%8D%B7%E9%94%AE"><span class="nav-number">1.4.</span> <span class="nav-text">启动栏快捷键</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#sougo%E4%B8%AD%E6%96%87%E8%BE%93%E5%85%A5%E6%B3%95"><span class="nav-number">1.5.</span> <span class="nav-text">sougo中文输入法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%8C%E6%AD%A5%E7%9B%98"><span class="nav-number">1.6.</span> <span class="nav-text">同步盘</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%96%E6%B6%88%E5%B7%A6%E4%B8%8B%E8%A7%92%E6%89%98%E7%9B%98"><span class="nav-number">1.7.</span> <span class="nav-text">取消左下角托盘</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#fedroa%E6%88%AA%E5%B1%8F"><span class="nav-number">1.8.</span> <span class="nav-text">fedroa截屏</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#fedroa-ssh-server"><span class="nav-number">1.9.</span> <span class="nav-text">fedroa ssh server</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85mysql"><span class="nav-number">1.10.</span> <span class="nav-text">安装mysql</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">LittleQ</p>
+  <div class="site-description" itemprop="description">数据开发工程师的成长历程</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">145</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">51</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://sjq597.github.io/2017/02/13/fedroa-25-%E5%BC%80%E5%8F%91%E5%B8%B8%E7%94%A8%E9%85%8D%E7%BD%AE%E5%8F%8A%E9%97%AE%E9%A2%98/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="LittleQ">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LittleQ">
+      <meta itemprop="description" content="数据开发工程师的成长历程">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="fedroa 25 开发常用配置及问题 | LittleQ">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          fedroa 25 开发常用配置及问题
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2017-02-13 18:04:05" itemprop="dateCreated datePublished" datetime="2017-02-13T18:04:05+08:00">2017-02-13</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-10-07 14:54:54" itemprop="dateModified" datetime="2023-10-07T14:54:54+08:00">2023-10-07</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Linux%E4%BD%BF%E7%94%A8/" itemprop="url" rel="index"><span itemprop="name">Linux使用</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>尝鲜使用了一段时间的<code>fedroa</code>,大概使用了一个月吧，之前一直是使用的<code>Ubuntu 16.04</code>,想着和服务器上的<code>CentOS</code>尽量保持一致就装了个<code>Fedroa 25</code>最为日常开发机器，大概用了一个月就放弃了，说句实话，不是很好用,引用一句在<code>stackoverflow</code>上的答案吧，我觉得确实说的很有道理，问题大概是<code>Ubuntu和Fedroa</code>有什么区别，我相信很多同时用过这两个系统的人都可能会问这个问题，那就是作为桌面开发机来说，到底选那个，或者又说这两者都是桌面环境的<code>Linux</code>,哪个更适合作为日常开发使用?</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Ubuntu的使命是使Linux对人更友好，更易于交互</span><br></pre></td></tr></table></figure>
+<p>其实你都不可否认，<code>Ubuntu</code>应该是目前为止非常稳定的一个<code>Linux桌面开发环境</code>,这句话在我使用了一个月的<code>Fedroa</code>之后感受尤为深刻。</p>
+<p>虽然也能用。碰到了各种问题，花了很多的时间，所以想记下来这些解决的笔记。</p>
+<h2 id=""><a href="#" class="headerlink" title=""></a></h2><p>系统Fedroa 25 64bit,以下操作都是在此基础上，其他系统仅做参考。可以先把源设置成阿里的源，那个源比较快。</p>
+<h3 id="mysqldb-python"><a href="#mysqldb-python" class="headerlink" title="mysqldb-python"></a>mysqldb-python</h3><p>安装<code>mysqldb</code>报错,错误信息如下:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">gcc: error: /usr/lib/rpm/redhat/redhat-hardened-cc1: No such file or directory</span><br><span class="line"> error: command &#x27;gcc&#x27; failed with exit status 1</span><br></pre></td></tr></table></figure>
+
+<p>解决方案在<code>stackoverflow</code>上,链接为:<br><a target="_blank" rel="noopener" href="http://stackoverflow.com/questions/34624428/g-error-usr-lib-rpm-redhat-redhat-hardened-cc1-no-that-file-and-directory">http://stackoverflow.com/questions/34624428/g-error-usr-lib-rpm-redhat-redhat-hardened-cc1-no-that-file-and-directory</a></p>
+<h3 id="vim"><a href="#vim" class="headerlink" title="vim"></a>vim</h3><p>fedora直接安装vim是会失败的，这个实在是太操蛋了解决方案,先更新系统自带<code>vi</code>,然后才能装.<br>好不容易装好了之后发现，vim里面的东西没有办法用鼠标选中复制到剪贴板，解决方案:<br><a target="_blank" rel="noopener" href="http://vi.stackexchange.com/questions/84/how-can-i-copy-text-to-the-system-clipboard-from-vim">http://vi.stackexchange.com/questions/84/how-can-i-copy-text-to-the-system-clipboard-from-vim</a></p>
+<h3 id="右键菜单打开终端"><a href="#右键菜单打开终端" class="headerlink" title="右键菜单打开终端"></a>右键菜单打开终端</h3><p>之前用<code>Ubuntu</code>一直没觉得这个功能有多么贴心，直到<code>Fedroa</code>中右键菜单没了这个才发现没了这个功能好麻烦，有时候就像在当前目录打开一个终端，还必须打开一个然后一路<code>cd</code>到当前目录，解决方案:<br><a target="_blank" rel="noopener" href="https://www.if-not-true-then-false.com/2011/nautilus-open-in-terminal-on-fedora-centos-red-hat-rhel/">right clik open terminnal</a></p>
+<h3 id="启动栏快捷键"><a href="#启动栏快捷键" class="headerlink" title="启动栏快捷键"></a>启动栏快捷键</h3><p>有时候需要把常用的一些应用固定在左侧启动栏，但是有些解压的软件好像无法<code>Add favourate</code>,此时可以手动编辑</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">~/.local/share/applications</span><br></pre></td></tr></table></figure>
+<p>下面的<code>xxxx.desktop</code>文件，照着写一个就行.<br>然后写完了可以用系统自带命令验证一下:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">desktop-file-install xxx.desktop</span><br></pre></td></tr></table></figure>
+
+<h3 id="sougo中文输入法"><a href="#sougo中文输入法" class="headerlink" title="sougo中文输入法"></a>sougo中文输入法</h3><p>中文社区有源:<a target="_blank" rel="noopener" href="https://www.fdzh.org/blog/2015/10/18/fedora-sougoupinyin/">https://www.fdzh.org/blog/2015/10/18/fedora-sougoupinyin/</a></p>
+<h3 id="同步盘"><a href="#同步盘" class="headerlink" title="同步盘"></a>同步盘</h3><p>公司把所有外网的网盘封了，内部提供的网盘是<code>ownCloud</code>,安装客户端程序:<br>地址:<a target="_blank" rel="noopener" href="https://software.opensuse.org/download/package?project=isv:ownCloud:desktop&package=owncloud-client">https://software.opensuse.org/download/package?project=isv:ownCloud:desktop&package=owncloud-client</a></p>
+<h3 id="取消左下角托盘"><a href="#取消左下角托盘" class="headerlink" title="取消左下角托盘"></a>取消左下角托盘</h3><p>TopIcons</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dnf install gnome-tweak-tool</span><br></pre></td></tr></table></figure>
+<p>然后照着github上来:<br><a target="_blank" rel="noopener" href="https://github.com/phocean/TopIcons-plus">https://github.com/phocean/TopIcons-plus</a></p>
+<h3 id="fedroa截屏"><a href="#fedroa截屏" class="headerlink" title="fedroa截屏"></a>fedroa截屏</h3><p>The default behaviour when pressing the PrintScreen key is to automatically place your screenshot in the Pictures folder in your home directory (i.e. “~&#x2F;Pictures”). The click and the flash mean that the screenshot has been taken, so just check the Pictures folder for your screenshot.</p>
+<p>Other than just the “Print Screen’ key, which saves your whole Desktop to the Pictures folder, GNOME3 also has the following shortcuts enabled by default for screenshot actions:</p>
+<p>PrintScreen – Takes a screenshot of your entire desktop and saves it to the Pictures folder.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Alt + PrintScreen -- Saves a screenshot of the focused window to the Pictures Folder</span><br><span class="line">Shift + PrintScreen -- Lets you select an area of the screen, and saves to the Pictures Folder</span><br><span class="line">Ctrl + PrintScreen -- Takes a screenshot of your entire desktop and copies it to the clipboard.</span><br><span class="line">Ctrl + Alt + PrintScreen -- copies a screenshot of the focused window to the clipboard.</span><br><span class="line">Ctrl + Shift + PrintScreen -- Lets you select an area of the screen, and copies it to the clipboard.</span><br><span class="line">Ctrl + Shift + Alt + R -- Records a Screencast) of your entire desktop and saves it to your Videos folder.</span><br></pre></td></tr></table></figure>
+
+<h3 id="fedroa-ssh-server"><a href="#fedroa-ssh-server" class="headerlink" title="fedroa ssh server"></a>fedroa ssh server</h3><p>安装完之后执行:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl start sshd</span><br></pre></td></tr></table></figure>
+
+<h3 id="安装mysql"><a href="#安装mysql" class="headerlink" title="安装mysql"></a>安装mysql</h3><p>这个最蛋疼,装完了还有一堆配置非常的麻烦。<br><a target="_blank" rel="noopener" href="https://www.if-not-true-then-false.com/2010/install-mysql-on-fedora-centos-red-hat-rhel/">https://www.if-not-true-then-false.com/2010/install-mysql-on-fedora-centos-red-hat-rhel/</a><br>如果无法初始化用户的密码，可以在mysql中试试下面的命令:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">update user set authentication_string=password(&#x27;Root@123&#x27;) where user=&#x27;root&#x27; and host=&#x27;localhost&#x27;;</span><br><span class="line">FLUSH PRIVILEGES;</span><br></pre></td></tr></table></figure>
+
+<p>**备注:**其实可以多折腾一下，但是说实话吧，这个系统的桌面版真的不好用，装个软件非常不方便，尤其是mysql.</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Linux/" rel="tag"># Linux</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2017/02/07/mysqldb-python-%E9%94%99%E8%AF%AF%E6%B1%87%E6%80%BB%E5%88%86%E6%9E%90/" rel="prev" title="mysqldb python 错误汇总分析">
+                  <i class="fa fa-angle-left"></i> mysqldb python 错误汇总分析
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2017/02/22/git-%E5%B8%B8%E7%94%A8%E5%9C%BA%E6%99%AF%E5%8D%B3%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/" rel="next" title="Git 常用场景即解决方案">
+                  Git 常用场景即解决方案 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">LittleQ</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

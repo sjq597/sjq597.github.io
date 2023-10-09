@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"sjq597.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.18.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="初级命令拉取项目初次拉取项目也就是克隆项目 12345678➜  docments  git clone git@repository_url&#x2F;project_name.gitCloning into &amp;#x27;project_name&amp;#x27;...remote: Counting objects: 14930, done.remote: Compressing objects: 100%">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Git 常用命令">
+<meta property="og:url" content="http://sjq597.github.io/2015/10/08/Git-%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/index.html">
+<meta property="og:site_name" content="LittleQ">
+<meta property="og:description" content="初级命令拉取项目初次拉取项目也就是克隆项目 12345678➜  docments  git clone git@repository_url&#x2F;project_name.gitCloning into &amp;#x27;project_name&amp;#x27;...remote: Counting objects: 14930, done.remote: Compressing objects: 100%">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2015-10-08T09:58:25.000Z">
+<meta property="article:modified_time" content="2023-10-07T06:54:54.000Z">
+<meta property="article:author" content="LittleQ">
+<meta property="article:tag" content="Git">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://sjq597.github.io/2015/10/08/Git-%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://sjq597.github.io/2015/10/08/Git-%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/","path":"2015/10/08/Git-常用命令/","title":"Git 常用命令"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Git 常用命令 | LittleQ</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">LittleQ</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">爱好：写代码</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9D%E7%BA%A7%E5%91%BD%E4%BB%A4"><span class="nav-number">1.</span> <span class="nav-text">初级命令</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8B%89%E5%8F%96%E9%A1%B9%E7%9B%AE"><span class="nav-number">1.1.</span> <span class="nav-text">拉取项目</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%86%E6%94%AF%E7%9B%B8%E5%85%B3"><span class="nav-number">1.2.</span> <span class="nav-text">分支相关</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8F%90%E4%BA%A4%E4%BF%AE%E6%94%B9"><span class="nav-number">1.3.</span> <span class="nav-text">提交修改</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8F%90%E4%BA%A4%E4%BB%A3%E7%A0%81"><span class="nav-number">1.4.</span> <span class="nav-text">提交代码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BF%BD%E7%95%A5%E6%96%87%E4%BB%B6"><span class="nav-number">1.5.</span> <span class="nav-text">忽略文件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E5%8F%98%E6%9B%B4%E5%86%85%E5%AE%B9"><span class="nav-number">1.6.</span> <span class="nav-text">查看变更内容</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%85%8D%E7%BD%AEgit"><span class="nav-number">1.7.</span> <span class="nav-text">配置git</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Git%E9%94%99%E8%AF%AF%E4%BF%A1%E6%81%AF%E6%B1%87%E6%80%BB"><span class="nav-number">2.</span> <span class="nav-text">Git错误信息汇总</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">LittleQ</p>
+  <div class="site-description" itemprop="description">数据开发工程师的成长历程</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">145</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">51</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://sjq597.github.io/2015/10/08/Git-%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="LittleQ">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LittleQ">
+      <meta itemprop="description" content="数据开发工程师的成长历程">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Git 常用命令 | LittleQ">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Git 常用命令
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2015-10-08 17:58:25" itemprop="dateCreated datePublished" datetime="2015-10-08T17:58:25+08:00">2015-10-08</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-10-07 14:54:54" itemprop="dateModified" datetime="2023-10-07T14:54:54+08:00">2023-10-07</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Git/" itemprop="url" rel="index"><span itemprop="name">Git</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h3 id="初级命令"><a href="#初级命令" class="headerlink" title="初级命令"></a>初级命令</h3><h4 id="拉取项目"><a href="#拉取项目" class="headerlink" title="拉取项目"></a>拉取项目</h4><p>初次拉取项目也就是克隆项目</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">➜  docments  git <span class="built_in">clone</span> git@repository_url/project_name.git</span><br><span class="line">Cloning into <span class="string">&#x27;project_name&#x27;</span>...</span><br><span class="line">remote: Counting objects: 14930, <span class="keyword">done</span>.</span><br><span class="line">remote: Compressing objects: 100% (5769/5769), <span class="keyword">done</span>.</span><br><span class="line">remote: Total 14930 (delta 10903), reused 12396 (delta 9013)</span><br><span class="line">Receiving objects: 100% (14930/14930), 127.75 MiB | 11.20 MiB/s, <span class="keyword">done</span>.</span><br><span class="line">Resolving deltas: 100% (10903/10903), <span class="keyword">done</span>.</span><br><span class="line">Checking connectivity... <span class="keyword">done</span>.</span><br></pre></td></tr></table></figure>
+<p><strong>注意：</strong> <code>git@repository_url/project_name.git</code>就是<code>git</code>服务器上项目的<code>ssh</code>地址<br>另外项目更新需要用到两个命令:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git fetch   <span class="comment"># 拉取远端数据到本地，不和并</span></span><br><span class="line">git pull    <span class="comment"># 相当于git fetch 和 git merge</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="分支相关"><a href="#分支相关" class="headerlink" title="分支相关"></a>分支相关</h4><ul>
+<li>新分支</li>
+</ul>
+<p>把项目从服务器上拉取下来之后，一般都需要建立一个自己的分支方便开发，比如新建一个本地<code>test</code>分支</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">➜  data git:(master) git checkout <span class="built_in">test</span></span><br></pre></td></tr></table></figure>
+<p><strong>注意：</strong> 如果你只是想看看项目里的分支代码，不想新建一个分支，有时候拉取的分支可能包括你想要看的分支，这个时候可以按照下面来做：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">➜  data git:(master) git branch -r</span><br><span class="line">  origin/HEAD -&gt; origin/master</span><br><span class="line">  origin/init</span><br><span class="line">  origin/master</span><br><span class="line">➜  data git:(master) git checkout -b init origin/init </span><br><span class="line">Branch init <span class="built_in">set</span> up to track remote branch init from origin.</span><br><span class="line">Switched to a new branch <span class="string">&#x27;init&#x27;</span></span><br></pre></td></tr></table></figure>
+<p>后面的<code>origin/init</code>可以省略，默认创建本地的<code>init</code>分支上游分支为<code>origin/init</code>.<br>如果有时候建分支忘了指定本地分支和远端的哪个分支对应，需要设定分支的远端对应分支可以这样，假设我想让我的本地master分支追踪远端的master分支：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git branch --track master origin/master	</span><br></pre></td></tr></table></figure>
+<p>不过貌似这种方式不推荐了<br>例如远端有个Python分支,那么想让本地分支追踪远端的Python分支，可以：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 将本地的Python和远端仓库origin的Python分支关联</span></span><br><span class="line">git branch --set-upstream-to=origin/Python Python</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>删除分支</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git branch -d -r &lt;branch_name&gt;</span><br><span class="line">git branch -D -r &lt;branch_name&gt;	# 强制删除</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>分支重命名</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git branch -m &lt;new_name&gt;	# 重命名当前分支</span><br><span class="line">git branch -m &lt;old_branch&gt; &lt;new_branch&gt;	# 重命名指定分支</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>删除缓存分支</li>
+</ul>
+<p>有时候远端的分支已经删除了,使用<code>git branch -a</code>仍然可以看到那些被删除的分支，清除远端分支缓存</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git fetch origin --prune</span><br></pre></td></tr></table></figure>
+
+<h4 id="提交修改"><a href="#提交修改" class="headerlink" title="提交修改"></a>提交修改</h4><p>添加一个新文件，<code>git</code>不会自动跟踪，需要手动</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git add file1 file2 file3       <span class="comment"># 把file1 file2 file3添加到git索引中</span></span><br><span class="line">git add .                       <span class="comment"># 把当前项目中的所有文件添加到git索引中，</span></span><br><span class="line">git commit -am <span class="string">&quot;add thefile&quot;</span>    <span class="comment"># 添加新文件到本地暂存区</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="提交代码"><a href="#提交代码" class="headerlink" title="提交代码"></a>提交代码</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git push origin <span class="built_in">test</span></span><br></pre></td></tr></table></figure>
+<p>关于<code>git push</code>使用还有很高级的用法，具体参见<a target="_blank" rel="noopener" href="http://www.yiibai.com/git/git_push.html">git push 详解</a></p>
+<h4 id="忽略文件"><a href="#忽略文件" class="headerlink" title="忽略文件"></a>忽略文件</h4><p>编辑项目下的<code>.gitignore</code>文件，添加</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">*.txt   # 忽略所有的txt文本文件</span><br><span class="line">dir/    # 忽略项目根目录下dir文件夹里所有的文件</span><br></pre></td></tr></table></figure>
+
+<h4 id="查看变更内容"><a href="#查看变更内容" class="headerlink" title="查看变更内容"></a>查看变更内容</h4><ul>
+<li>查看某次提交的修改内容</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git show commit_id</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>查看提交历史</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git log -p -2 # 查看最近两次提交的历史</span><br></pre></td></tr></table></figure>
+
+<h4 id="配置git"><a href="#配置git" class="headerlink" title="配置git"></a>配置git</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 全局配置</span></span><br><span class="line">git config --global user.name yourname</span><br><span class="line">git config --global user.email emailaddress</span><br><span class="line"></span><br><span class="line"><span class="comment"># 本地配置，进到具体的项目目录下</span></span><br><span class="line">git config --<span class="built_in">local</span> user.name yourname</span><br><span class="line">git config --<span class="built_in">local</span> user.email emailaddress</span><br><span class="line"></span><br><span class="line"><span class="comment"># 指定git编辑器</span></span><br><span class="line">git config --global core.editor vim</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="Git错误信息汇总"><a href="#Git错误信息汇总" class="headerlink" title="Git错误信息汇总"></a>Git错误信息汇总</h3><ul>
+<li>git push 出错</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fatal: The current branch master has multiple upstream branches, refusing to push.</span><br></pre></td></tr></table></figure>
+<p>解决办法：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">➜  git config remote.origin.push HEAD</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Git/" rel="tag"># Git</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2015/10/08/Git-%E8%8E%B7%E5%8F%96%E8%BF%9C%E7%AB%AF%E6%8C%87%E5%AE%9A%E5%88%86%E6%94%AF/" rel="prev" title="Git 获取远端指定分支">
+                  <i class="fa fa-angle-left"></i> Git 获取远端指定分支
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2015/10/09/Python%E5%85%A5%E9%97%A8:%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA%E5%8F%8A%E5%AD%97%E7%AC%A6%E4%B8%B2/" rel="next" title="输入输出及字符串">
+                  输入输出及字符串 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">LittleQ</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

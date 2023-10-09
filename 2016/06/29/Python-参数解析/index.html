@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"sjq597.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.18.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="有时需要用到外部传入的参数，虽然简单的使用*arg数组可以获取到每个参数的值，但是有一个局限性就是参数必须按顺序传入，不能多也不能少。但是考虑到有时候我们需要制定特定的参数的值，参数的个数，顺序都是不定的，这个时候单纯的靠*args显然无法满足我们的需求,这个时候就轮到argparse模块上场了，基本上一般的参数解析都可以胜任，下面看看怎么用： 参数的几种解析方式主要有四种方式，简单介绍一下,先介">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Python 参数解析">
+<meta property="og:url" content="http://sjq597.github.io/2016/06/29/Python-%E5%8F%82%E6%95%B0%E8%A7%A3%E6%9E%90/index.html">
+<meta property="og:site_name" content="LittleQ">
+<meta property="og:description" content="有时需要用到外部传入的参数，虽然简单的使用*arg数组可以获取到每个参数的值，但是有一个局限性就是参数必须按顺序传入，不能多也不能少。但是考虑到有时候我们需要制定特定的参数的值，参数的个数，顺序都是不定的，这个时候单纯的靠*args显然无法满足我们的需求,这个时候就轮到argparse模块上场了，基本上一般的参数解析都可以胜任，下面看看怎么用： 参数的几种解析方式主要有四种方式，简单介绍一下,先介">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2016-06-29T15:21:52.000Z">
+<meta property="article:modified_time" content="2023-10-07T06:54:54.000Z">
+<meta property="article:author" content="LittleQ">
+<meta property="article:tag" content="Python">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://sjq597.github.io/2016/06/29/Python-%E5%8F%82%E6%95%B0%E8%A7%A3%E6%9E%90/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://sjq597.github.io/2016/06/29/Python-%E5%8F%82%E6%95%B0%E8%A7%A3%E6%9E%90/","path":"2016/06/29/Python-参数解析/","title":"Python 参数解析"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Python 参数解析 | LittleQ</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">LittleQ</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">爱好：写代码</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E6%95%B0%E7%9A%84%E5%87%A0%E7%A7%8D%E8%A7%A3%E6%9E%90%E6%96%B9%E5%BC%8F"><span class="nav-number">1.</span> <span class="nav-text">参数的几种解析方式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%8D%E5%B8%A6key%E6%8C%89%E9%A1%BA%E5%BA%8F%E8%A7%A3%E6%9E%90"><span class="nav-number">1.1.</span> <span class="nav-text">不带key按顺序解析</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%8D%E5%B8%A6-%E5%8F%82%E6%95%B0"><span class="nav-number">1.2.</span> <span class="nav-text">不带-参数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B8%A6-%E7%9A%84%E5%8F%82%E6%95%B0"><span class="nav-number">1.3.</span> <span class="nav-text">带-的参数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B8%A6-%E5%8F%82%E6%95%B0"><span class="nav-number">1.4.</span> <span class="nav-text">带--参数</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%A3%E6%9E%90%E5%8F%82%E6%95%B0%E7%9A%84%E5%85%B6%E4%BB%96%E5%B1%9E%E6%80%A7"><span class="nav-number">2.</span> <span class="nav-text">解析参数的其他属性</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">LittleQ</p>
+  <div class="site-description" itemprop="description">数据开发工程师的成长历程</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">145</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">51</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://sjq597.github.io/2016/06/29/Python-%E5%8F%82%E6%95%B0%E8%A7%A3%E6%9E%90/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="LittleQ">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LittleQ">
+      <meta itemprop="description" content="数据开发工程师的成长历程">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Python 参数解析 | LittleQ">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Python 参数解析
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2016-06-29 23:21:52" itemprop="dateCreated datePublished" datetime="2016-06-29T23:21:52+08:00">2016-06-29</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-10-07 14:54:54" itemprop="dateModified" datetime="2023-10-07T14:54:54+08:00">2023-10-07</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Python%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">Python笔记</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>有时需要用到外部传入的参数，虽然简单的使用<code>*arg</code>数组可以获取到每个参数的值，但是有一个局限性就是参数必须按顺序传入，不能多也不能少。<br>但是考虑到有时候我们需要制定特定的参数的值，参数的个数，顺序都是不定的，这个时候单纯的靠<code>*args</code>显然无法满足我们的需求,这个时候就轮到<code>argparse</code>模块上场了，基本上一般的参数解析都可以胜任，下面看看怎么用：</p>
+<h3 id="参数的几种解析方式"><a href="#参数的几种解析方式" class="headerlink" title="参数的几种解析方式"></a>参数的几种解析方式</h3><p>主要有四种方式，简单介绍一下,先介绍一下最简单的按顺序解析不带<code>key</code>指定参数形式:</p>
+<h4 id="不带key按顺序解析"><a href="#不带key按顺序解析" class="headerlink" title="不带key按顺序解析"></a>不带key按顺序解析</h4><p>这种方式可以获取脚本运行时后面的所有参数，但是顺序由输入的顺序决定的，<br>先看看测试代码,假设文件名叫<code>args.py</code>:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#! /usr/bin/python</span></span><br><span class="line"><span class="comment"># coding=utf-8</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    <span class="keyword">for</span> arg <span class="keyword">in</span> sys.argv:</span><br><span class="line">        <span class="built_in">print</span> arg</span><br><span class="line">    <span class="keyword">pass</span></span><br></pre></td></tr></table></figure>
+<p>来一段测试代码:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$ python args.py 12 34 56 78                                                                                                </span><br><span class="line">args.py</span><br><span class="line">12</span><br><span class="line">34</span><br><span class="line">56</span><br><span class="line">78</span><br></pre></td></tr></table></figure>
+<p>第一个参数就是python脚本的名字,后面四个就是四个参数了.但这个有时候我们希望我们传入参数的顺序可以是随意的，只要我们指定每个参数的<code>key</code>,程序就能解析到对应的参数值，那应该怎么做呢？下面介绍一下带<code>key</code>的参数解析。</p>
+<h4 id="不带-参数"><a href="#不带-参数" class="headerlink" title="不带-参数"></a>不带<code>-</code>参数</h4><p>新建一个脚本<code>arg_demo.py</code>,然后输入以下代码:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">#!/usr/bin/env python</span><br><span class="line"># -*- coding: utf-8 -*-</span><br><span class="line">import argparse</span><br><span class="line"></span><br><span class="line">__author__ = &#x27;anonymous&#x27;</span><br><span class="line"></span><br><span class="line">if __name__ == &#x27;__main__&#x27;:</span><br><span class="line">    parse = argparse.ArgumentParser()</span><br><span class="line">    parse.add_argument(&#x27;a&#x27;, help=&#x27;必填参数&#x27;)</span><br><span class="line">    args = parse.parse_args()</span><br><span class="line">    </span><br><span class="line">    print args.a  </span><br><span class="line">    pass</span><br></pre></td></tr></table></figure>
+<p>终端运行:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">➜  parameter git:(python-note) ✗ python arg_demo.py                    </span><br><span class="line">usage: arg_demo.py [-h] a</span><br><span class="line">arg_demo.py: error: too few arguments</span><br><span class="line">➜  parameter git:(python-note) ✗ python arg_demo.py 我是参数           </span><br><span class="line">我是参数</span><br><span class="line">➜  parameter git:(python-note) ✗ python arg_demo.py 我是参数1 我是参数2</span><br><span class="line">usage: arg_demo.py [-h] a</span><br><span class="line">arg_demo.py: error: unrecognized arguments: 我是参数2</span><br><span class="line">➜  parameter git:(python-note) ✗ </span><br></pre></td></tr></table></figure>
+<p>可以看出不带<code>-</code>的参数在调用脚本时必须输入值，并且输入的顺序必须和程序定义的一直，而且个数也得一致</p>
+<h4 id="带-的参数"><a href="#带-的参数" class="headerlink" title="带-的参数"></a>带<code>-</code>的参数</h4><p>同样的文件，改动以下代码</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">#!/usr/bin/env python</span><br><span class="line"># -*- coding: utf-8 -*-</span><br><span class="line">import argparse</span><br><span class="line"></span><br><span class="line">__author__ = &#x27;anonymous&#x27;</span><br><span class="line"></span><br><span class="line">if __name__ == &#x27;__main__&#x27;:</span><br><span class="line">    parse = argparse.ArgumentParser()</span><br><span class="line">    parse.add_argument(&#x27;-a&#x27;)</span><br><span class="line">    args = parse.parse_args()</span><br><span class="line"></span><br><span class="line">    print args.a</span><br></pre></td></tr></table></figure>
+<p>同样，我们在终端中输入不同值运行一下:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">➜  parameter git:(python-note) ✗ python arg_demo.py                          </span><br><span class="line">None</span><br><span class="line">➜  parameter git:(python-note) ✗ python arg_demo.py 我是参数                 </span><br><span class="line">usage: arg_demo.py [-h] [-a A]</span><br><span class="line">arg_demo.py: error: unrecognized arguments: 我是参数</span><br><span class="line">➜  parameter git:(python-note) ✗ python arg_demo.py -a 我是参数              </span><br><span class="line">我是参数</span><br><span class="line">➜  parameter git:(python-note) ✗ python arg_demo.py -a我是参数 </span><br><span class="line">我是参数</span><br><span class="line">➜  parameter git:(python-note) ✗ python arg_demo.py -a 我是参数1 -a 我是参数2</span><br><span class="line">我是参数2</span><br><span class="line">➜  parameter git:(python-note) ✗ python arg_demo.py -a 我是参数2 -a 我是参数1 </span><br><span class="line">我是参数1</span><br></pre></td></tr></table></figure>
+<p>可以看出，带<code>-</code>的参数,可以输入也可以不输入，但是不能输入的时候不指定key,并且输入的key可以和参数分开或者连在一起，多次对一个key输入值，后面的会覆盖前面的输入。</p>
+<h4 id="带-参数"><a href="#带-参数" class="headerlink" title="带--参数"></a>带<code>--</code>参数</h4><p><code>-</code>参数还可以指定<code>shorname</code>,即<code>--shortname</code>这种格式，表示变量的别名，改动一下代码:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">#!/usr/bin/env python</span><br><span class="line"># -*- coding: utf-8 -*-</span><br><span class="line">import argparse</span><br><span class="line"></span><br><span class="line">__author__ = &#x27;anonymous&#x27;</span><br><span class="line"></span><br><span class="line">if __name__ == &#x27;__main__&#x27;:</span><br><span class="line">    parse = argparse.ArgumentParser()</span><br><span class="line">    parse.add_argument(&#x27;-a&#x27;, &#x27;--another_name&#x27;, default=&#x27;我是默认参数&#x27;)</span><br><span class="line">    args = parse.parse_args()</span><br><span class="line"></span><br><span class="line">    print args.another_name</span><br></pre></td></tr></table></figure>
+<p>同理在终端中运行:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">➜  parameter git:(python-note) ✗ python arg_demo.py                          </span><br><span class="line">我是默认参数</span><br><span class="line">➜  parameter git:(python-note) ✗ python arg_demo.py -a输入参数</span><br><span class="line">输入参数</span><br></pre></td></tr></table></figure>
+<p>可以看到如果不输入就输入默认值，输入了我们引用别名<code>another_name</code>也可以输出<code>-a</code>的值</p>
+<h3 id="解析参数的其他属性"><a href="#解析参数的其他属性" class="headerlink" title="解析参数的其他属性"></a>解析参数的其他属性</h3><p><code>argparse</code>还有很多可选参数，用来设置我们解析参数的具体操作，例如:</p>
+<ul>
+<li><p>dest<br>这个参数表示绑定参数在程序中对应的变量名称</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">add_argument(&quot;a&quot;,dest=&#x27;code_name&#x27;)</span><br></pre></td></tr></table></figure>
+<p>表示<code>a</code>参数直接绑定到程序中的变量值<code>code_name</code></p>
+</li>
+<li><p>default<br>为参数提供默认值，如果没有输入这个参数，就用默认值代替,注意不带<code>-</code>的参数不能制定默认值，因为不带<code>-</code>必须输入参数值，也就没有不输入而采用默认值的场景</p>
+</li>
+<li><p>help<br>参数的帮助文档，一般用来告诉用户这个参数是什么意思，起提示和指导作用</p>
+</li>
+<li><p>type<br>为参数指定一个类型，一般不指定的时候，默认会把输入的参数解析成字符串类型</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">add_argument(&quot;c&quot;, type=int)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>action<br>指对参数的具体操作</p>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>store</td>
+<td>默认就是这个模式，存储值到制定变量</td>
+</tr>
+<tr>
+<td>store_const</td>
+<td>存储值在参数的const部分指定，多用于实现非布尔的命令行flag</td>
+</tr>
+<tr>
+<td>store_true&#x2F;store_falst</td>
+<td>布尔开关，store_true默认为False,输入则为True,store_false则相反</td>
+</tr>
+<tr>
+<td>append</td>
+<td>存储值到列表，该参数可以重复使用</td>
+</tr>
+<tr>
+<td>append_const</td>
+<td>存储值到列表，存储值在参数的const部分指定</td>
+</tr>
+<tr>
+<td>count</td>
+<td>统计参数简写输入的个数</td>
+</tr>
+<tr>
+<td>version</td>
+<td>输出版本信息然后退出</td>
+</tr>
+</tbody></table>
+<ul>
+<li><p>const<br>配合<code>action＝&quot;store_const|append_const&quot;</code>使用,默认值</p>
+</li>
+<li><p>choices<br>输入值的范围</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">add_argument(&quot;--gb&quot;, choices=[&#x27;A&#x27;, &#x27;B&#x27;, &#x27;C&#x27;, 0])</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>required<br>默认为<code>False</code>，若为<code>True</code>，则必须输入该参数.</p>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Python/" rel="tag"># Python</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2016/06/26/Linux-%E6%A0%87%E5%87%86%E8%BE%93%E5%87%BA%E9%87%8D%E5%AE%9A%E5%90%91%E5%88%B0%E6%96%87%E4%BB%B6/" rel="prev" title="Linux 标准输出重定向到文件">
+                  <i class="fa fa-angle-left"></i> Linux 标准输出重定向到文件
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2016/07/06/Hexo-%E4%B8%BB%E9%A2%98%E5%90%8C%E6%AD%A5/" rel="next" title="Hexo 主题同步">
+                  Hexo 主题同步 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">LittleQ</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

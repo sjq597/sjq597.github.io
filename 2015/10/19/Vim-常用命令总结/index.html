@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"sjq597.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.18.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="先申明，如果你不是非常需要和服务器以及服务器上的日志打交道，其实vim只会简单的光标移动以及插入，删除，复制，粘贴，保存即可。学习Vim和学习乐器很像，需要很长时间的练习，如果你平时很少用到vim，我建议是不用学的太深入，懂一些简单的即可。如果需要经常和日志打交道，那么，好好学学Vim，这可以很大的提升你的工作效率，当然学习成本很大。 初级命令Ubuntu系统都自带了vi，你可以把Vim看成是Vi">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Vim 常用命令总结">
+<meta property="og:url" content="http://sjq597.github.io/2015/10/19/Vim-%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%E6%80%BB%E7%BB%93/index.html">
+<meta property="og:site_name" content="LittleQ">
+<meta property="og:description" content="先申明，如果你不是非常需要和服务器以及服务器上的日志打交道，其实vim只会简单的光标移动以及插入，删除，复制，粘贴，保存即可。学习Vim和学习乐器很像，需要很长时间的练习，如果你平时很少用到vim，我建议是不用学的太深入，懂一些简单的即可。如果需要经常和日志打交道，那么，好好学学Vim，这可以很大的提升你的工作效率，当然学习成本很大。 初级命令Ubuntu系统都自带了vi，你可以把Vim看成是Vi">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog-1254094716.cos.ap-chengdu.myqcloud.com/note_vim%20%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%E6%80%BB%E7%BB%9301.jpg">
+<meta property="article:published_time" content="2015-10-19T12:47:02.000Z">
+<meta property="article:modified_time" content="2023-10-07T06:54:54.000Z">
+<meta property="article:author" content="LittleQ">
+<meta property="article:tag" content="Vim">
+<meta property="article:tag" content="开发工具">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog-1254094716.cos.ap-chengdu.myqcloud.com/note_vim%20%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%E6%80%BB%E7%BB%9301.jpg">
+
+
+<link rel="canonical" href="http://sjq597.github.io/2015/10/19/Vim-%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%E6%80%BB%E7%BB%93/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://sjq597.github.io/2015/10/19/Vim-%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%E6%80%BB%E7%BB%93/","path":"2015/10/19/Vim-常用命令总结/","title":"Vim 常用命令总结"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Vim 常用命令总结 | LittleQ</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">LittleQ</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">爱好：写代码</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9D%E7%BA%A7%E5%91%BD%E4%BB%A4"><span class="nav-number">1.</span> <span class="nav-text">初级命令</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AE%80%E5%8D%95%E8%AE%A4%E8%AF%86vim"><span class="nav-number">1.1.</span> <span class="nav-text">简单认识vim</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%A7%BB%E5%8A%A8%E5%85%89%E6%A0%87"><span class="nav-number">1.2.</span> <span class="nav-text">移动光标</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%AD%E7%BA%A7%E5%91%BD%E4%BB%A4"><span class="nav-number">2.</span> <span class="nav-text">中级命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%AB%98%E6%95%88%E5%91%BD%E4%BB%A4"><span class="nav-number">3.</span> <span class="nav-text">高效命令</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4"><span class="nav-number">3.1.</span> <span class="nav-text">常用命令</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">LittleQ</p>
+  <div class="site-description" itemprop="description">数据开发工程师的成长历程</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">145</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">51</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://sjq597.github.io/2015/10/19/Vim-%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%E6%80%BB%E7%BB%93/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="LittleQ">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LittleQ">
+      <meta itemprop="description" content="数据开发工程师的成长历程">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Vim 常用命令总结 | LittleQ">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Vim 常用命令总结
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2015-10-19 20:47:02" itemprop="dateCreated datePublished" datetime="2015-10-19T20:47:02+08:00">2015-10-19</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-10-07 14:54:54" itemprop="dateModified" datetime="2023-10-07T14:54:54+08:00">2023-10-07</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Vim/" itemprop="url" rel="index"><span itemprop="name">Vim</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>先申明，如果你不是非常需要和服务器以及服务器上的日志打交道，其实vim只会简单的光标移动以及插入，删除，复制，粘贴，保存即可。学习Vim和学习乐器很像，需要很长时间的练习，如果你平时很少用到vim，我建议是不用学的太深入，懂一些简单的即可。如果需要经常和日志打交道，那么，好好学学Vim，这可以很大的提升你的工作效率，当然学习成本很大。</p>
+<h3 id="初级命令"><a href="#初级命令" class="headerlink" title="初级命令"></a>初级命令</h3><p>Ubuntu系统都自带了<code>vi</code>，你可以把Vim看成是Vi的升级版，Vim兼容Vi的所有命令，虽然vi<br>也可以用，但是有个不太好的地方，当你想在Vi打开的文件中插入东西时，它并没有提示，也就是不太好分清<code>Normal</code>模式和<code>Insert</code>模式，这个很容易搞混，一般就是多按几下<code>Esc</code>来确保是在<code>Normal</code>模式。所以我还是建议安装一个Vim。</p>
+<h4 id="简单认识vim"><a href="#简单认识vim" class="headerlink" title="简单认识vim"></a>简单认识vim</h4><p>当你安装好Vim之后，一定项输入点东西，很多新手也就在这里止步了，很多人都不知道如何在Vim中插入字符，所以Vim给很多人的第一印象是难用，甚至不如记事本好用，其实Vim不是这样的，安装好之后，请按照下面的命令操作：</p>
+<ol>
+<li>启动Vim后，Vim在<code>Normal</code>模式下</li>
+<li>按下<code>i</code>，进入<code>Insert</code>模式，这时Vim左下角会出现<code>-- INSERT --</code>，这个时候你可以像使用记事本那样，输入你想要输入的东西</li>
+<li>按<code>Esc</code>，可以从<code>Insert</code>模式返回到<code>Normal</code>模式</li>
+</ol>
+<p>现在你已经掌握了基本的在Normal和Insert模式的切换了，下面是一些比较常用的命令:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">i    <span class="comment"># Insert 模式，按Esc返回Normal模式</span></span><br><span class="line">x    <span class="comment"># 删除当前光标所在的一个字符，你也可以试试delete键，效果是一样的</span></span><br><span class="line">:wq  <span class="comment"># 保存并且退出</span></span><br><span class="line"><span class="built_in">dd</span>   <span class="comment"># 删除光标所在那一行</span></span><br><span class="line">p    <span class="comment"># 粘贴剪贴板</span></span><br></pre></td></tr></table></figure>
+<p><strong>注意：</strong> <code>:w</code>存盘，后面也可以跟文件名 空格隔开。<code>:q</code>退出</p>
+<h4 id="移动光标"><a href="#移动光标" class="headerlink" title="移动光标"></a>移动光标</h4><p>Vim里移动光标有三种方式</p>
+<ul>
+<li>第一种：当然是用鼠标了，还可以用滚轮就不说了</li>
+<li>第二种：<code>←↓↑→</code>，最简单易记的移动光标方式</li>
+<li>第三种：<code>hjkl</code>，最常用的使用方式</li>
+</ul>
+<p>但是，最常用的其实是第三种，想想你为什么要放弃那么多好用的编辑器甚至IDE，其实很重要的一个理由是，用Vim可以做到基本不用鼠标，毕竟程序员需要频繁的在键盘和鼠标之间切换，有时候如果键盘可以完成的事，都是懒得去用鼠标点的，所以日常操作也会记一些经常用到的系统快捷键，所以，这里道理一样，并且使用<code>←↓↑→</code>，手指并不是很方便，所以大家习惯了使用<code>hjkl</code>。确实有点不好记，不过熟了就习惯了，有个技巧就是：<code>j</code>看上去像一个向下的箭头。</p>
+<p><strong>建议：</strong>如果你不长用Vim，或者写代码的机会不是那么多，那么你只需要记住上面的几个命令就足够了，这几个命令可以让你能基本使用Vim来编辑文件，做简单的修改。再说个题外话，一般的编辑器，如果你需要拷贝一段文字的时候，一般是<code>Ctrl-c</code>配合<code>Ctrl-v</code>，Ctrl扮演的就是功能键的作用，即当功能键被按下，c便不再是c，变成了一个命令或者快捷键，<code>在Vim的Normal模式下，所有的键都是功能键</code>。</p>
+<h3 id="中级命令"><a href="#中级命令" class="headerlink" title="中级命令"></a>中级命令</h3><p>下面在介绍的时候，多半是一些快捷键，如果是<code>Ctrl-key</code>，统一写成<code>&lt;C-key&gt;</code>。并且以<code>:</code>开始的命令需要输入回车，例如退出命令：<code>:q&lt;enter&gt;</code>。<br>为了更高效的使用Vim，一些简单的命令还是不行的，拿还不如使用IDE和其他文本编辑器更加方便，以下所有的命令都是在Normal模式下输入的，如果不确定是不是在Normal下，多敲几下Esc键。</p>
+<ul>
+<li>各种插入模式</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">a	<span class="comment"># 在光标后插入</span></span><br><span class="line">o	<span class="comment"># 在光标所在行后免插入一个新行</span></span><br><span class="line">O	<span class="comment"># 大写字母o，表示在光标所在行前插入一个新行</span></span><br><span class="line">cw	<span class="comment"># 替换光标所在位置后一直到光标所在单词结尾的字符，就是删除掉</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>各种移动光标</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">0		<span class="comment"># 数字0，到行头</span></span><br><span class="line">^		<span class="comment"># 到本行第一个不是空白的位置，空白包括空格，tab，换行，回车等</span></span><br><span class="line">$		<span class="comment"># 到本行行尾</span></span><br><span class="line">g_		<span class="comment"># 到本行最后一个不是空白的位置</span></span><br><span class="line">/pattern	<span class="comment"># 搜索pattern的字符串，多个匹配可以按n跳到下一个</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>拷贝&#x2F;粘贴</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">p		<span class="comment"># 粘贴，在当前位置之后粘贴</span></span><br><span class="line">P		<span class="comment"># 粘贴，在当前位置之前粘贴</span></span><br><span class="line">yy		<span class="comment"># 拷贝当前行</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>撤销&#x2F;重做</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">u		<span class="comment"># undo 撤销</span></span><br><span class="line">&lt;C-r&gt;		<span class="comment"># redo 重做</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>打开&#x2F;保存&#x2F;退出&#x2F;改变文件</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">:e &lt;path/to/file&gt;		<span class="comment"># 打开一个文件，空格隔开</span></span><br><span class="line">:w				<span class="comment"># 存盘</span></span><br><span class="line">:saveas &lt;path/to/file&gt;		<span class="comment"># 另存为&lt;path/to/file&gt; 空格隔开</span></span><br><span class="line">:x				<span class="comment"># 保存并退出</span></span><br><span class="line">ZZ				<span class="comment"># 保存并退出</span></span><br><span class="line">:wq				<span class="comment"># 保存并退出</span></span><br><span class="line">:q!				<span class="comment"># 退出，但不保存</span></span><br><span class="line">:qa!				<span class="comment"># 强行退出所有正在编辑的文件</span></span><br><span class="line">:bn				<span class="comment"># 切换到打开的下一个文件</span></span><br><span class="line">:bp				<span class="comment"># 切换到挡开的上一个文件</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>注意：</strong> 其实只是切换文件可以用<code>:n</code>，表示到下一个文件。</p>
+<h3 id="高效命令"><a href="#高效命令" class="headerlink" title="高效命令"></a>高效命令</h3><p>在处理文本的时候，有时候需要做很多重复的动作，下面来看看<code>Vim</code>如何重复自己</p>
+<ul>
+<li>重复命令</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">.		<span class="comment"># 小数点，可以重复上一次命令，当然你要记住上次你干了啥</span></span><br><span class="line">N&lt;<span class="built_in">command</span>&gt;	<span class="comment"># 重复某个命令N次，N为数字，命令要是有效的vim命令</span></span><br></pre></td></tr></table></figure>
+<p> 看看示例：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">dd</span>			<span class="comment"># 删除一行，并且删除的内容会存放到剪贴板</span></span><br><span class="line">2dd			<span class="comment"># 2dd表示删除从光标开始的两行</span></span><br><span class="line">3p			<span class="comment"># 粘贴文本3次，内容是剪贴板的内容，假设先执行了2dd，再3p，则会粘贴6行新内容</span></span><br><span class="line">100icontent [Esc]	<span class="comment"># 中间有个空格 插入100遍content&lt;space&gt;</span></span><br></pre></td></tr></table></figure>
+<p> <strong>注意：</strong> 如果在<code>100icontent [Esc]之后在输入小数点</code>.<code>。那么会再插入100遍content&lt;space&gt;，即重复上条命令。如果再输入</code>3.&#96;，会再输入3个content<space></p>
+<ul>
+<li>更快的移动光标</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">NG		<span class="comment"># 到第N行，G必须大写</span></span><br><span class="line">gg		<span class="comment"># 到第一行</span></span><br><span class="line">G		<span class="comment"># 到最后一行</span></span><br><span class="line">w		<span class="comment"># 到下一个单词的开头</span></span><br><span class="line">e		<span class="comment"># 到下一个单词的结尾</span></span><br></pre></td></tr></table></figure>
+<p> <strong>注意：</strong> 默认情况，单词是由字母，数字，下划线组成，如果认为是blank字符分隔，则需要使用<code>E</code>和<code>W</code>，如下如所示：<br><img src="https://blog-1254094716.cos.ap-chengdu.myqcloud.com/note_vim%20%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%E6%80%BB%E7%BB%9301.jpg" alt="e,w和E,W区别"></p>
+<p> 其实这并不是最强的光标移动，下面来看看最快的光标如何移动：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">%		<span class="comment"># 匹配括号移动，包括(,&#123;,[,这个对于编程来匹配括号非常好用，记住你需要把光标先移到括号上，然后就可以匹配到与之对应的反括号</span></span><br><span class="line">*		<span class="comment"># 匹配光标当前所在单词，移动到下一个，以blank字符为分隔符</span></span><br><span class="line"><span class="comment">#		# 匹配光标当前所在单词，移动到上一个,以blank字符为分隔符</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>选中</li>
+</ul>
+<p>一定要记住光标的移动快捷键，很多命令可以通过光标的移动来实现联动，比如从某个地方拷贝到某个地方，删除从某个位置到另一个位置，语法类似下面</p>
+<blockquote>
+<p><start position>command<end position></p>
+</blockquote>
+<p> 例如：<code>0y$</code>命令意味着：</p>
+<blockquote>
+<p>0	# 先到行头<br>y	# 从光标处开始拷贝<br>$	# 拷贝到本行最后一个字符</p>
+</blockquote>
+<p> 类似这样的命令还有：<code>ye</code>，从当前位置拷贝到本单词的最后一个字符。<code>y2/foo</code>，拷贝两个foo之间的字符串。不一定按<code>y</code>才会拷贝，下面的命令也会拷贝：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">d		<span class="comment"># 删除</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">:g/^$/de		# 删除空白行</span><br><span class="line">:set encoding	# 查看文件编码</span><br><span class="line">:set list		# 显示不可见字符，一般来看每一行结尾是否有空格</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Vim/" rel="tag"># Vim</a>
+              <a href="/tags/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/" rel="tag"># 开发工具</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2015/10/14/Ubuntu-14-04-%E5%A4%9A%E7%BB%88%E7%AB%AF%E7%AA%97%E5%8F%A3%E5%90%88%E5%B9%B6/" rel="prev" title="Ubuntu 14.04 多终端窗口合并">
+                  <i class="fa fa-angle-left"></i> Ubuntu 14.04 多终端窗口合并
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2015/10/25/Hexo-%E5%9F%BA%E6%9C%AC%E9%85%8D%E7%BD%AE/" rel="next" title="Hexo 基本配置">
+                  Hexo 基本配置 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">LittleQ</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

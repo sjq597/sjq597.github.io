@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"sjq597.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.18.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="最近开始用Flask做一个报表系统，为了方便组织代码，网上了解了一下Flask Blueprint这个东西，算是一个入门，新手容易碰到的问题。关于蓝图的介绍网上也很多了，我也不多讲，主要是上代码，然后有常见的问题 项目结构123456789101112131415161718192021➜  script git:(3a429f0) tree -L 4.├── my_site│   ├── app">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Flask Blueprint笔记">
+<meta property="og:url" content="http://sjq597.github.io/2016/08/07/Flask-Blueprint%E7%AC%94%E8%AE%B0/index.html">
+<meta property="og:site_name" content="LittleQ">
+<meta property="og:description" content="最近开始用Flask做一个报表系统，为了方便组织代码，网上了解了一下Flask Blueprint这个东西，算是一个入门，新手容易碰到的问题。关于蓝图的介绍网上也很多了，我也不多讲，主要是上代码，然后有常见的问题 项目结构123456789101112131415161718192021➜  script git:(3a429f0) tree -L 4.├── my_site│   ├── app">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2016-08-07T14:48:19.000Z">
+<meta property="article:modified_time" content="2023-10-07T06:54:54.000Z">
+<meta property="article:author" content="LittleQ">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://sjq597.github.io/2016/08/07/Flask-Blueprint%E7%AC%94%E8%AE%B0/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://sjq597.github.io/2016/08/07/Flask-Blueprint%E7%AC%94%E8%AE%B0/","path":"2016/08/07/Flask-Blueprint笔记/","title":"Flask Blueprint笔记"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Flask Blueprint笔记 | LittleQ</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">LittleQ</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">爱好：写代码</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A1%B9%E7%9B%AE%E7%BB%93%E6%9E%84"><span class="nav-number">1.</span> <span class="nav-text">项目结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%87%86%E5%A4%87%E5%B7%A5%E4%BD%9C"><span class="nav-number">2.</span> <span class="nav-text">准备工作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A8%A1%E5%9D%97"><span class="nav-number">3.</span> <span class="nav-text">模块</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%90%E8%A1%8C"><span class="nav-number">4.</span> <span class="nav-text">运行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%BF%E9%97%AE"><span class="nav-number">5.</span> <span class="nav-text">访问</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">LittleQ</p>
+  <div class="site-description" itemprop="description">数据开发工程师的成长历程</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">145</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">51</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://sjq597.github.io/2016/08/07/Flask-Blueprint%E7%AC%94%E8%AE%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="LittleQ">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LittleQ">
+      <meta itemprop="description" content="数据开发工程师的成长历程">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Flask Blueprint笔记 | LittleQ">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Flask Blueprint笔记
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2016-08-07 22:48:19" itemprop="dateCreated datePublished" datetime="2016-08-07T22:48:19+08:00">2016-08-07</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-10-07 14:54:54" itemprop="dateModified" datetime="2023-10-07T14:54:54+08:00">2023-10-07</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Flask/" itemprop="url" rel="index"><span itemprop="name">Flask</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>最近开始用Flask做一个报表系统，为了方便组织代码，网上了解了一下<code>Flask Blueprint</code>这个东西，算是一个入门，新手容易碰到的问题。<br>关于蓝图的介绍网上也很多了，我也不多讲，主要是上代码，然后有常见的问题</p>
+<h3 id="项目结构"><a href="#项目结构" class="headerlink" title="项目结构"></a>项目结构</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">➜  script git:(3a429f0) tree -L 4</span><br><span class="line">.</span><br><span class="line">├── my_site</span><br><span class="line">│   ├── app1</span><br><span class="line">│   │   ├── __init__.py</span><br><span class="line">│   │   ├── templates</span><br><span class="line">│   │   │   └── index.html</span><br><span class="line">│   │   └── views.py</span><br><span class="line">│   ├── app2</span><br><span class="line">│   │   ├── __init__.py</span><br><span class="line">│   │   ├── templates</span><br><span class="line">│   │   │   └── index.html</span><br><span class="line">│   │   └── views.py</span><br><span class="line">│   ├── app3</span><br><span class="line">│   │   ├── __init__.py</span><br><span class="line">│   │   ├── templates</span><br><span class="line">│   │   │   └── index.html</span><br><span class="line">│   │   └── views.py</span><br><span class="line">│   └── __init__.py</span><br><span class="line">├── README.md</span><br><span class="line">└── run.py</span><br></pre></td></tr></table></figure>
+<p>项目的目录结构如上面所示，项目根目录为<code>scirpt</code>,真正的项目为<code>my_site</code>目录,<code>app1</code>,<code>app2</code>,<code>app3</code>为三个不同的应用，对应为3个不同模块.<br><code>env</code>文件夹为<code>virtualenv</code>虚拟<code>python</code>环境安装目录.</p>
+<h3 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h3><p>安装虚拟Python环境，这个不多说，网上教程一堆，因为我用的Pycharm IDE,所以在Pycharm里面设置成我的安装环境就行。具体方法:<code>File--&gt;Settings--&gt;Project--&gt;Project Interpreter</code>,选你安装虚拟环境的地址即可。</p>
+<h3 id="模块"><a href="#模块" class="headerlink" title="模块"></a>模块</h3><p>一般自己写着玩或者写个小网站，就几个访问URL，都写在一个<code>views.py</code>里面当然没啥问题，但是项目大了，越来越复杂的话，肯定不可能都写在一个文件里面，极难维护，所以一般会按功能分成不同模块，下面以<code>app1</code>模块为例讲解一下:</p>
+<ul>
+<li><code>my_site/app1/views.py</code></li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">#!/usr/bin/env python</span><br><span class="line"># -*- coding: utf-8 -*-</span><br><span class="line">from flask import Blueprint, render_template</span><br><span class="line"></span><br><span class="line">__author__ = &#x27;anonymous&#x27;</span><br><span class="line"></span><br><span class="line">app1 = Blueprint(&#x27;app1&#x27;, __name__, template_folder=&#x27;templates&#x27;)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">@app1.route(&#x27;/index&#x27;)</span><br><span class="line">def index():</span><br><span class="line">    print &#x27;访问app1&#x27;</span><br><span class="line">    return render_template(&#x27;index.html&#x27;)</span><br></pre></td></tr></table></figure>
+<p>这就相当于完成了一个模块了，模块里访问的<code>index.html</code>模板文件为:</p>
+<ul>
+<li><code>my_site/app1/templates/index.html</code></li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html lang=&quot;en&quot;&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">    &lt;meta charset=&quot;UTF-8&quot;&gt;</span><br><span class="line">    &lt;title&gt;应用1&lt;/title&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">    测试1</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+<p>完成了模块之后还需要注册模块.</p>
+<ul>
+<li><code>my_site/__init__.py</code></li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">#!/usr/bin/env python</span><br><span class="line"># -*- coding: utf-8 -*-</span><br><span class="line">from flask import Flask</span><br><span class="line"></span><br><span class="line">__author__ = &#x27;anonymous&#x27;</span><br><span class="line"></span><br><span class="line">app = Flask(__name__, instance_relative_config=True)</span><br><span class="line"></span><br><span class="line">app.config.from_object(&#x27;config&#x27;)</span><br><span class="line"></span><br><span class="line">from my_site.app1.views import app1</span><br><span class="line">from my_site.app2.views import app2</span><br><span class="line">from my_site.app3.views import app3</span><br><span class="line"></span><br><span class="line">app.register_blueprint(app1, url_prefix=&#x27;/app1&#x27;)</span><br><span class="line">app.register_blueprint(app2, url_prefix=&#x27;/app2&#x27;)</span><br><span class="line">app.register_blueprint(app3, url_prefix=&#x27;/app3&#x27;)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>这里注册了三个模块，为了演示，有三个模块，内容就不多虽说了，<code>views.py</code>的内容都是一样的，但是<code>index.html</code>稍作区分，以标志我们访问的是哪一个页面.</p>
+<h3 id="运行"><a href="#运行" class="headerlink" title="运行"></a>运行</h3><p>然后在项目的根目录下创建一个<code>run.py</code>文件作为主启动文件:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">#!/usr/bin/env python</span><br><span class="line"># -*- coding: utf-8 -*-</span><br><span class="line">from my_site import app</span><br><span class="line"></span><br><span class="line">__author__ = &#x27;anonymous&#x27;</span><br><span class="line"></span><br><span class="line">if __name__ == &#x27;__main__&#x27;:</span><br><span class="line">    app.run(host=&#x27;localhost&#x27;, debug=True)</span><br><span class="line"></span><br><span class="line">    pass</span><br></pre></td></tr></table></figure>
+<p>然后直接用IDE运行<code>run.py</code>文件就行。</p>
+<h3 id="访问"><a href="#访问" class="headerlink" title="访问"></a>访问</h3><p>然后通过浏览器访问<code>http://localhost:5000/app1/index.html</code>，结果返回的值为:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">测试3</span><br></pre></td></tr></table></figure>
+<p>问题有点儿奇怪，通过设置断点,请求确实进入了<code>app1/views.py</code>文件，但是返回的却是<code>app3/index.html</code>的内容，上网查了一下，发现这个问题好像还挺常见的，官方也没把这个问题定义成bug,这个就涉及到<code>Flask</code>的<code>render_template()</code>函数在查找模板的时候是如何处理模板的了，默认是在项目的目录下查找<code>template</code>文件夹,如果没找到，就去模块下找，最后会把所有模块下找到的模板文件的路径加到一个字典文件里面，因为字典是无序的，所以具体会返回哪个页面得看字典的<code>hash</code>算法了,核心模块代码如下:</p>
+<ul>
+<li><code>python2.7/site-packages/flask/templating.py</code></li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">def get_source(self, environment, template):</span><br><span class="line">    if self.app.config[&#x27;EXPLAIN_TEMPLATE_LOADING&#x27;]:</span><br><span class="line">        return self._get_source_explained(environment, template)</span><br><span class="line">    return self._get_source_fast(environment, template)</span><br><span class="line"></span><br><span class="line">def render_template(template_name_or_list, **context):</span><br><span class="line">    &quot;&quot;&quot;Renders a template from the template folder with the given</span><br><span class="line">    context.</span><br><span class="line"></span><br><span class="line">    :param template_name_or_list: the name of the template to be</span><br><span class="line">                                  rendered, or an iterable with template names</span><br><span class="line">                                  the first one existing will be rendered</span><br><span class="line">    :param context: the variables that should be available in the</span><br><span class="line">                    context of the template.</span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line">    ctx = _app_ctx_stack.top</span><br><span class="line">    ctx.app.update_template_context(context)</span><br><span class="line">    return _render(ctx.app.jinja_env.get_or_select_template(template_name_or_list),</span><br><span class="line">                   context, ctx.app)</span><br></pre></td></tr></table></figure>
+
+<p>针对这个情况，有两种解决办法:</p>
+<ul>
+<li>官方解决方案:</li>
+</ul>
+<p>在每个模块的<code>template</code>文件夹下面的模板文件不要重名，怎么做呢？很简单，就是以模块名再建一个文件夹，把所有的模板文件放到这个文件夹下面，最后的结构可能就变成了:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">├── config.py</span><br><span class="line">└─── my_site</span><br><span class="line">    ├── app1</span><br><span class="line">    │   ├── __init__.py</span><br><span class="line">    │   ├── templates</span><br><span class="line">    │   │   └── app1</span><br><span class="line">    │   │       └── index.html</span><br><span class="line">    │   └── views.py</span><br><span class="line">    └── app2</span><br><span class="line">        ├── __init__.py</span><br><span class="line">        ├── templates</span><br><span class="line">        │   └── app2</span><br><span class="line">        │       └── index.html</span><br><span class="line">        └── views.py</span><br></pre></td></tr></table></figure>
+<p>所以对应的<code>views.py</code>文件中需要改成:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">return render_template(&#x27;app1/index.html&#x27;)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>第三方解决方案</li>
+</ul>
+<p>既然已经知道问题出在处理模板的文件<code>templating.py</code>文件中，所以在对应额地方加上处理逻辑即可，github上的一位道友给出的解决方案,修改<code>python2.7/site-packages/flask/templating.py</code>:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">def render_template(template_name_or_list, **context):</span><br><span class="line">    &quot;&quot;&quot;Renders a template from the template folder with the given</span><br><span class="line">    context.</span><br><span class="line">    :param template_name_or_list: the name of the template to be</span><br><span class="line">                                  rendered, or an iterable with template names</span><br><span class="line">                                  the first one existing will be rendered</span><br><span class="line">    :param context: the variables that should be available in the</span><br><span class="line">                    context of the template.</span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line">    ctx = _app_ctx_stack.top</span><br><span class="line">    ctx.app.update_template_context(context)</span><br><span class="line"></span><br><span class="line">    template = None</span><br><span class="line"></span><br><span class="line">    if _request_ctx_stack.top is not None and \</span><br><span class="line">            _request_ctx_stack.top.request.blueprint is not None and \</span><br><span class="line">            isinstance(template_name_or_list, string_types):</span><br><span class="line">        bp = ctx.app.blueprints[_request_ctx_stack.top.request.blueprint]</span><br><span class="line">        if bp.jinja_loader is not None:</span><br><span class="line">            try:</span><br><span class="line">                template = bp.jinja_loader.load(ctx.app.jinja_env,</span><br><span class="line">                                                template_name_or_list,</span><br><span class="line">                                                ctx.app.jinja_env.globals)</span><br><span class="line">            except TemplateNotFound:</span><br><span class="line">                pass</span><br><span class="line"></span><br><span class="line">    if template is None:</span><br><span class="line">        template = ctx.app.jinja_env\</span><br><span class="line">            .get_or_select_template(template_name_or_list)</span><br><span class="line"></span><br><span class="line">    return _render(template, context, ctx.app)</span><br></pre></td></tr></table></figure>
+<p>然后再访问就可以了。<br>**注意:**两种方式都可以，但是推荐使用第一种官方的方案，因为如果改源码，虽然可以正常运行，但是换个环境，或者项目重新给别人部署，如果不加说明，不知道的人不会去改<code>Flask</code>代码,那么这个项目则会出错。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2016/07/20/Ubuntu-16-04-Hive-%E6%9C%AC%E5%9C%B0%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE/" rel="prev" title="Ubuntu 16.04 Hive 本地安装配置">
+                  <i class="fa fa-angle-left"></i> Ubuntu 16.04 Hive 本地安装配置
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2016/08/20/Python-SQLALchemy%E7%90%86%E8%A7%A3/" rel="next" title="Python SQLALchemy理解">
+                  Python SQLALchemy理解 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">LittleQ</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

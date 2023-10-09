@@ -1,0 +1,27 @@
+2015-11-16 23:29:40,698 Stage-1 map = 78%,  reduce = 0%, Cumulative CPU 33177.17 sec
+2015-11-16 23:29:41,732 Stage-1 map = 79%,  reduce = 0%, Cumulative CPU 33378.13 sec
+[Fatal Error] total number of created files now is 100056, which exceeds 100000. Killing the job.
+MapReduce Total cumulative CPU time: 0 days 9 hours 16 minutes 18 seconds 130 msec
+Ended Job = job_1434099279301_4717505 with errors
+Error during job, obtaining debugging information...
+Examining task ID: task_1434099279301_4717505_m_000382 (and more) from job job_1434099279301_4717505
+Examining task ID: task_1434099279301_4717505_m_000266 (and more) from job job_1434099279301_4717505
+
+
+Task with the most failures(1):
+-----
+Task ID:
+  task_1434099279301_4717505_m_001432
+
+URL:
+  http://l-hdpm2.data.cn5:8088/taskdetails.jsp?jobid=job_1434099279301_4717505&tipid=task_1434099279301_4717505_m_001432
+-----
+Diagnostic Messages for this Task:
+
+FAILED: Execution Error, return code 2 from org.apache.hadoop.hive.ql.exec.mr.MapRedTask
+MapReduce Jobs Launched:
+Stage-Stage-1: Map: 2157   Cumulative CPU: 33378.13 sec   HDFS Read: 470838507979 HDFS Write: 438078102092 FAIL
+Total MapReduce CPU Time Spent: 0 days 9 hours 16 minutes 18 seconds 130 msec
+
+
+

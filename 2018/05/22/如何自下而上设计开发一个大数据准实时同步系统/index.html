@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"sjq597.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.18.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="最近项目基本上进入尾声了，也有时间来整理下最近做的这个项目.因为主要就一个人在做,所以周期比较长,整个系统涉及到的开源数据框架比较多,所以感觉还是有不少价值的,当然这个里面也有很多的坑,只有做过才能体会到,后面我会慢慢展开. 项目背景主要是两个公司合并了,哪两家就不说了,反正是行业Top1,Top2.后来打算成立新公司,所以数据需要整合.其实在一开始合并之后,数据就有陆陆续续的整合,不过这种整合方">
+<meta property="og:type" content="article">
+<meta property="og:title" content="如何自下而上设计开发一个大数据准实时同步系统">
+<meta property="og:url" content="http://sjq597.github.io/2018/05/22/%E5%A6%82%E4%BD%95%E8%87%AA%E4%B8%8B%E8%80%8C%E4%B8%8A%E8%AE%BE%E8%AE%A1%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%87%86%E5%AE%9E%E6%97%B6%E5%90%8C%E6%AD%A5%E7%B3%BB%E7%BB%9F/index.html">
+<meta property="og:site_name" content="LittleQ">
+<meta property="og:description" content="最近项目基本上进入尾声了，也有时间来整理下最近做的这个项目.因为主要就一个人在做,所以周期比较长,整个系统涉及到的开源数据框架比较多,所以感觉还是有不少价值的,当然这个里面也有很多的坑,只有做过才能体会到,后面我会慢慢展开. 项目背景主要是两个公司合并了,哪两家就不说了,反正是行业Top1,Top2.后来打算成立新公司,所以数据需要整合.其实在一开始合并之后,数据就有陆陆续续的整合,不过这种整合方">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog-1254094716.cos.ap-chengdu.myqcloud.com/%E5%A6%82%E4%BD%95%E8%87%AA%E4%B8%8B%E8%80%8C%E4%B8%8A%E8%AE%BE%E8%AE%A1%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%87%86%E5%AE%9E%E6%97%B6%E5%90%8C%E6%AD%A5%E7%B3%BB%E7%BB%9F001.png">
+<meta property="og:image" content="https://blog-1254094716.cos.ap-chengdu.myqcloud.com/%E5%A6%82%E4%BD%95%E8%87%AA%E4%B8%8B%E8%80%8C%E4%B8%8A%E8%AE%BE%E8%AE%A1%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%87%86%E5%AE%9E%E6%97%B6%E5%90%8C%E6%AD%A5%E7%B3%BB%E7%BB%9F002.png">
+<meta property="article:published_time" content="2018-05-22T14:28:09.000Z">
+<meta property="article:modified_time" content="2023-10-07T06:54:54.000Z">
+<meta property="article:author" content="LittleQ">
+<meta property="article:tag" content="Hive">
+<meta property="article:tag" content="Hadoop">
+<meta property="article:tag" content="大数据">
+<meta property="article:tag" content="Kafka">
+<meta property="article:tag" content="Spark">
+<meta property="article:tag" content="Flume">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog-1254094716.cos.ap-chengdu.myqcloud.com/%E5%A6%82%E4%BD%95%E8%87%AA%E4%B8%8B%E8%80%8C%E4%B8%8A%E8%AE%BE%E8%AE%A1%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%87%86%E5%AE%9E%E6%97%B6%E5%90%8C%E6%AD%A5%E7%B3%BB%E7%BB%9F001.png">
+
+
+<link rel="canonical" href="http://sjq597.github.io/2018/05/22/%E5%A6%82%E4%BD%95%E8%87%AA%E4%B8%8B%E8%80%8C%E4%B8%8A%E8%AE%BE%E8%AE%A1%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%87%86%E5%AE%9E%E6%97%B6%E5%90%8C%E6%AD%A5%E7%B3%BB%E7%BB%9F/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://sjq597.github.io/2018/05/22/%E5%A6%82%E4%BD%95%E8%87%AA%E4%B8%8B%E8%80%8C%E4%B8%8A%E8%AE%BE%E8%AE%A1%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%87%86%E5%AE%9E%E6%97%B6%E5%90%8C%E6%AD%A5%E7%B3%BB%E7%BB%9F/","path":"2018/05/22/如何自下而上设计开发一个大数据准实时同步系统/","title":"如何自下而上设计开发一个大数据准实时同步系统"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>如何自下而上设计开发一个大数据准实时同步系统 | LittleQ</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">LittleQ</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">爱好：写代码</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%A1%B9%E7%9B%AE%E8%83%8C%E6%99%AF"><span class="nav-number">1.</span> <span class="nav-text">项目背景</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%AE%BE%E8%AE%A1%E6%96%B9%E6%A1%88"><span class="nav-number">2.</span> <span class="nav-text">设计方案</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E9%87%87%E9%9B%86"><span class="nav-number">2.1.</span> <span class="nav-text">数据采集</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Database"><span class="nav-number">2.1.1.</span> <span class="nav-text">Database</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Tomcat-Log"><span class="nav-number">2.1.2.</span> <span class="nav-text">Tomcat Log</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E8%AE%A1%E7%AE%97"><span class="nav-number">2.2.</span> <span class="nav-text">数据计算</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Binlog-Hive"><span class="nav-number">2.2.1.</span> <span class="nav-text">Binlog-&gt;Hive</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Binlog-ElasticSearch"><span class="nav-number">2.2.2.</span> <span class="nav-text">Binlog-&gt;ElasticSearch</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Tomcat-Log-Redis-Hbase-ElasticSearch-Hadoop"><span class="nav-number">2.2.3.</span> <span class="nav-text">Tomcat Log-&gt;Redis&#x2F;Hbase&#x2F;ElasticSearch&#x2F;Hadoop</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Trace%E7%B3%BB%E7%BB%9F"><span class="nav-number">2.2.3.1.</span> <span class="nav-text">Trace系统</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Hive%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93"><span class="nav-number">2.2.3.2.</span> <span class="nav-text">Hive数据仓库</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BB%9F%E4%B8%80%E6%9F%A5%E8%AF%A2"><span class="nav-number">2.2.3.3.</span> <span class="nav-text">统一查询</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9C%AA%E5%AE%8C%E5%BE%85%E7%BB%AD"><span class="nav-number">3.</span> <span class="nav-text">未完待续</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">LittleQ</p>
+  <div class="site-description" itemprop="description">数据开发工程师的成长历程</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">145</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">51</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://sjq597.github.io/2018/05/22/%E5%A6%82%E4%BD%95%E8%87%AA%E4%B8%8B%E8%80%8C%E4%B8%8A%E8%AE%BE%E8%AE%A1%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%87%86%E5%AE%9E%E6%97%B6%E5%90%8C%E6%AD%A5%E7%B3%BB%E7%BB%9F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="LittleQ">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LittleQ">
+      <meta itemprop="description" content="数据开发工程师的成长历程">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="如何自下而上设计开发一个大数据准实时同步系统 | LittleQ">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          如何自下而上设计开发一个大数据准实时同步系统
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2018-05-22 22:28:09" itemprop="dateCreated datePublished" datetime="2018-05-22T22:28:09+08:00">2018-05-22</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-10-07 14:54:54" itemprop="dateModified" datetime="2023-10-07T14:54:54+08:00">2023-10-07</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%95%B0%E6%8D%AE%E6%9E%B6%E6%9E%84/" itemprop="url" rel="index"><span itemprop="name">数据架构</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>最近项目基本上进入尾声了，也有时间来整理下最近做的这个项目.因为主要就一个人在做,所以周期比较长,整个系统涉及到的开源数据框架比较多,所以感觉还是有不少价值的,当然这个里面也有很多的坑,只有做过才能体会到,后面我会慢慢展开.</p>
+<h1 id="项目背景"><a href="#项目背景" class="headerlink" title="项目背景"></a>项目背景</h1><p>主要是两个公司合并了,哪两家就不说了,反正是行业Top1,Top2.后来打算成立新公司,所以数据需要整合.其实在一开始合并之后,数据就有陆陆续续的整合,不过这种整合方式效率比较低,整个链路很长,涉及到很多部门,圈绕的比较大.具体的流程大概说下:</p>
+<ol>
+<li>首先数据在我们的数据仓库ETL跑完之后,会有一个下游作业把数据拷贝到一个公共hadoop队列里面(Hadoop权限这块比较差,由于支付的数据要求较高,在防火墙内,不可能共享Hive数据仓库所在目录的数据,所以只能采取这种方式共享数据);</li>
+<li>然后由专门和对方公司数据部门对接的人来把我们拷贝到指定队列的数据从hadoop上下载下来,上传公有云服务器(其实就是FTP服务器);</li>
+<li>然后对方公司的数据组有专门的人从公有云把数据下载到他们的Hadoop客户机上,然后把数据上传到他们的Hadoop集群,然后数据才能达到基本能用的状态.</li>
+</ol>
+<p>**PS:**由于Hive本身作为离线数据仓库,数据延迟为T+1,然后数据再到他们那，延迟就变成了T+2,并且整个过程涉及到的部门比较多.数据不出问题还好,一旦出了问题,得找到每个环节的负责人,然后定位问题出现的环节,总之是很麻烦.</p>
+<p>所以上面的老大也觉得这种方式使用数据非常的麻烦,成本太大,关键是数据的时效性也不满足要求,所以就想做实时数据流同步,整合两边的数据仓库.当然数据仓库只是实时数据流的一个用途之一,也会有其他数据使用场景,比如实时计算之类的.</p>
+<h1 id="设计方案"><a href="#设计方案" class="headerlink" title="设计方案"></a>设计方案</h1><p>一般而言,一个完整的数据体系结构都比较复杂,我这里就大概说下整体架构:</p>
+<p><img src="https://blog-1254094716.cos.ap-chengdu.myqcloud.com/%E5%A6%82%E4%BD%95%E8%87%AA%E4%B8%8B%E8%80%8C%E4%B8%8A%E8%AE%BE%E8%AE%A1%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%87%86%E5%AE%9E%E6%97%B6%E5%90%8C%E6%AD%A5%E7%B3%BB%E7%BB%9F001.png" alt="数据体系结构图"><br>如果觉得图片太小看不清可以在新标签中打开查看大图.我会从下而上简单说下这个架构里面都有些什么东西:</p>
+<h2 id="数据采集"><a href="#数据采集" class="headerlink" title="数据采集"></a>数据采集</h2><p>数据系统的第一步,数据采集.这部分数据主要分为两大类,DB数据以及业务日志</p>
+<h3 id="Database"><a href="#Database" class="headerlink" title="Database"></a>Database</h3><p>第一类就是比较主要的,业务数据库数据采集,目前基本上都是用的mysql数据库,所以采集方案比较大众化都是采用阿里的<a target="_blank" rel="noopener" href="https://github.com/alibaba/canal">Canal</a>,当然一般可能不能直接拿来用，需要你根据公司的技术架构做一些二次开发,因为一般公司内部会对MySQL做一些架构来给业务提供高可用的特性.数据采集之后会封装成自定义的<code>Kafka Message</code>,为了方便区分,topic命名方式可以有一个统一规则,例如binlog_{db实例架构类型}_{db实例名},这样能比较方便知道某个db实例的binlog数据特性以及排查问题.这里需要注意的就是往Kafka上写数据的时候,Kafka的分区策略要注意下，一个参考建议就是可以采用(Schema,Table)作为PartitionKey.这样可以保证同一个表的数据是顺序存放在同一个分区的,这样后续的一些程序处理可以保证数据的顺序性.<br>**NOTE:**封装的KafkaMessage可以根据业务来,如果想简单起见,可以把Canal的RowChange消息整个封装进去.</p>
+<h3 id="Tomcat-Log"><a href="#Tomcat-Log" class="headerlink" title="Tomcat Log"></a>Tomcat Log</h3><p>这部分数据原则上来说,并没有Database数据重要,因为我们建的大部分数据表,模型都是基于业务的ER关系表来的.但是日志数据可以做很多其他的事情,数据挖掘里面也有很大的用途,还有的主要就是业务辅助用,后面会讲一些使用场景.业务日志采集采取的方案比较多,有采用入侵式埋点的,但是现在的普遍做法应该还是非入侵式采集,因为日志采集事实上对业务而言是一个非必须的功能,但是线上业务首先要保证性能和可靠性不受其他无关影响.<br>采集业务日志一般采用的就是flume tail功能,对指定日志目录下面的文件执行类似Linux:<code>tail -f</code>命令不断滚动采集新产生的日志.这个里面也有很多的坑,目前最新的flume好像支持直接采集一个目录,这样就不用自己写tail插件去采集日志了.这部分日志采集之后也是放在Kafka集群,同样的也需要自己封装成定义的KafaMessage.建议是需要保留日志的文件名以及机器名,所以分区策略是用这两个key就可以了.<br>**NOTE:**一般大一点儿的公司,线上的业务系统都会有appId这种东西,所以建议如果有这个信息也封装到KafkaMessage消息里面.</p>
+<h2 id="数据计算"><a href="#数据计算" class="headerlink" title="数据计算"></a>数据计算</h2><p>数据存储之后,就是数据的计算了,Kafka毕竟只能存一段时间,过期就会删除,所以这些消息会落地到其他的存储系统,不同类型的数据有不同的落地场景，相同的数据也可能有不同的落地场景,下面一个一个说下这些应用及落地场景:</p>
+<h3 id="Binlog-Hive"><a href="#Binlog-Hive" class="headerlink" title="Binlog-&gt;Hive"></a>Binlog-&gt;Hive</h3><p>Database的binlog数据采集到Kafka之后,最大的一个用途就是作为数据仓库的ods层源数据.由于离线数据仓库一般延迟要求不高，基本上默认就是T+1,所以我们不用事实计算这部分数据,反而是吞吐量是个很重要的指标.所以这里可以考虑的就是Spark Streaming这个框架,微批处理,可以在延迟和吞吐量之间做一个很好的平衡.<br>当然如果你没有Spark集群,也可以用Flume消费Kafka消息写到本地(据说直接写HDFS性能不是很好，没有测试过),然后隔一段时间put到hdfs上.关于写的策略,因为每天的binlog是增量数据,所以你需要一个字段作为binlog的分区依据,可以在将Canal消息封装KafkaMessage的时候加上一个binlog的执行时间.<br>**关键点:**这个过程其实坑还是挺多的,Binlog一般并发比较大,你要保证数据可以准确去重,不会取到错误的数据.</p>
+<h3 id="Binlog-ElasticSearch"><a href="#Binlog-ElasticSearch" class="headerlink" title="Binlog-&gt;ElasticSearch"></a>Binlog-&gt;ElasticSearch</h3><p>这个需求和Hive那个很像，但是又有一些区别.Hive不支持单行记录更新(据说貌似新版本的支持了,没去详细了解过),ElasticSearch简单来说就是作为Database里面的表的一个镜像.因为MySQL的单表数据量在超过5000w的时候性能会变得非常差,所以业务上为了性能考虑,都会对表按月或者其他规则做分表.所以一般像运营,开发,测试在查询数据的时候非常的不方便.而ElasticSearch本身就是作为索引系统而存在的,非常适合有大量的查询场景.<br>这个因为并不是同步到离线数据仓库里面,所以对数据的延迟要求会高一些,这个时候Spark Streaming就不太合适,那么可不可以使用Jstorm这种流式处理框架呢?答案是不行,原因也很简单,JStorm这种流处理框架是<code>at least once</code>语义,也就是能保证数据至少被处理一次(当然好像后面的版本是准备实现还是已经实现了<code>exactly only once</code>,反正我们自己用的并没有内置支持),并且还有一个很重要的原因就是:JStorm无法保证数据的顺序,一个拓扑里面的每个bolt会有多个task,数据如果是按随机分发的话,不同的task处理速度是没办法预估的,这就可能导致先产生的binlog变更记录有可能后写入到ElasticSearch,就容易出现数据不一致的问题.所以这种情况下异步流处理框架是没有办法处理这种问题的,所以在技术选型上我们可以选像<code>Spark Streaming</code>这种顺序批处理(但是也有条件限制,就是每次只能有一个batch在执行,队列设置成FIFO).<br>这里简单说下我们的技术方案:首先从Kafka消费Binlog,清洗出每个表的<code>Primary Key</code>,封装成自定义的Kafka Message写回到Kafka,然后再从Kafka去消费这种消息,拿到<code>Primary Key</code>,然后查询对应的Database,这样每次都是拿到的最新的记录,然后更新ElasticSearch,这样就不用担心数据变更记录顺序不一致的问题,因为每次拿到的都是最新的.至于历史数据问题也比较简单,直接把当前表里面的记录清洗出Key写到Kafka,后面作业不用改,自然就会消费到这些消息,整体架构如下:</p>
+<p><img src="https://blog-1254094716.cos.ap-chengdu.myqcloud.com/%E5%A6%82%E4%BD%95%E8%87%AA%E4%B8%8B%E8%80%8C%E4%B8%8A%E8%AE%BE%E8%AE%A1%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%87%86%E5%AE%9E%E6%97%B6%E5%90%8C%E6%AD%A5%E7%B3%BB%E7%BB%9F002.png" alt="Binlog-ElasticSearch"></p>
+<p>**优化点:**其实这个项目后期还是有一些优化点的,目前为了简单起见是采取的中转了一次,并且反查Database的方案,这样可以不用考虑数据的顺序,正确性问题,因为反查拿到的数据永远是当前时间点的正确数据.但是也会有一个问题,就是服务部署的机器无法做到动态扩容,需要有指定Database的连接权限,公司的Database都是采用的ip白名单方式,需要提前申请权限.其实如果Kafka保证Binlog的数据正确性,那么下游完全不用再反查Database，直接按变更记录查询就行了,唯一需要担心的就是数据初始化和已有数据同步作业同时跑的一个顺序问题.</p>
+<h3 id="Tomcat-Log-Redis-Hbase-ElasticSearch-Hadoop"><a href="#Tomcat-Log-Redis-Hbase-ElasticSearch-Hadoop" class="headerlink" title="Tomcat Log-&gt;Redis&#x2F;Hbase&#x2F;ElasticSearch&#x2F;Hadoop"></a>Tomcat Log-&gt;Redis&#x2F;Hbase&#x2F;ElasticSearch&#x2F;Hadoop</h3><p>这一步相信会有很多的应用场景,基本就涵盖了几乎所有的日志使用场景了,分别大致说一下几个场景吧.</p>
+<h4 id="Trace系统"><a href="#Trace系统" class="headerlink" title="Trace系统"></a>Trace系统</h4><p>这个应该算是最终要,最有意义的一个东西:分布式式追踪系统.基本上一个稍微大一点儿的公司都会有自己的Trace系统,一方面是大公司的系统比较复杂,一件事情往往需要很多个系统互相配合才能完成;另外一个就是现在微服务比较火,都在提倡系统解藕,所以调用链会比较长.业界有名的就是Google 的Dapper,具体的实现有阿里的鹰眼(不开源),Twitter的Zipkin.当然这不是我们这里的主要内容,我们只关心如何应用,也就是在有traceId的情况下,这些日志能有哪些应用场景.有大概这么几个场景:</p>
+<ol>
+<li>服务异常排查: 这个就是用到的traceId,我们把这些日志通过流计算作业提取traceId,把日志按照qrtaceId存放,当某个服务出问题了,可以通过查询服务的调用链,分析具体的出问题在哪个环节.</li>
+<li>用户行为&#x2F;订单流程分析: 这个的原理其实和上面的差不多,只不过现在不是看traceId,而是看userId&#x2F;orderNo.这个应用场景也很大,主要是发现异常数据,定位排查细节,一般我们会选取某个有问题的用户,查到他某个时间段的所有行为日志.上面这两个就比较适合存放在HBase中,至于为什么,了解HBase的特性的人应该就明白了.</li>
+<li>运营分析: 一般对于有些系统,运营会关注系统的异常数据,在系统出现问题的时候,有时候运营需要查询到异常数据,然后批量做人工处理.我们也通过流计算提取所有的日志中的<code>Execption Log</code>,按应用名,系统,机器名,异常类型存放到ElasticSearch中.之所以放在ES中主要是因为可以安装ES-SQL插件,运营可以写SQL查询统计这些信息.当然也会有定时作业去汇总这些信息发邮件,按照系统给相关负责人发邮件.</li>
+</ol>
+<h4 id="Hive数据仓库"><a href="#Hive数据仓库" class="headerlink" title="Hive数据仓库"></a>Hive数据仓库</h4><p>虽然数据仓库主要是业务的DB数据,但是日志里面也含有非常多的信息,而且DB受限于业务和性能,不会把所有的东西都存在DB里面,但是日志就自由多了,可以输出很多有用的信息,比如记录用户的位置&#x2F;搜索&#x2F;页面浏览记录,再比如修改密码&#x2F;登录这些,往往DB里面只会记录成功的那条记录,中间很多失败的信息是只存在于日志里面的.所以这部分数据也会通过Streaming作业这个ETL过程并入到Hive数据仓库里面.PM也主要是分析用户行为日志来改进用户体验.</p>
+<h4 id="统一查询"><a href="#统一查询" class="headerlink" title="统一查询"></a>统一查询</h4><p>这个说起来其实也不算一个单独的功能,上面的这几个其实说到底也是提供了统一查询的功能.这里要说的是一个统一入口问题,正常的开发线上排查问题,查看日志都是直接到对应的机器上查看的.但是当我们有实时日志采集系统之后,完全可以做到屏蔽机器这层概念,即通过我们的系统直接实时tail服务器上的日志,虽然会有延迟,但是在秒级别的话是可以忽略的.</p>
+<h1 id="未完待续"><a href="#未完待续" class="headerlink" title="未完待续"></a>未完待续</h1>
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Hive/" rel="tag"># Hive</a>
+              <a href="/tags/Hadoop/" rel="tag"># Hadoop</a>
+              <a href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/" rel="tag"># 大数据</a>
+              <a href="/tags/Kafka/" rel="tag"># Kafka</a>
+              <a href="/tags/Spark/" rel="tag"># Spark</a>
+              <a href="/tags/Flume/" rel="tag"># Flume</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2018/05/22/ShadowSocks-Haproxy%E4%B8%AD%E7%BB%A7/" rel="prev" title="ShadowSocks+Haproxy中继">
+                  <i class="fa fa-angle-left"></i> ShadowSocks+Haproxy中继
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2018/05/24/Linux%E8%BF%90%E7%BB%B4%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%E5%A4%87%E5%BF%98%E5%BD%95/" rel="next" title="Linux运维常用命令备忘录">
+                  Linux运维常用命令备忘录 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">LittleQ</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

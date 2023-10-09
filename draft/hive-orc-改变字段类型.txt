@@ -1,0 +1,16 @@
+Error: java.io.IOException: java.lang.ClassCastException: org.apache.hadoop.io.Text cannot be cast to org.apache.hadoop.io.IntWritable (state=,code=0) 
+
+测试 create table A like B
+change A A string; A GG
+
+
+find ignore directory
+find . -path ./misc -prune
+
+hive 排除字段查询法
+set hive.support.quoted.identifiers=none
+
+insert overwrite table tb2 partition(dt=xx, hr=xx) select `(dt|hr)?+.+` from tb1
+
+uglifyjs iview-admin
+

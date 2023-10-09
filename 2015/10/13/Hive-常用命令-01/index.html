@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"sjq597.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.18.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="最近在进行数据迁移，把常用的Hive命令整理一下。 导入分区数据把一个Hive表中的数据导入到另一个表中，但是这两个表都是有分区的，需要动态导入，假设想把表table_a的数据导入到表table_b。这两个表都是按照时间分区的，例如表A的建表语句如下： 12345678CREATE TABLE table_a (  id int,  name string comment &amp;#x27;姓名&amp;#x2">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hive 常用命令 01">
+<meta property="og:url" content="http://sjq597.github.io/2015/10/13/Hive-%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4-01/index.html">
+<meta property="og:site_name" content="LittleQ">
+<meta property="og:description" content="最近在进行数据迁移，把常用的Hive命令整理一下。 导入分区数据把一个Hive表中的数据导入到另一个表中，但是这两个表都是有分区的，需要动态导入，假设想把表table_a的数据导入到表table_b。这两个表都是按照时间分区的，例如表A的建表语句如下： 12345678CREATE TABLE table_a (  id int,  name string comment &amp;#x27;姓名&amp;#x2">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2015-10-13T08:46:05.000Z">
+<meta property="article:modified_time" content="2023-10-07T06:54:54.000Z">
+<meta property="article:author" content="LittleQ">
+<meta property="article:tag" content="Hive">
+<meta property="article:tag" content="大数据">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://sjq597.github.io/2015/10/13/Hive-%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4-01/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://sjq597.github.io/2015/10/13/Hive-%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4-01/","path":"2015/10/13/Hive-常用命令-01/","title":"Hive 常用命令 01"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Hive 常用命令 01 | LittleQ</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">LittleQ</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">爱好：写代码</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%BC%E5%85%A5%E5%88%86%E5%8C%BA%E6%95%B0%E6%8D%AE"><span class="nav-number">1.</span> <span class="nav-text">导入分区数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%88%E7%AB%AF%E5%91%BD%E4%BB%A4"><span class="nav-number">2.</span> <span class="nav-text">终端命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E5%91%BD%E4%BB%A4"><span class="nav-number">3.</span> <span class="nav-text">修改命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B1%95%E7%A4%BA%E4%BF%A1%E6%81%AF%E5%91%BD%E4%BB%A4"><span class="nav-number">4.</span> <span class="nav-text">展示信息命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E5%91%BD%E4%BB%A4"><span class="nav-number">5.</span> <span class="nav-text">查看命令</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">LittleQ</p>
+  <div class="site-description" itemprop="description">数据开发工程师的成长历程</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">145</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">51</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://sjq597.github.io/2015/10/13/Hive-%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4-01/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="LittleQ">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LittleQ">
+      <meta itemprop="description" content="数据开发工程师的成长历程">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Hive 常用命令 01 | LittleQ">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Hive 常用命令 01
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2015-10-13 16:46:05" itemprop="dateCreated datePublished" datetime="2015-10-13T16:46:05+08:00">2015-10-13</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-10-07 14:54:54" itemprop="dateModified" datetime="2023-10-07T14:54:54+08:00">2023-10-07</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Hive%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">Hive笔记</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>最近在进行数据迁移，把常用的<code>Hive</code>命令整理一下。</p>
+<h3 id="导入分区数据"><a href="#导入分区数据" class="headerlink" title="导入分区数据"></a>导入分区数据</h3><p>把一个<code>Hive</code>表中的数据导入到另一个表中，但是这两个表都是有分区的，需要动态导入，假设想把表<code>table_a</code>的数据导入到表<code>table_b</code>。这两个表都是按照时间分区的，例如表A的建表语句如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">CREATE TABLE table_a (</span><br><span class="line">  id int,</span><br><span class="line">  name string comment &#x27;姓名&#x27;,)</span><br><span class="line">comment &#x27;表A&#x27;</span><br><span class="line">PARTITIONED BY (dt string)</span><br><span class="line">ROW format delimited fields terminated by &#x27;\t&#x27;</span><br><span class="line">lines terminated by &#x27;\n&#x27;</span><br><span class="line">stored as textfile;</span><br></pre></td></tr></table></figure>
+<p>现在新建一个表B,建表语句和表A完全一样，把表A的数据导入到表B，可以这么做：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">INSERT OVERWRITE TABLE table_b partition(dt)</span><br><span class="line">select * from table_a</span><br></pre></td></tr></table></figure>
+
+<h3 id="终端命令"><a href="#终端命令" class="headerlink" title="终端命令"></a>终端命令</h3><ul>
+<li>登陆Hive</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo -u$&#123;user_name&#125; /home/q/hive/hive-0.12.0/bin/hive -database database_name</span><br></pre></td></tr></table></figure>
+
+<h3 id="修改命令"><a href="#修改命令" class="headerlink" title="修改命令"></a>修改命令</h3><ul>
+<li>重命名表名</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">alter table table_name rename to new_table_name</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>重命名分区</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">alter table table_name partition(dt=&#x27;20151014&#x27;) rename to partition(dt=&#x27;20151014old&#x27;);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>删除表</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">drop table if exists table_name;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>删除&#x2F;添加分区</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">alter table table_name drop partition(dt=&#x27;20151014&#x27;);</span><br><span class="line">alter table table_name add if not exists partition(dt=&#x27;20151018&#x27;);</span><br><span class="line">alter table table_name add if not exists partition(dt&lt;&#x27;20151018&#x27;);	# 批量删除分区</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>清空表数据</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">insert overwrite table table_name select * from table_name where 1=0;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>删除指定条件的数据</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># 把Hive表中link_end_date字段为&#x27;2099-12-31&#x27;的数据删掉,即只要不等于这个值就再插回源表中</span><br><span class="line">insert overwrite table ap_fuwu_tb_complaint_his</span><br><span class="line">select * from ap_fuwu_tb_complaint_his where</span><br><span class="line">link_end_date&lt;&gt;&#x27;2099-12-31&#x27;;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>将数据插入到指定分区</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">alter table table_name add if not exists partition(dt=&#x27;20151021old&#x27;);</span><br><span class="line">insert overwrite table table_name partition(dt=&#x27;20151021old&#x27;)</span><br><span class="line">SELECT * FROM table_name WHERE dt=&#x27;20151021&#x27;;</span><br></pre></td></tr></table></figure>
+<p><strong>注意：</strong> 如果列不等，则把<code>*</code>换成对应的列。</p>
+<ul>
+<li>重命名列名</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">alter table table_name CHANGE old_col_name new_col_name field_type;</span><br><span class="line"></span><br><span class="line"># 表结构列替换,通常用于</span><br><span class="line">alter table table_name replace columns (</span><br><span class="line">  col_name data_type [comment col_comment],</span><br><span class="line">  col_name data_type [comment col_comment],</span><br><span class="line">  col_name data_type [comment col_comment]</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>改变列顺序</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 把old_col_name改名为new_col_name并且把这列放在another_col_name列后面</span><br><span class="line">alter table table_name CHANGE old_col_name new_col_name field_type after another_col_name;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>复制表</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">create table new_table like old_table;	# 只复制表结构，不复制数据</span><br><span class="line">create table new_table as select * from old_table;	# 复制数据</span><br></pre></td></tr></table></figure>
+<p>**注意:**对于分区表，如果使用<code>create table xxx as select * from xxx</code>这样新表就不是分区表了，分区字段会作为一个字段插入到新表中。<br>所以如果想保证新表也是分区表,需要下面这样,假设分区字段为dt</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">create table new_table like old_table;</span><br><span class="line">insert overwrite table new_table partition(dt) select * from old_table;</span><br></pre></td></tr></table></figure>
+
+<h3 id="展示信息命令"><a href="#展示信息命令" class="headerlink" title="展示信息命令"></a>展示信息命令</h3><ul>
+<li>展示建表语句</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">show create table table_name;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>展示表详情</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">desc table_name;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>模糊查询</li>
+</ul>
+<p>使用<code>like</code>可以进行模糊查询使用<code>like</code>可以进行模糊查询,其中<code>_</code>表示单个字符,<code>%</code>表示任意数量的字符.要注意如果是用否定,语法是:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 语法类似下面这样</span><br><span class="line">select * from table where NOT &#x27;key&#x27; like &#x27;fff%&#x27;; </span><br></pre></td></tr></table></figure>
+
+<p><strong>RLIKE</strong>:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># 字符串a符合java正则表达式b的正则语法则返回true</span><br><span class="line"># 语法:A rlike b</span><br><span class="line">hive&gt; select 1 from tabe_name where &#x27;footbar&#x27; rlike &#x27;^f.*r$’;</span><br><span class="line">1</span><br></pre></td></tr></table></figure>
+<p>还有个和<code>rlike</code>功能一样的操作:<code>REGEXP</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">hive&gt; <span class="keyword">select</span> 1 from table_name <span class="built_in">where</span> <span class="string">&#x27;footbar&#x27;</span> REGEXP <span class="string">&#x27;^f.*r$&#x27;</span>;</span><br><span class="line">1</span><br></pre></td></tr></table></figure>
+
+<h3 id="查看命令"><a href="#查看命令" class="headerlink" title="查看命令"></a>查看命令</h3><ul>
+<li>查看Hive表大小</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">hadoop fs -ls  /user/hive/warehouse/test_table/ds=20151111|awk -F &#x27; &#x27; &#x27;&#123;print $5&#125;&#x27;|awk &#x27;&#123;a+=$1&#125;END&#123;print a/(1024*1024*1024)&#125;&#x27;</span><br><span class="line">hadoop fs -du /user/hive/warehouse/test_table|awk &#x27; &#123; SUM += $1 &#125; END &#123; print SUM/(1024*1024*1024)&#125;&#x27;</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Hive/" rel="tag"># Hive</a>
+              <a href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/" rel="tag"># 大数据</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2015/10/12/Python-%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7:%E5%88%87%E7%89%87,%E8%BF%AD%E4%BB%A3,%E7%94%9F%E6%88%90%E5%BC%8F/" rel="prev" title="高级特性:切片,迭代,生成式">
+                  <i class="fa fa-angle-left"></i> 高级特性:切片,迭代,生成式
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2015/10/14/Ubuntu-14-04-%E5%AE%89%E8%A3%85Python-Mysqldb/" rel="next" title="Ubuntu 14.04 安装Python Mysqldb">
+                  Ubuntu 14.04 安装Python Mysqldb <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">LittleQ</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

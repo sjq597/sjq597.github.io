@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"sjq597.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.18.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="最近发现家里的网连我国外的服务器非常的慢,丢包已经基本上到了访问不了的地步了,所以搭的ss代理基本上只能在公司用.之前花几百快撸的腾讯云服务器放了好几个月都没管过了,正好拿来做中继代理.之前买了半年的阿里云服务器搞过，后来过期了没有续费了,这次撸了6年的应该够用了. 准备工作其实就是运营商的国际出口比较堵,所以直接访问国外的服务器丢包严重，当然实测应该还有一个原因，应该是运营商主动干扰这些代理服务">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ShadowSocks+Haproxy中继">
+<meta property="og:url" content="http://sjq597.github.io/2018/05/22/ShadowSocks-Haproxy%E4%B8%AD%E7%BB%A7/index.html">
+<meta property="og:site_name" content="LittleQ">
+<meta property="og:description" content="最近发现家里的网连我国外的服务器非常的慢,丢包已经基本上到了访问不了的地步了,所以搭的ss代理基本上只能在公司用.之前花几百快撸的腾讯云服务器放了好几个月都没管过了,正好拿来做中继代理.之前买了半年的阿里云服务器搞过，后来过期了没有续费了,这次撸了6年的应该够用了. 准备工作其实就是运营商的国际出口比较堵,所以直接访问国外的服务器丢包严重，当然实测应该还有一个原因，应该是运营商主动干扰这些代理服务">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2018-05-22T12:24:11.000Z">
+<meta property="article:modified_time" content="2023-10-07T06:54:54.000Z">
+<meta property="article:author" content="LittleQ">
+<meta property="article:tag" content="shadowsocks">
+<meta property="article:tag" content="haproxy">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://sjq597.github.io/2018/05/22/ShadowSocks-Haproxy%E4%B8%AD%E7%BB%A7/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://sjq597.github.io/2018/05/22/ShadowSocks-Haproxy%E4%B8%AD%E7%BB%A7/","path":"2018/05/22/ShadowSocks-Haproxy中继/","title":"ShadowSocks+Haproxy中继"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>ShadowSocks+Haproxy中继 | LittleQ</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">LittleQ</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">爱好：写代码</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%87%86%E5%A4%87%E5%B7%A5%E4%BD%9C"><span class="nav-number">1.</span> <span class="nav-text">准备工作</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE"><span class="nav-number">2.</span> <span class="nav-text">安装配置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9C%8D%E5%8A%A1%E5%90%AF%E7%94%A8"><span class="nav-number">3.</span> <span class="nav-text">服务启用</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">LittleQ</p>
+  <div class="site-description" itemprop="description">数据开发工程师的成长历程</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">145</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">51</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://sjq597.github.io/2018/05/22/ShadowSocks-Haproxy%E4%B8%AD%E7%BB%A7/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="LittleQ">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LittleQ">
+      <meta itemprop="description" content="数据开发工程师的成长历程">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="ShadowSocks+Haproxy中继 | LittleQ">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          ShadowSocks+Haproxy中继
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2018-05-22 20:24:11" itemprop="dateCreated datePublished" datetime="2018-05-22T20:24:11+08:00">2018-05-22</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-10-07 14:54:54" itemprop="dateModified" datetime="2023-10-07T14:54:54+08:00">2023-10-07</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Linux%E4%BD%BF%E7%94%A8/" itemprop="url" rel="index"><span itemprop="name">Linux使用</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>最近发现家里的网连我国外的服务器非常的慢,丢包已经基本上到了访问不了的地步了,所以搭的ss代理基本上只能在公司用.之前花几百快撸的腾讯云服务器放了好几个月都没管过了,正好拿来做中继代理.之前买了半年的阿里云服务器搞过，后来过期了没有续费了,这次撸了6年的应该够用了.</p>
+<h1 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h1><p>其实就是运营商的国际出口比较堵,所以直接访问国外的服务器丢包严重，当然实测应该还有一个原因，应该是运营商主动干扰这些代理服务器.个人感觉后面的可能性要大一些,不过不管是哪种都不重要了,要实现低延迟链路，只能借助大厂的线路(阿里，腾讯),基本原理也很简单:</p>
+<ul>
+<li>直连方案:<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">local(A) --&gt; sserver(C)</span><br></pre></td></tr></table></figure></li>
+<li>中继方案:<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">local(A) --&gt; aliyun/cloud tencent(B) --&gt; sserver(C)</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h1 id="安装配置"><a href="#安装配置" class="headerlink" title="安装配置"></a>安装配置</h1><p>主要是在中继机器B上操作,sserver(C)不用做任何变更,首先登录我们的中继机器(B):</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo yum install haproxy -y</span><br></pre></td></tr></table></figure>
+<p>然后就是配置我们的机器了,编辑<code>sudo vim /etc/haproxy/haproxy.cfg</code>,直接改成下面这样:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">global</span><br><span class="line">    ulimit-n  51200</span><br><span class="line"></span><br><span class="line">defaults</span><br><span class="line">    log     global</span><br><span class="line">    mode    tcp</span><br><span class="line">    option  dontlognull</span><br><span class="line">    timeout connect 5000</span><br><span class="line">    timeout client  50000</span><br><span class="line">    timeout server  50000</span><br><span class="line"></span><br><span class="line">frontend ss-in</span><br><span class="line">    bind *: &#123;B_local_listen_port&#125;</span><br><span class="line">    default_backend ss-out</span><br><span class="line"></span><br><span class="line">backend ss-out</span><br><span class="line">    server sserver_name &#123;sserver_ip&#125;:&#123;sserver_port&#125; maxconn 20480</span><br></pre></td></tr></table></figure>
+<p>这里需要设置的几个地方为:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&#123;B_local_listen_port&#125;:这个就是中继服务器监听外部请求的端口,为了你local改动小,这个端口可以设置和sserver(C)的端口一致</span><br><span class="line">&#123;sserver_ip&#125;:这个就很好理解了,就是你部署sserver的机器的ip,后面那个端口也是ss服务器的端口</span><br></pre></td></tr></table></figure>
+<p>等这些都改完了，然后还需要做一件事,就是给你的中继服务器开安全组策略，阿里和腾讯的云主机基本上是一样的，开入站和出战规则即可,然后把设置好的安全组规则绑定到你的机器实例上.简单来说就是需要对<code>&#123;B_local_listen_port&#125;</code>开入站规则,对<code>&#123;sserver_port&#125;</code>开出战规则，如果你分不清觉得麻烦，就把这两个端口设置的一样,然后开一个端口的出站和入站规则即可.</p>
+<h1 id="服务启用"><a href="#服务启用" class="headerlink" title="服务启用"></a>服务启用</h1><p>由于你改了安全组规则，所以需要重启你的服务器实例,重启好了之后,需要启动haproxy服务,不同的机器不一样，以我的腾讯云主机为例:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">systemctl start haproxy.service</span><br><span class="line"># 设置成开机启动(CentOS7)</span><br><span class="line">systemctl enable haproxy.service</span><br><span class="line"># 设置成开机启动(CentOS6,没测试过，网上查的)</span><br><span class="line">chkconfig –level 3 haproxy.service on</span><br></pre></td></tr></table></figure>
+<p>启动服务之后可以检测一下服务是否开启了,直接用<code>ps</code>命令即可.</p>
+<p>然后就是本地<code>local</code>机器,即<code>sslocal</code>的配置,因为我们上面配置的中继监听端口和<code>sserver</code>的端口一致,所以我们的<code>sslocal</code>只用改一个ip，端口不用改,ip由原来的<code>sserver ip</code>改为中继服务器的ip就行了.延迟由原来的300ms直接降为40ms,收工.</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/shadowsocks/" rel="tag"># shadowsocks</a>
+              <a href="/tags/haproxy/" rel="tag"># haproxy</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2018/05/18/Hexo-%E4%BD%BF%E7%94%A8Gitment%E8%AF%84%E8%AE%BA%E5%8A%9F%E8%83%BD/" rel="prev" title="Hexo 使用Gitment评论功能">
+                  <i class="fa fa-angle-left"></i> Hexo 使用Gitment评论功能
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2018/05/22/%E5%A6%82%E4%BD%95%E8%87%AA%E4%B8%8B%E8%80%8C%E4%B8%8A%E8%AE%BE%E8%AE%A1%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%87%86%E5%AE%9E%E6%97%B6%E5%90%8C%E6%AD%A5%E7%B3%BB%E7%BB%9F/" rel="next" title="如何自下而上设计开发一个大数据准实时同步系统">
+                  如何自下而上设计开发一个大数据准实时同步系统 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">LittleQ</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

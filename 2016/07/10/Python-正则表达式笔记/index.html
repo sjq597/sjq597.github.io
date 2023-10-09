@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"sjq597.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.18.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="总结一下在工作中常用到的关于Python正则的一些用法,主要无非就是匹配提取置顶信息，或者替换指定信息,不过都是re模块的用法 查找匹配查找和匹配主要就是re.search()以及re.match()  match:从字符串的开始处匹配,匹配成功会返回match object,如果匹配不上返回None search:只要又字串符合就匹配成功，返回match object,如果没有一个子串满足匹配则">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Python 正则表达式笔记">
+<meta property="og:url" content="http://sjq597.github.io/2016/07/10/Python-%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F%E7%AC%94%E8%AE%B0/index.html">
+<meta property="og:site_name" content="LittleQ">
+<meta property="og:description" content="总结一下在工作中常用到的关于Python正则的一些用法,主要无非就是匹配提取置顶信息，或者替换指定信息,不过都是re模块的用法 查找匹配查找和匹配主要就是re.search()以及re.match()  match:从字符串的开始处匹配,匹配成功会返回match object,如果匹配不上返回None search:只要又字串符合就匹配成功，返回match object,如果没有一个子串满足匹配则">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2016-07-10T04:34:44.000Z">
+<meta property="article:modified_time" content="2023-10-07T06:54:54.000Z">
+<meta property="article:author" content="LittleQ">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="正则">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://sjq597.github.io/2016/07/10/Python-%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F%E7%AC%94%E8%AE%B0/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://sjq597.github.io/2016/07/10/Python-%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F%E7%AC%94%E8%AE%B0/","path":"2016/07/10/Python-正则表达式笔记/","title":"Python 正则表达式笔记"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Python 正则表达式笔记 | LittleQ</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">LittleQ</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">爱好：写代码</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E6%89%BE%E5%8C%B9%E9%85%8D"><span class="nav-number">1.</span> <span class="nav-text">查找匹配</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#match-search"><span class="nav-number">1.1.</span> <span class="nav-text">match,search</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#findall"><span class="nav-number">1.2.</span> <span class="nav-text">findall</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AD%A3%E5%88%99%E5%88%86%E5%89%B2"><span class="nav-number">2.</span> <span class="nav-text">正则分割</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AD%A3%E5%88%99%E6%9B%BF%E6%8D%A2"><span class="nav-number">3.</span> <span class="nav-text">正则替换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AD%A3%E5%88%99%E6%9F%A5%E8%AF%A2%E8%A1%A8"><span class="nav-number">4.</span> <span class="nav-text">正则查询表</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">LittleQ</p>
+  <div class="site-description" itemprop="description">数据开发工程师的成长历程</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">145</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">51</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://sjq597.github.io/2016/07/10/Python-%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F%E7%AC%94%E8%AE%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="LittleQ">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LittleQ">
+      <meta itemprop="description" content="数据开发工程师的成长历程">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Python 正则表达式笔记 | LittleQ">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Python 正则表达式笔记
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2016-07-10 12:34:44" itemprop="dateCreated datePublished" datetime="2016-07-10T12:34:44+08:00">2016-07-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-10-07 14:54:54" itemprop="dateModified" datetime="2023-10-07T14:54:54+08:00">2023-10-07</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Python%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">Python笔记</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>总结一下在工作中常用到的关于Python正则的一些用法,主要无非就是匹配提取置顶信息，或者替换指定信息,不过都是<code>re</code>模块的用法</p>
+<h3 id="查找匹配"><a href="#查找匹配" class="headerlink" title="查找匹配"></a>查找匹配</h3><p>查找和匹配主要就是<code>re.search()</code>以及<code>re.match()</code></p>
+<ul>
+<li>match:从字符串的开始处匹配,匹配成功会返回<code>match object</code>,如果匹配不上返回None</li>
+<li>search:只要又字串符合就匹配成功，返回<code>match object</code>,如果没有一个子串满足匹配则返回None</li>
+<li>findall: 如果能匹配，返回所有的匹配结果list</li>
+</ul>
+<p>下面会以代码介绍一下如何使用以及提取出匹配到的内容:</p>
+<h4 id="match-search"><a href="#match-search" class="headerlink" title="match,search"></a>match,search</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">#!/usr/bin/env python</span><br><span class="line"># -*- coding: utf-8 -*-</span><br><span class="line">import re</span><br><span class="line"></span><br><span class="line">__author__ = &#x27;anonymous&#x27;</span><br><span class="line"></span><br><span class="line">if __name__ == &#x27;__main__&#x27;:</span><br><span class="line">    str1 = &#x27;hello world, test test Test&#x27;</span><br><span class="line">    if not re.match(&#x27;world&#x27;, str1):</span><br><span class="line">        print &#x27;1:not match&#x27;</span><br><span class="line">    print &#x27;2:&#x27;, re.match(&#x27;hello&#x27;, str1).group()</span><br><span class="line">    print &#x27;3:&#x27;, re.match(&#x27;.*test&#x27;, str1).group()</span><br><span class="line">    print &#x27;4:&#x27;, re.match(&#x27;.*test&#x27;, str1, re.I).group()</span><br><span class="line">    print &#x27;5:&#x27;, re.search(&#x27;test&#x27;, str1, re.I).group()</span><br><span class="line">    pass</span><br></pre></td></tr></table></figure>
+<p>输出结果如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">1:not match</span><br><span class="line">2: hello</span><br><span class="line">3: hello world, test test</span><br><span class="line">4: hello world, test test Test</span><br><span class="line">5: test</span><br></pre></td></tr></table></figure>
+<ul>
+<li>1, 2 说明<code>match()</code>只会从开头开始匹配,如果不是在开头则无法匹配</li>
+<li>2, 3 说明如果要匹配的内容不是在字符串的开头，那么需要加<code>.*</code>或者类似的通配符</li>
+<li>3, 4 说明<code>re.I</code>表示的是忽略大小写，</li>
+<li>4, 5 可以看到<code>search()</code>函数则是在整个字符串里面去查找给定的模式，没有位置限制,但是只会匹配第一个，就算后面还有也不会输出来,所以只输出了一个<strong>test</strong>,后面的<strong>Test</strong>也没有输出来。</li>
+</ul>
+<h4 id="findall"><a href="#findall" class="headerlink" title="findall"></a>findall</h4><p>如果想获取指定内容应该怎么做呢？这里介绍一下正则里面的<code>()</code>,用括号匹配出来的内容可以通过<code>groups()</code>提取，看下面的代码:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">#!/usr/bin/env python</span><br><span class="line"># -*- coding: utf-8 -*-</span><br><span class="line">import re</span><br><span class="line"></span><br><span class="line">__author__ = &#x27;anonymous&#x27;</span><br><span class="line"></span><br><span class="line">if __name__ == &#x27;__main__&#x27;:</span><br><span class="line">    str1 = &#x27;sfasfasfsfaname=hello phone=234123423 mail=23423@qq.com,hslfas7&#x27;</span><br><span class="line"></span><br><span class="line">    result = re.match(r&#x27;.*name=(\w*).*phone=(\d*) mail=(\d*@\w*.com).*&#x27;, str1, re.I)</span><br><span class="line"></span><br><span class="line">    if result is not None:</span><br><span class="line">        print result.groups()</span><br><span class="line">    pass</span><br></pre></td></tr></table></figure>
+<p>看一下输出结果：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(&#x27;hello&#x27;, &#x27;234123423&#x27;, &#x27;23423@qq.com&#x27;)</span><br></pre></td></tr></table></figure>
+<p>可以看到，匹配结果被保存到了一个tuple里面，只要遍历这个tuple或者访问指定顺序的下标就可以获取相应的匹配结果了.<br>前面也说了，用<code>search()</code>匹配只会输出第一个匹配结果，而且上面的<code>match()</code>如果换成<code>search()</code>，调用<code>groups()</code>返回的结果和使用<code>match()</code>的结果是一样的,因为对于这个正则表达式来说，上面的匹配结果是第一个也是唯一一个。如果想返回字符串中所有出现的<strong>as</strong>应该怎么做呢？这个时候就需要用<code>findall()</code>:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">#!/usr/bin/env python</span><br><span class="line"># -*- coding: utf-8 -*-</span><br><span class="line">import re</span><br><span class="line"></span><br><span class="line">__author__ = &#x27;anonymous&#x27;</span><br><span class="line"></span><br><span class="line">if __name__ == &#x27;__main__&#x27;:</span><br><span class="line">    str1 = &#x27;sfasfasfsfaname=hello phone=234123423 mail=23423@qq.com,hslfas7&#x27;</span><br><span class="line"></span><br><span class="line">    result1 = re.findall(r&#x27;name=(\w*).*phone=(\d*) mail=(\d*@\w*.com)&#x27;, str1, re.I)</span><br><span class="line">    result2 = re.findall(r&#x27;as&#x27;, str1, re.I)</span><br><span class="line">    print result1</span><br><span class="line">    print result2</span><br><span class="line">    pass</span><br></pre></td></tr></table></figure>
+<p>程序的输出结果为</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[(&#x27;hello&#x27;, &#x27;234123423&#x27;, &#x27;23423@qq.com&#x27;)]</span><br><span class="line">[&#x27;as&#x27;, &#x27;as&#x27;, &#x27;as&#x27;]</span><br></pre></td></tr></table></figure>
+<p>可以看到<code>findall()</code>函数返回的是一个list，返回所有匹配的结果，如果正则里面有<code>()</code>提取内容，这写内容也会出现在里面，单独保存在一个tuple中.</p>
+<h3 id="正则分割"><a href="#正则分割" class="headerlink" title="正则分割"></a>正则分割</h3><p>在Python中，如果想对一个字符串进行分割的话，只需要调用str的split方法就可以实现，但是这个split只能根据某个字符来进行分割的操作，如果要同时指定多个字符来进行分割的话，它就无法实现了。<br>好在re模块也提供了split这个方法来对字符串进行分割，而且这个方法更加强大，可以同时根据多个字符进行分割的操作，下面来看分别看一下str的split和re的split有什么不同的地方：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">#!/usr/bin/env python</span><br><span class="line"># -*- coding: utf-8 -*-</span><br><span class="line">import re</span><br><span class="line"></span><br><span class="line">__author__ = &#x27;anonymous&#x27;</span><br><span class="line"></span><br><span class="line">if __name__ == &#x27;__main__&#x27;:</span><br><span class="line">    str1 = &#x27;helloword,i;am\nalex&#x27;</span><br><span class="line">    str2 = str1.split(&#x27;,&#x27;)</span><br><span class="line">    print str2</span><br><span class="line"></span><br><span class="line">    str3 = re.split(&#x27;[,|;|\n]&#x27;, str1)</span><br><span class="line">    print str3</span><br></pre></td></tr></table></figure>
+<p>看看输出结果:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[&#x27;helloword&#x27;, &#x27;i;am\nalex&#x27;]</span><br><span class="line">[&#x27;helloword&#x27;, &#x27;i&#x27;, &#x27;am&#x27;, &#x27;alex&#x27;]</span><br></pre></td></tr></table></figure>
+<p>这里就可以看到差别是啥了，正则分割确实功能更加强大也更加灵活，可以用正则模式分割一个字符串</p>
+<h3 id="正则替换"><a href="#正则替换" class="headerlink" title="正则替换"></a>正则替换</h3><p>讲到正则分割，当然少不了正则<code>replace()</code>，同理字符串也有替换方法，但是只能替换指定的内容，如果想达到模糊替换，只能用正则，不过正则里面的替换方法不叫<code>replace</code>，叫<code>sub()</code>.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">#!/usr/bin/env python</span><br><span class="line"># -*- coding: utf-8 -*-</span><br><span class="line">import re</span><br><span class="line"></span><br><span class="line">__author__ = &#x27;anonymous&#x27;</span><br><span class="line"></span><br><span class="line">if __name__ == &#x27;__main__&#x27;:</span><br><span class="line">    str1 = &#x27;Hello 111 is 222&#x27;</span><br><span class="line">    str2 = re.sub(r&#x27;\d+&#x27;, &#x27;333&#x27;, str1)</span><br><span class="line">    print str2</span><br></pre></td></tr></table></figure>
+<p>输出结果为:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Hello 333 is 333</span><br></pre></td></tr></table></figure>
+
+<h3 id="正则查询表"><a href="#正则查询表" class="headerlink" title="正则查询表"></a>正则查询表</h3><p>平时记住一些常见的的正则用法，有些不太常用需要自己网上去查，这里整理记在一个表里，免得以后上网查:</p>
+<p>正则速查表</p>
+<table>
+<thead>
+<tr>
+<th>字符</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>\</td>
+<td>将下一个字符标记为一个特殊字符、或一个原义字符、或一个向后引用、或一个八进制转义符。例如，<code>n</code>匹配字符<code>n</code>。<code>\n</code>匹配一个换行符。串行<code>\\</code>匹配<code>\</code>而<code>\(</code>则匹配<code>(</code>。</td>
+</tr>
+<tr>
+<td>^</td>
+<td>匹配输入字符串的开始位置。如果设置了RegExp对象的Multiline属性，<code>^</code>也匹配<code>\n</code>或<code>\r</code>之后的位置。</td>
+</tr>
+<tr>
+<td>$</td>
+<td>匹配输入字符串的结束位置。如果设置了RegExp对象的Multiline属性，<code>$</code>也匹配<code>\n</code>或<code>\r</code>之前的位置。</td>
+</tr>
+</tbody></table>
+<ul>
+<li>|匹配前面的子表达式零次或多次。例如，<code>zo*</code>能匹配<code>z</code>以及<code>zoo</code>。<code>*</code>等价于<code>&#123;0,&#125;</code>。</li>
+</ul>
+<ul>
+<li>|匹配前面的子表达式一次或多次。例如，<code>zo+</code>能匹配<code>zo</code>以及<code>zoo</code>，但不能匹配<code>z</code>。<code>+</code>等价于<code>&#123;1,&#125;</code>。<br>? |匹配前面的子表达式零次或一次。例如，<code>do(es)?</code>可以匹配<code>does</code>或<code>does</code>中的<code>do</code>。<code>?</code>等价于<code>&#123;0,1&#125;</code>。<br>{n} |<code>n</code>是一个非负整数。匹配确定的<code>n</code>次。例如，<code>o&#123;2&#125;</code>不能匹配<code>Bob</code>中的<code>o</code>，但是能匹配<code>food</code>中的两个<code>o</code>。<br>{n,} |<code>n</code>是一个非负整数。至少匹配<code>n</code>次。例如，<code>o&#123;2,&#125;</code>不能匹配<code>Bob</code>中的<code>o</code>，但能匹配<code>foooood</code>中的所有o。<code>o&#123;1,&#125;</code>等价于<code>o+</code>。<code>o&#123;0,&#125;</code>则等价于<code>o*</code>。<br>{n,m} |<code>m</code>和<code>n</code>均为非负整数，其中<code>n&lt;=m</code>。最少匹配<code>n</code>次且最多匹配<code>m</code>次。例如，<code>o&#123;1,3&#125;</code>将匹配<code>fooooood</code>中的前三个o。<code>o&#123;0,1&#125;</code>等价于<code>o?</code>。请注意在逗号和两个数之间不能有空格。<br>? |当该字符紧跟在任何一个其他限制符<code>(*,+,?,&#123;n&#125;,&#123;n,&#125;,&#123;n,m&#125;)</code>后面时，匹配模式是非贪婪的。非贪婪模式尽可能少的匹配所搜索的字符串，而默认的贪婪模式则尽可能多的匹配所搜索的字符串。例如，对于字符串<code>oooo</code>，<code>o+?</code>将匹配单个<code>o</code>，而<code>o+</code>将匹配所有<code>o</code>。<br>. |匹配除<code>\n</code>之外的任何单个字符。要匹配包括<code>\n</code>在内的任何字符，请使用像(.&#124;\n)的模式。<br>(pattern) |匹配pattern并获取这一匹配。所获取的匹配可以从产生的Matches集合得到，在VBScript中使用SubMatches集合，在JScript中则使用$0…$9属性。要匹配圆括号字符，请使用<code>\(</code>或<code>\)</code>。<br>(?:pattern) |匹配pattern但不获取匹配结果，也就是说这是一个非获取匹配，不进行存储供以后使用。这在使用或字符(&#124;)来组合一个模式的各个部分是很有用。例如industr(?:y&#124;ies)就是一个比industry&#124;industries更简略的表达式。<br>(?&#x3D;pattern) |正向肯定预查，在任何匹配pattern的字符串开始处匹配查找字符串。这是一个非获取匹配，也就是说，该匹配不需要获取供以后使用。例如，Windows(?&#x3D;95&#124;98&#124;NT&#124;2000)能匹配<code>Windows2000</code>中的<code>Windows</code>，但不能匹配<code>Windows3.1</code>中的<code>Windows</code>。预查不消耗字符，也就是说，在一个匹配发生后，在最后一次匹配之后立即开始下一次匹配的搜索，而不是从包含预查的字符之后开始。<br>(?!pattern) |正向否定预查，在任何不匹配pattern的字符串开始处匹配查找字符串。这是一个非获取匹配，也就是说，该匹配不需要获取供以后使用。例如<code>Windows(?!95&amp;#124;98&amp;#124;NT&amp;#124;2000)</code>能匹配<code>Windows3.1</code>中的<code>Windows</code>，但不能匹配<code>Windows2000</code>中的<code>Windows</code>。预查不消耗字符，也就是说，在一个匹配发生后，在最后一次匹配之后立即开始下一次匹配的搜索，而不是从包含预查的字符之后开始<br>(?&lt;&#x3D;pattern) |反向肯定预查，与正向肯定预查类拟，只是方向相反。例如，(?&lt;&#x3D;95&#124;98&#124;NT&#124;2000)Windows能匹配<code>2000Windows</code>中的<code>Windows</code>，但不能匹配<code>3.1Windows</code>中的<code>Windows</code>。<br>(?&lt;!pattern) |反向否定预查，与正向否定预查类拟，只是方向相反。例如(?&lt;!95&#124;98&#124;NT&#124;2000)Windows能匹配<code>3.1Windows</code>中的<code>Windows</code>，但不能匹配<code>2000Windows</code>中的<code>Windows</code>。<br>x&#124;y |匹配x或y。例如，<code>z&amp;#124;food</code>能匹配<code>z</code>或<code>food</code>。<code>(z&amp;#124;f)ood</code>则匹配<code>zood</code>或<code>food</code>。</li>
+</ul>
+<p>[xyz] |字符集合。匹配所包含的任意一个字符。例如，<code>[abc]</code>可以匹配<code>plain</code>中的<code>a</code>。<br>[^xyz] |负值字符集合。匹配未包含的任意字符。例如，<code>[^abc]</code>可以匹配<code>plain</code>中的<code>p</code>。<br>[a-z] |字符范围。匹配指定范围内的任意字符。例如，<code>[a-z]</code>可以匹配<code>a</code>到<code>z</code>范围内的任意小写字母字符。<br>[^a-z] |负值字符范围。匹配任何不在指定范围内的任意字符。例如，<code>[^a-z]</code>可以匹配任何不在<code>a</code>到<code>z</code>范围内的任意字符。<br>\b |匹配一个单词边界，也就是指单词和空格间的位置。例如，<code>er\b</code>可以匹配<code>never</code>中的<code>er</code>，但不能匹配<code>verb</code>中的<code>er</code>。<br>\B |匹配非单词边界。<code>er\B</code>能匹配<code>verb</code>中的<code>er</code>，但不能匹配<code>never</code>中的<code>er</code>。<br>\cx |匹配由x指明的控制字符。例如，\cM匹配一个Control-M或回车符。x的值必须为A-Z或a-z之一。否则，将c视为一个原义的<code>c</code>字符。<br>\d |匹配一个数字字符。等价于<code>[0-9]</code>。<br>\D |匹配一个非数字字符。等价于<code>[^0-9]</code>。<br>\f |匹配一个换页符。等价于<code>\x0c</code>和<code>\cL</code>。<br>\n |匹配一个换行符。等价于<code>\x0a</code>和<code>\cJ</code>。<br>\r |匹配一个回车符。等价于<code>\x0d</code>和<code>\cM</code>。<br>\s |匹配任何空白字符，包括空格、制表符、换页符等等。等价于<code>[ \f\n\r\t\v]</code>。<br>\S |匹配任何非空白字符。等价于<code>[^ \f\n\r\t\v]</code>。<br>\t |匹配一个制表符。等价于<code>\x09</code>和<code>\cI</code>。<br>\v |匹配一个垂直制表符。等价于<code>\x0b</code>和<code>\cK</code>。<br>\w |匹配包括下划线的任何单词字符。等价于<code>[A-Za-z0-9_]</code>。<br>\W |匹配任何非单词字符。等价于<code>[^A-Za-z0-9_]</code>。<br>\xn |匹配n，其中n为十六进制转义值。十六进制转义值必须为确定的两个数字长。例如，<code>\x41</code>匹配<code>A</code>。<code>\x041</code>则等价于<code>\x04&amp;1</code>。正则表达式中可以使用ASCII编码。<br>\num |匹配num，其中num是一个正整数。对所获取的匹配的引用。例如，<code>(.)\1</code>匹配两个连续的相同字符。<br>\n |标识一个八进制转义值或一个向后引用。如果<code>\n</code>之前至少<code>n</code>个获取的子表达式，则<code>n</code>为向后引用。否则，如果<code>n</code>为八进制数字<code>(0-7)</code>，则<code>n</code>为一个八进制转义值。<br>\nm |标识一个八进制转义值或一个向后引用。如果<code>\nm</code>之前至少有<code>nm</code>个获得子表达式，则<code>nm</code>为向后引用。如果<code>\nm</code>之前至少有<code>n</code>个获取，则<code>n</code>为一个后跟文字<code>m</code>的向后引用。如果前面的条件都不满足，若<code>n</code>和<code>m``均为八进制数字</code>(0-7)<code>，则</code>\nm<code>将匹配八进制转义值</code>nm<code>。 \nml |如果</code>n<code>为八进制数字</code>(0-3)<code>，且m和l均为八进制数字</code>(0-7)<code>，则匹配八进制转义值</code>nml<code>。 \un |匹配</code>n<code>，其中</code>n<code>是一个用四个十六进制数字表示的Unicode字符。例如，</code>\u00A9<code>匹配版权符号</code>(©)&#96;。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Python/" rel="tag"># Python</a>
+              <a href="/tags/%E6%AD%A3%E5%88%99/" rel="tag"># 正则</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2016/07/08/Linux-%E6%8A%A5%E9%94%99cannot-open-shared-object-file%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88-md/" rel="prev" title="Linux 报错cannot open shared object file解决方案.md">
+                  <i class="fa fa-angle-left"></i> Linux 报错cannot open shared object file解决方案.md
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2016/07/10/D3-js-%E7%AC%94%E8%AE%B001/" rel="next" title="D3.js 笔记01">
+                  D3.js 笔记01 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">LittleQ</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

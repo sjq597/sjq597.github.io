@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"sjq597.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.18.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Hive参数设置方式Hive提供了很多可设置参数，可以通过设置不同的参数来满足不同场景的各种需求，改变Hive有三种方式：  修改Hive安装路径下的配置文件，即修改${HIVE_HOME}&#x2F;conf&#x2F;hive-site.xml文件里的配置； 在启动Hive时，在命令行里面设置参数； 在进入Hive的CLI客户端里面进行参数设置。  修改配置文件设置参数在安装好Hive之后，默">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hive 参数设置">
+<meta property="og:url" content="http://sjq597.github.io/2016/02/20/Hive-%E5%8F%82%E6%95%B0%E8%AE%BE%E7%BD%AE/index.html">
+<meta property="og:site_name" content="LittleQ">
+<meta property="og:description" content="Hive参数设置方式Hive提供了很多可设置参数，可以通过设置不同的参数来满足不同场景的各种需求，改变Hive有三种方式：  修改Hive安装路径下的配置文件，即修改${HIVE_HOME}&#x2F;conf&#x2F;hive-site.xml文件里的配置； 在启动Hive时，在命令行里面设置参数； 在进入Hive的CLI客户端里面进行参数设置。  修改配置文件设置参数在安装好Hive之后，默">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2016-02-20T06:14:10.000Z">
+<meta property="article:modified_time" content="2023-10-07T06:54:54.000Z">
+<meta property="article:author" content="LittleQ">
+<meta property="article:tag" content="Hive">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://sjq597.github.io/2016/02/20/Hive-%E5%8F%82%E6%95%B0%E8%AE%BE%E7%BD%AE/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://sjq597.github.io/2016/02/20/Hive-%E5%8F%82%E6%95%B0%E8%AE%BE%E7%BD%AE/","path":"2016/02/20/Hive-参数设置/","title":"Hive 参数设置"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Hive 参数设置 | LittleQ</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">LittleQ</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">爱好：写代码</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Hive%E5%8F%82%E6%95%B0%E8%AE%BE%E7%BD%AE%E6%96%B9%E5%BC%8F"><span class="nav-number">1.</span> <span class="nav-text">Hive参数设置方式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E8%AE%BE%E7%BD%AE%E5%8F%82%E6%95%B0"><span class="nav-number">1.1.</span> <span class="nav-text">修改配置文件设置参数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%91%BD%E4%BB%A4%E8%A1%8C%E8%AE%BE%E7%BD%AE%E5%8F%82%E6%95%B0"><span class="nav-number">1.2.</span> <span class="nav-text">命令行设置参数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%9B%E5%85%A5Hive%E7%9A%84CLI%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%AE%BE%E7%BD%AE%E5%8F%82%E6%95%B0"><span class="nav-number">1.3.</span> <span class="nav-text">进入Hive的CLI客户端设置参数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8Hive%E9%85%8D%E7%BD%AE"><span class="nav-number">2.</span> <span class="nav-text">常用Hive配置</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">LittleQ</p>
+  <div class="site-description" itemprop="description">数据开发工程师的成长历程</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">145</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">51</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://sjq597.github.io/2016/02/20/Hive-%E5%8F%82%E6%95%B0%E8%AE%BE%E7%BD%AE/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="LittleQ">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LittleQ">
+      <meta itemprop="description" content="数据开发工程师的成长历程">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Hive 参数设置 | LittleQ">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Hive 参数设置
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2016-02-20 14:14:10" itemprop="dateCreated datePublished" datetime="2016-02-20T14:14:10+08:00">2016-02-20</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-10-07 14:54:54" itemprop="dateModified" datetime="2023-10-07T14:54:54+08:00">2023-10-07</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Hive%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">Hive笔记</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h2 id="Hive参数设置方式"><a href="#Hive参数设置方式" class="headerlink" title="Hive参数设置方式"></a>Hive参数设置方式</h2><p>Hive提供了很多可设置参数，可以通过设置不同的参数来满足不同场景的各种需求，改变Hive有三种方式：</p>
+<ol>
+<li>修改Hive安装路径下的配置文件，即修改${HIVE_HOME}&#x2F;conf&#x2F;hive-site.xml文件里的配置；</li>
+<li>在启动Hive时，在命令行里面设置参数；</li>
+<li>在进入Hive的CLI客户端里面进行参数设置。</li>
+</ol>
+<h3 id="修改配置文件设置参数"><a href="#修改配置文件设置参数" class="headerlink" title="修改配置文件设置参数"></a>修改配置文件设置参数</h3><p>在安装好Hive之后，默认的配置会在${hive_home}&#x2F;conf&#x2F;hive-default.xml文件里面，一般都会对默认的配置做一定的修改，如果要修改默认配置，可以先在相同目录下创建一个<code>hive-site.xml</code>,格式如下：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">name</span>&gt;</span>hive.metastore.warehouse.dir<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">value</span>&gt;</span>/user/hive/warehouse<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">description</span>&gt;</span></span><br><span class="line">	    location of default database for the warehouse</span><br><span class="line">	<span class="tag">&lt;/<span class="name">description</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>所有的配置都是以<code>&lt;configuration&gt;&lt;/configuration&gt;</code>标签里面，里面可以有多个<code>&lt;property&gt;&lt;/property&gt;</code>标签，每个<code>&lt;property&gt;&lt;/property&gt;</code>标签里面可以设定我们需要设定的属性值：</p>
+<ol>
+<li><code>&lt;name&gt;&lt;/name&gt;:</code>要设定的属性的属性名</li>
+<li><code>&lt;value&gt;&lt;/value&gt;:</code>设定属性的值</li>
+<li><code>&lt;description&gt;&lt;/description&gt;:</code>描述属性的一些介绍性语句，可以不写<br>大部分共同的配置都是写到这里的，如果有必要的话，因为这里面的配置对全局用户都有效，并且一旦设置就永久有效。并且<code>hive-site.xml</code>里的配置会覆盖<code>hive-default.xml</code>里的配置，并且由于Hive是作为Hadoop的客户端启动的，所以Hive同时也会读取Hadoop的配置，同理，Hive的配置会覆盖Hadoop的配置。</li>
+</ol>
+<h3 id="命令行设置参数"><a href="#命令行设置参数" class="headerlink" title="命令行设置参数"></a>命令行设置参数</h3><p>在命令行启动Hive进入CLI的时候，可以在命令行里面添加<code>--hiveconf param=value</code>来设定参数，例如，在终端里输入：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hive --hiveconf mapreduce.job.queuename=queue1</span><br></pre></td></tr></table></figure>
+<p>这个是设置MapReduce任务的队列，注意这个设置是临时的，一旦你退出了Hive客户端，这个配置就失效了，下次如果想使用这个配置，你必须重新配置。</p>
+<h3 id="进入Hive的CLI客户端设置参数"><a href="#进入Hive的CLI客户端设置参数" class="headerlink" title="进入Hive的CLI客户端设置参数"></a>进入Hive的CLI客户端设置参数</h3><p>当我们已经进入了CLI里面，可以使用<code>set</code>关键字来设置参数，例如：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="operator">&gt;</span>hive <span class="keyword">set</span> mapreduce.job.queuename<span class="operator">=</span>queue1;</span><br></pre></td></tr></table></figure>
+<p>这个和上一种方式差不多，效果也是一样，一旦退出CLI客户端，也会失效，但是和方法二有一个不同的地方是，如果set后面只跟参数名而不带参数值，就可以查看这个参数目前的值，像下面这样：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="operator">&gt;</span>hive <span class="keyword">set</span> mapreduce.job.queuename;</span><br><span class="line">mapreduce.job.queuename<span class="operator">=</span>queue1</span><br></pre></td></tr></table></figure>
+<p>如果set后面连参数名都不跟，那么就可以查看整个Hive的所有配置</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="operator">&gt;</span>hive <span class="keyword">set</span>;</span><br><span class="line">datanucleus.autoCreateSchema<span class="operator">=</span><span class="literal">true</span></span><br><span class="line">datanucleus.autoStartMechanismMode<span class="operator">=</span>checked</span><br><span class="line">datanucleus.cache.level2<span class="operator">=</span><span class="literal">false</span></span><br><span class="line">datanucleus.cache.level2.type<span class="operator">=</span><span class="keyword">none</span></span><br><span class="line">datanucleus.connectionPoolingType<span class="operator">=</span>DBCP</span><br><span class="line">datanucleus.identifierFactory<span class="operator">=</span>datanucleus</span><br><span class="line">datanucleus.plugin.pluginRegistryBundleCheck<span class="operator">=</span>LOG</span><br><span class="line">datanucleus.storeManagerType<span class="operator">=</span>rdbms</span><br><span class="line">datanucleus.transactionIsolation<span class="operator">=</span>read<span class="operator">-</span>committed</span><br></pre></td></tr></table></figure>
+<p>上面介绍的这三种参数设置方式的优先级类似于编程语言里的变量声明，即本地变量会覆盖全局变量，优先级是依此递增的</p>
+<h2 id="常用Hive配置"><a href="#常用Hive配置" class="headerlink" title="常用Hive配置"></a>常用Hive配置</h2><p>注意，这些设置里面没有双引号</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># 设置job名</span><br><span class="line"><span class="keyword">set</span> mapred.job.name<span class="operator">=</span>这是一个测试;</span><br><span class="line"># 设置job执行队列名</span><br><span class="line"><span class="keyword">set</span> mapred.job.queue.name<span class="operator">=</span>root.tcop;</span><br><span class="line"># 设定reduce内存大小,单位M</span><br><span class="line"><span class="keyword">set</span> mapreduce.reduce.memory.mb<span class="operator">=</span><span class="number">8048</span>;</span><br><span class="line"><span class="keyword">set</span> mapred.child.reduce.java.opts<span class="operator">=</span><span class="operator">-</span>Xmx8048M;</span><br><span class="line"><span class="keyword">set</span> mapreduce.reduce.java.opts<span class="operator">=</span><span class="operator">-</span>Xmx8048M;</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Hive/" rel="tag"># Hive</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2016/02/06/Ubuntu-an-operation-is-already-pending/" rel="prev" title="Ubuntu an operation is already pending">
+                  <i class="fa fa-angle-left"></i> Ubuntu an operation is already pending
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2016/02/20/pyCharm-trying-to-add-breakpoint-to-file-that-does-not-exist/" rel="next" title="pyCharm trying to add breakpoint to file that does not exist">
+                  pyCharm trying to add breakpoint to file that does not exist <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">LittleQ</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

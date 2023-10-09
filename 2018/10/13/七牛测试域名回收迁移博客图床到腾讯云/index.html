@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"sjq597.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.18.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="七牛图床最近发现博客里面用的七牛的免费图床全部过期了，之前也收到了七牛发的测试域名回收通知，当时以为域名过期了，再申请续一下就行，结果发现是直接都回收，啥都没有了，心中真是一万头草泥马。之前工作比较忙也就忘了，最近登录博客一看，图片全部GG了, 博客搭建最近发现博客里面用的七牛的免费图床全部过期了，所以周末在家花时间就折腾了下迁移方案,记录一下. 方案调研其实最初写博客的初衷也只是为了记录写自己日">
+<meta property="og:type" content="article">
+<meta property="og:title" content="七牛测试域名回收迁移博客图床到腾讯云">
+<meta property="og:url" content="http://sjq597.github.io/2018/10/13/%E4%B8%83%E7%89%9B%E6%B5%8B%E8%AF%95%E5%9F%9F%E5%90%8D%E5%9B%9E%E6%94%B6%E8%BF%81%E7%A7%BB%E5%8D%9A%E5%AE%A2%E5%9B%BE%E5%BA%8A%E5%88%B0%E8%85%BE%E8%AE%AF%E4%BA%91/index.html">
+<meta property="og:site_name" content="LittleQ">
+<meta property="og:description" content="七牛图床最近发现博客里面用的七牛的免费图床全部过期了，之前也收到了七牛发的测试域名回收通知，当时以为域名过期了，再申请续一下就行，结果发现是直接都回收，啥都没有了，心中真是一万头草泥马。之前工作比较忙也就忘了，最近登录博客一看，图片全部GG了, 博客搭建最近发现博客里面用的七牛的免费图床全部过期了，所以周末在家花时间就折腾了下迁移方案,记录一下. 方案调研其实最初写博客的初衷也只是为了记录写自己日">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog-1254094716.cos.ap-chengdu.myqcloud.com/%E7%89%9B%E6%B5%8B%E8%AF%95%E5%9F%9F%E5%90%8D%E5%9B%9E%E6%94%B6%E8%BF%81%E7%A7%BB%E5%8D%9A%E5%AE%A2%E5%9B%BE%E5%BA%8A%E5%88%B0%E8%85%BE%E8%AE%AF%E4%BA%9101.png">
+<meta property="article:published_time" content="2018-10-13T06:07:45.000Z">
+<meta property="article:modified_time" content="2023-10-07T06:54:54.000Z">
+<meta property="article:author" content="LittleQ">
+<meta property="article:tag" content="Hexo">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog-1254094716.cos.ap-chengdu.myqcloud.com/%E7%89%9B%E6%B5%8B%E8%AF%95%E5%9F%9F%E5%90%8D%E5%9B%9E%E6%94%B6%E8%BF%81%E7%A7%BB%E5%8D%9A%E5%AE%A2%E5%9B%BE%E5%BA%8A%E5%88%B0%E8%85%BE%E8%AE%AF%E4%BA%9101.png">
+
+
+<link rel="canonical" href="http://sjq597.github.io/2018/10/13/%E4%B8%83%E7%89%9B%E6%B5%8B%E8%AF%95%E5%9F%9F%E5%90%8D%E5%9B%9E%E6%94%B6%E8%BF%81%E7%A7%BB%E5%8D%9A%E5%AE%A2%E5%9B%BE%E5%BA%8A%E5%88%B0%E8%85%BE%E8%AE%AF%E4%BA%91/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://sjq597.github.io/2018/10/13/%E4%B8%83%E7%89%9B%E6%B5%8B%E8%AF%95%E5%9F%9F%E5%90%8D%E5%9B%9E%E6%94%B6%E8%BF%81%E7%A7%BB%E5%8D%9A%E5%AE%A2%E5%9B%BE%E5%BA%8A%E5%88%B0%E8%85%BE%E8%AE%AF%E4%BA%91/","path":"2018/10/13/七牛测试域名回收迁移博客图床到腾讯云/","title":"七牛测试域名回收迁移博客图床到腾讯云"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>七牛测试域名回收迁移博客图床到腾讯云 | LittleQ</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">LittleQ</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">爱好：写代码</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%83%E7%89%9B%E5%9B%BE%E5%BA%8A"><span class="nav-number">1.</span> <span class="nav-text">七牛图床</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%96%B9%E6%A1%88%E8%B0%83%E7%A0%94"><span class="nav-number">2.</span> <span class="nav-text">方案调研</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9B%BE%E7%89%87%E5%A4%87%E4%BB%BD"><span class="nav-number">3.</span> <span class="nav-text">图片备份</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%B0%E5%BB%BA%E5%AD%98%E5%82%A8%E7%A9%BA%E9%97%B4"><span class="nav-number">3.1.</span> <span class="nav-text">新建存储空间</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%8B%E8%BD%BD%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7"><span class="nav-number">3.2.</span> <span class="nav-text">下载开发工具</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%B9%E9%87%8F%E4%B8%8B%E8%BD%BD%E5%88%B0%E6%9C%AC%E5%9C%B0"><span class="nav-number">3.3.</span> <span class="nav-text">批量下载到本地</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%8A%E4%BC%A0%E5%88%B0%E8%85%BE%E8%AE%AFCOS"><span class="nav-number">3.4.</span> <span class="nav-text">上传到腾讯COS</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%B9%E9%87%8F%E6%9B%BF%E6%8D%A2"><span class="nav-number">3.5.</span> <span class="nav-text">批量替换</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">LittleQ</p>
+  <div class="site-description" itemprop="description">数据开发工程师的成长历程</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">145</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">51</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://sjq597.github.io/2018/10/13/%E4%B8%83%E7%89%9B%E6%B5%8B%E8%AF%95%E5%9F%9F%E5%90%8D%E5%9B%9E%E6%94%B6%E8%BF%81%E7%A7%BB%E5%8D%9A%E5%AE%A2%E5%9B%BE%E5%BA%8A%E5%88%B0%E8%85%BE%E8%AE%AF%E4%BA%91/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="LittleQ">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LittleQ">
+      <meta itemprop="description" content="数据开发工程师的成长历程">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="七牛测试域名回收迁移博客图床到腾讯云 | LittleQ">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          七牛测试域名回收迁移博客图床到腾讯云
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2018-10-13 14:07:45" itemprop="dateCreated datePublished" datetime="2018-10-13T14:07:45+08:00">2018-10-13</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-10-07 14:54:54" itemprop="dateModified" datetime="2023-10-07T14:54:54+08:00">2023-10-07</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/" itemprop="url" rel="index"><span itemprop="name">博客搭建</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="七牛图床"><a href="#七牛图床" class="headerlink" title="七牛图床"></a>七牛图床</h1><p>最近发现博客里面用的七牛的免费图床全部过期了，之前也收到了七牛发的测试域名回收通知，当时以为域名过期了，再申请续一下就行，结果发现是直接都回收，啥都没有了，心中真是一万头草泥马。<br>之前工作比较忙也就忘了，最近登录博客一看，图片全部GG了, 博客搭建最近发现博客里面用的七牛的免费图床全部过期了，所以周末在家花时间就折腾了下迁移方案,记录一下.</p>
+<h1 id="方案调研"><a href="#方案调研" class="headerlink" title="方案调研"></a>方案调研</h1><p>其实最初写博客的初衷也只是为了记录写自己日常工作中学到的一些东西，方便日后查阅。另外一个其实也有赠人玫瑰的想法,记录下工作中碰到的一些棘手的问题，方便同行交流。所以其实访问量不大，对图片的需求也不大，但是有时候博客里有必须得放一两张图。<br>所以最初在网上调研的时候，基本是看有哪些免费好用的图用的图床,当时看七牛的评价挺好的，一个月有10G的免费流量，一般人根本用不到那么多，而且方案也比较成熟，各种工具啥的都有，就用七牛了。所以现在不让用了，就调研了下其他的方案,网上有推荐其他免费图床的，反正我是真不敢用了。还有一些推荐阿里OSS的，不过据说收费比较复杂，用之前先好好研究下收费公式，因为我只有腾讯的vps,所以就只关注了腾讯的方案，腾讯和阿里OSS对应的服务叫COS,并且收费方式也很良心，大家可以去这里看下:<a target="_blank" rel="noopener" href="https://buy.cloud.tencent.com/price/cos/calculator">定价对象存储 COS</a><br><img src="https://blog-1254094716.cos.ap-chengdu.myqcloud.com/%E7%89%9B%E6%B5%8B%E8%AF%95%E5%9F%9F%E5%90%8D%E5%9B%9E%E6%94%B6%E8%BF%81%E7%A7%BB%E5%8D%9A%E5%AE%A2%E5%9B%BE%E5%BA%8A%E5%88%B0%E8%85%BE%E8%AE%AF%E4%BA%9101.png" alt="COS计费规则截图"><br>所以看这个图，基本上你可以不用花钱，流量肯定够你用了.</p>
+<h1 id="图片备份"><a href="#图片备份" class="headerlink" title="图片备份"></a>图片备份</h1><p>这里有个很坑的地方就是，如果你的测试域名过期，你上传到七牛云的文件你是没办法直接访问的,你会发现点击预览和下载都是没有反,你会发现点击预览和下载都是没有反应的，这是因为你上传生成的域名链接已经被回收了，是无法通过网页URL来访问的,只能通过其他接口来操作,主要有下面几个步骤:</p>
+<h2 id="新建存储空间"><a href="#新建存储空间" class="headerlink" title="新建存储空间"></a>新建存储空间</h2><p>之前那个存储空间里面上传的文件已经没有办法访问了，但是可以创建一个新的存储空间，通过其他接口把文件都转移到新的存储空间，这样就可以访问那些失效的文件了，比如可以建一个新的存储空间叫<code>backup</code></p>
+<h2 id="下载开发工具"><a href="#下载开发工具" class="headerlink" title="下载开发工具"></a>下载开发工具</h2><p><a target="_blank" rel="noopener" href="https://developer.qiniu.com/kodo/tools/1302/qshell">命令行工具(qshell)</a>,这个工具提供了很多接口，下载下来解压就能直接用，根据的操作系统选择对应的就行，详细的可以看下载界面的链接,如果只用一次，也不用去设置什么环境变量了，直接开始搞</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"># 我的是mac,所以用的是下面这个，具体的取决于你的系统</span><br><span class="line">sudo chmod +x qshell-darwin-x64</span><br><span class="line">ln -s qshell-darwin-x64 qshell</span><br><span class="line"># AK/SK 需要去 个人中心-&gt;密钥管理 看下你自己的</span><br><span class="line">./qshell account &lt;AK&gt; &lt;SK&gt;</span><br><span class="line"># 把过期存储空间所有文件列表保存到文件</span><br><span class="line">./qshell listbucket &lt;old存储空间&gt; list.txt</span><br><span class="line"># 切割出文件名</span><br><span class="line">cat list.txt | awk -F &#x27;\t&#x27; &#x27;&#123;print $1&#125;&#x27; &gt; list_final.txt</span><br><span class="line"># 把过期的文件列表搬迁到新的存储空间,我这里会出现让输入一个确认字符串，照着输入就行</span><br><span class="line">./qshell batchcopy &lt;old存储空间&gt; backup list_final.txt</span><br></pre></td></tr></table></figure>
+<p>  然后就可以在网页上的新的存储空间看到之前那些无法查看的文件了.</p>
+<h2 id="批量下载到本地"><a href="#批量下载到本地" class="headerlink" title="批量下载到本地"></a>批量下载到本地</h2><p>qshell提供了qdownload可以批量下载文件，不过官网给出的api文档特别标注了，这个接口默认是要收费的:<strong>配置【该功能默认需要计费，如果希望享受10G的免费流量，请自行设置cdn_domain参数，如不设置，需支付源站流量费用，无法减免！！！】</strong>,先看下用法:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">qshell qdownload [&lt;ThreadCount&gt;] &lt;LocalDownloadConfig&gt;</span><br></pre></td></tr></table></figure>
+<p>  第一个下载线程数参数是个可选参数，可以不用管,主要是需要写个配置文件，并且记住，得配置下<code>cdn_domain</code>这个参数，新建一个配置文件<code>batch_download.conf</code>:</p>
+  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;dest_dir&quot;   :   &quot;/xxx/xxx/Downloads/qiniu&quot;,</span><br><span class="line">    &quot;bucket&quot;     :   &quot;backup&quot;,</span><br><span class="line">    &quot;prefix&quot;     :   &quot;&quot;,</span><br><span class="line">    &quot;suffixes&quot;   :   &quot;&quot;,</span><br><span class="line">    &quot;cdn_domain&quot; :   &quot;http://pgiolcvny.bkt.clouddn.com&quot;,</span><br><span class="line">    &quot;referer&quot;    :   &quot;&quot;,</span><br><span class="line">    &quot;log_file&quot;   :   &quot;download.log&quot;,</span><br><span class="line">    &quot;log_level&quot;  :   &quot;info&quot;,</span><br><span class="line">    &quot;log_rotate&quot; :   1,</span><br><span class="line">    &quot;log_stdout&quot; :   false</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>  <strong>备注:</strong><code>cdn_domain</code>这个就是你的<code>backup</code>这个存储空间的对外访问域名,每个参数的具体含义及使用事项在这里可以看到<a target="_blank" rel="noopener" href="https://github.com/qiniu/qshell/blob/master/docs/qdownload.md">qdownload参数解释</a>,配置好之后就可以执行:<br>  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./qshell qdownload batch_download.conf</span><br></pre></td></tr></table></figure><br>  终端中就可以看到日志，然后在<code>dest_dir</code>中就可以看到你要下载的文件了。</p>
+<h2 id="上传到腾讯COS"><a href="#上传到腾讯COS" class="headerlink" title="上传到腾讯COS"></a>上传到腾讯COS</h2><p>我们把所有的文件下载下来之后，然后还需要把文件上传到COS，这样图片才可以作为资源被外部访问,如果你之前没有使用过对象存储服务，还需要先创建一个存储桶，记住权限要设置成对外可读(不然别人也访问不了),然后把这些文件上传到这个存储桶里边，这个在网页上就可以直接操作，可以批量把刚才下载的都上传了。</p>
+<h2 id="批量替换"><a href="#批量替换" class="headerlink" title="批量替换"></a>批量替换</h2><p>然后就只剩一步了，我们现在可以通过腾讯的COS来作为我们的图床服务，所以如果你写的新的博客，可以直接用新的地址，但是你之前写的那些博客，都是七牛的域名，所以需要把博客的原始文件里面的图片链接全部替换成腾讯COS的域名，老的域名可以看你的博客文件，我的是:<code>http://7xn9y9.com1.z0.glb.clouddn.com</code>,然后新的域名可以直接在腾讯云控制台，点开一张你上传过的图片查看,我的是:<code>https://blog-1254094716.cos.ap-chengdu.myqcloud.com</code>.具体的文件名因为都是一样的编码方式，所以只用替换域名就行，这里可以用<code>sed</code>命令来批量操作:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">cd source/_post</span><br><span class="line"></span><br><span class="line"># Linux用户</span><br><span class="line">sed -i &#x27;s#(http://7xn9y9.com1.z0.glb.clouddn.com#(https://blog-1254094716.cos.ap-chengdu.myqcloud.com#g&#x27; *.md</span><br><span class="line"></span><br><span class="line"># Mac用户</span><br><span class="line">sed -i -e &#x27;s#(http://7xn9y9.com1.z0.glb.clouddn.com#(https://blog-1254094716.cos.ap-chengdu.myqcloud.com#g&#x27; *.md</span><br><span class="line">rm *.md-e</span><br></pre></td></tr></table></figure>
+<p>**NOTE:**之所以替换的链接带上<code>(</code>是为了防止误伤,比如这边文章里就有七牛的域名链接地址,但是图片链接在MarkDown写法里都是放在括号里的,所以记得这么替换就行。</p>
+<p>然后你可以去访问下你的博客，找一篇有图的，应该是可以访问的。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Hexo/" rel="tag"># Hexo</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2018/08/22/Kafka%E6%91%B8%E9%B1%BC%E7%B3%BB%E5%88%9701-%E7%99%BE%E4%B8%87QPS%E5%90%9E%E5%90%90%E9%87%8F/" rel="prev" title="Kafka摸鱼系列01-百万QPS吞吐量">
+                  <i class="fa fa-angle-left"></i> Kafka摸鱼系列01-百万QPS吞吐量
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2019/02/22/IllegalAccessError-HBaseZeroCopyByteString/" rel="next" title="IllegalAccessError HBaseZeroCopyByteString">
+                  IllegalAccessError HBaseZeroCopyByteString <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">LittleQ</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

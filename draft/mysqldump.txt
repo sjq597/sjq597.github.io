@@ -1,0 +1,3 @@
+mysqldump -h主机名  -P端口 -u用户名 -p密码 (–database) 数据库名 > 文件名.sql
+mysqldump -h{hostname} -P{port} -u{username} -p{password} {databasename} > {backupfile.sql}
+例如：

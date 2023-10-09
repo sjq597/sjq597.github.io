@@ -1,0 +1,3 @@
+https://datatables.net/forums/discussion/29863/problem-with-var-api-new-fn-datatable-api-settings
+
+https://github.com/spacewander/blogWithMarkdown/issues/27

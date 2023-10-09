@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"sjq597.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.18.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="简单介绍一下什么是Apriori算法： Apriori算法是一种挖掘关联规则的频繁项集算法，其核心思想是通过候选集生成和情节的向下封闭检测两个阶段来挖掘频繁项集。 Apriori（先验的，推测的）算法应用广泛，可用于消费市场价格分析，猜测顾客的消费习惯；网络安全领域中的入侵检测技术；可用在用于高校管理中，根据挖掘规则可以有效地辅助学校管理部门有针对性的开展贫困助学工作；也可用在移动通信领域中，指导">
+<meta property="og:type" content="article">
+<meta property="og:title" content="关联算法之-Apriori">
+<meta property="og:url" content="http://sjq597.github.io/2015/12/01/%E5%85%B3%E8%81%94%E7%AE%97%E6%B3%95%E4%B9%8B-Apriori/index.html">
+<meta property="og:site_name" content="LittleQ">
+<meta property="og:description" content="简单介绍一下什么是Apriori算法： Apriori算法是一种挖掘关联规则的频繁项集算法，其核心思想是通过候选集生成和情节的向下封闭检测两个阶段来挖掘频繁项集。 Apriori（先验的，推测的）算法应用广泛，可用于消费市场价格分析，猜测顾客的消费习惯；网络安全领域中的入侵检测技术；可用在用于高校管理中，根据挖掘规则可以有效地辅助学校管理部门有针对性的开展贫困助学工作；也可用在移动通信领域中，指导">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog-1254094716.cos.ap-chengdu.myqcloud.com/%E5%85%B3%E8%81%94%E7%AE%97%E6%B3%95%E4%B9%8B-Apriori01.png">
+<meta property="og:image" content="https://blog-1254094716.cos.ap-chengdu.myqcloud.com/%E5%85%B3%E8%81%94%E7%AE%97%E6%B3%95%E4%B9%8B-Apriori02.png">
+<meta property="article:published_time" content="2015-12-01T15:49:54.000Z">
+<meta property="article:modified_time" content="2023-10-07T06:54:54.000Z">
+<meta property="article:author" content="LittleQ">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="机器学习">
+<meta property="article:tag" content="算法">
+<meta property="article:tag" content="数据挖掘">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog-1254094716.cos.ap-chengdu.myqcloud.com/%E5%85%B3%E8%81%94%E7%AE%97%E6%B3%95%E4%B9%8B-Apriori01.png">
+
+
+<link rel="canonical" href="http://sjq597.github.io/2015/12/01/%E5%85%B3%E8%81%94%E7%AE%97%E6%B3%95%E4%B9%8B-Apriori/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://sjq597.github.io/2015/12/01/%E5%85%B3%E8%81%94%E7%AE%97%E6%B3%95%E4%B9%8B-Apriori/","path":"2015/12/01/关联算法之-Apriori/","title":"关联算法之-Apriori"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>关联算法之-Apriori | LittleQ</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">LittleQ</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">爱好：写代码</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%83%8C%E6%99%AF%E7%9F%A5%E8%AF%86"><span class="nav-number">1.</span> <span class="nav-text">背景知识</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="nav-number">2.</span> <span class="nav-text">基本概念</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89"><span class="nav-number">2.1.</span> <span class="nav-text">定义</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Apriori%E5%8E%9F%E7%90%86"><span class="nav-number">3.</span> <span class="nav-text">Apriori原理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Apriori%E4%BE%8B%E5%AD%90"><span class="nav-number">3.1.</span> <span class="nav-text">Apriori例子</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8Apriori%E8%BF%94%E5%9B%9E%E7%9B%AE%E5%BD%95"><span class="nav-number">3.2.</span> <span class="nav-text">使用Apriori返回目录</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">LittleQ</p>
+  <div class="site-description" itemprop="description">数据开发工程师的成长历程</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">145</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">51</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://sjq597.github.io/2015/12/01/%E5%85%B3%E8%81%94%E7%AE%97%E6%B3%95%E4%B9%8B-Apriori/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="LittleQ">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LittleQ">
+      <meta itemprop="description" content="数据开发工程师的成长历程">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="关联算法之-Apriori | LittleQ">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          关联算法之-Apriori
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2015-12-01 23:49:54" itemprop="dateCreated datePublished" datetime="2015-12-01T23:49:54+08:00">2015-12-01</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-10-07 14:54:54" itemprop="dateModified" datetime="2023-10-07T14:54:54+08:00">2023-10-07</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%95%B0%E6%8D%AE%E6%8C%96%E6%8E%98/" itemprop="url" rel="index"><span itemprop="name">数据挖掘</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>简单介绍一下什么是Apriori算法： Apriori算法是一种挖掘关联规则的频繁项集算法，其核心思想是通过候选集生成和情节的向下封闭检测两个阶段来挖掘频繁项集。 Apriori（先验的，推测的）算法应用广泛，可用于消费市场价格分析，猜测顾客的消费习惯；网络安全领域中的入侵检测技术；可用在用于高校管理中，根据挖掘规则可以有效地辅助学校管理部门有针对性的开展贫困助学工作；也可用在移动通信领域中，指导运营商的业务运营和辅助业务提供商的决策制定。</p>
+<h3 id="背景知识"><a href="#背景知识" class="headerlink" title="背景知识"></a>背景知识</h3><p>关联规则做数据挖掘一般的步骤可以分为两大类：</p>
+<ol>
+<li>依据支持度找出所有频繁项集(频度)</li>
+<li>依据置信度产生关联规则</li>
+</ol>
+<h3 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h3><p>上面提到了两个概念：支持度和置信度。其实数据挖掘里面的概念很多，这里简单介绍几个最基本的术语，后面的变量和集合都会用到。</p>
+<h4 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h4><ol>
+<li><p>资料库(transaction database):存储着二维结构的记录集，定义为<code>D</code><br>**备注:**这个可以理解为数据库里面的交易记录，每一条交易为一条记录，所有这些需要挖掘的数据构成了一个记录集。</p>
+</li>
+<li><p>所有项集(items):所有项目的集合，定义为I.<br>**备注:**这个可以理解为，把资料库里的每一条记录拆分成最小单位，最后构成的一个集合</p>
+</li>
+<li><p>记录(transaction):在资料库的一笔记录。定义为T,T∈D</p>
+</li>
+<li><p>项集(itemset):同时出现项的集合。定义为：k-itemset(k项集)<br>**备注:**同时出现项的集合意思是所有项集里面的单个项或者多个项组合成的一条记录<br><strong>解释:</strong><code>[[1, 3, 4], [2, 3, 5], [1, 2, 3, 5], [2, 5]]</code>就是资料库<code>D</code>，里面有4条记录，所有项集<code>I</code>为<code>[[1],[2],[3],[4],[5]]</code>,有5项；<code>[1,3,4]</code>为其中一条记录<code>T</code>;<code>[2,5]</code>称为2项集，<code>[2,3,5]</code>称为3项集。</p>
+</li>
+<li><p>支持度(support):定义为<br>$supp(X)&#x3D;\frac{occur(X)}{count(D)}&#x3D;P(X)$.<br>**备注:**支持度可以简单理解为投票，选举这种，在总人数(资料库),有多少人是选择支持你的，即X出现的次数(频度),即X出现的概率</p>
+</li>
+<li><p>置信度(confidence&#x2F;strength):定义为<br>$conf(X-&gt;Y)&#x3D;\frac{supp(X∪Y)}{supp(X)}$<br>即下面的意思$P(Y|X)&#x3D;\frac{P(XY)}{P(X)}$<br>**备注:**这个公式可以这么理解，买了<code>X</code>的人有多少人会同时会买<code>Y</code>，这就是<code>X</code>对<code>Y</code>的推荐度，概率论中的解释就是<code>P(Y|X)=P(XY)/P(X)</code>。看一个例子：<br> 例子：[支持度:3%,置信度:40%]<br> 支持度3%：意味着3%顾客同时购买牛奶和面包<br> 置信度40%：意味着购买牛奶的顾客40%也购买面包</p>
+</li>
+<li><p>候选集(Candidate itemset):通过合并得出的项集,有<code>k</code>个元素的候选集记为<code>C[k]</code>.</p>
+</li>
+<li><p>频繁集(Frequent itemset):支持度&gt;&#x3D;特定的最小支持度(Minimum Support&#x2F;minsup)的项集,表示为<code>L[k]</code>.<br>**注意:**频繁集的子集一定是频繁集,这个也好理解,假设子集都不满足最小支持度,那么与他组合的概率必然是只会比这个概率更小,参见概率论里面的联合概率.</p>
+</li>
+<li><p>提升比率(提升度Lift):<br>$lift(X-&gt;Y)&#x3D;lift(Y-&gt;X)<br>&#x3D;\frac{conf(X-&gt;Y)}{supp(Y)}&#x3D;\frac{conf(Y-&gt;X)}{supp(X)}<br>&#x3D;\frac{P(XY)}{P(X)P(Y)}$<br>经过关联规则分析后,针对某些人推销(根据某规则)比盲目推销(一般来说是整个数据)的比例,这个比率越高越好,我们称这个为强规则,这个可以理解为:假设买了X的人多半会买Y,那么我们就对买了X的人推销Y.</p>
+</li>
+</ol>
+<h3 id="Apriori原理"><a href="#Apriori原理" class="headerlink" title="Apriori原理"></a>Apriori原理</h3><h4 id="Apriori例子"><a href="#Apriori例子" class="headerlink" title="Apriori例子"></a>Apriori例子</h4><p>先来个简单的例子,最初这个例子来源于零售商,我们假设有4个商品,编号为<code>0,1,2,3</code>,那么能够被一起购买的商品组合为:<br><img src="https://blog-1254094716.cos.ap-chengdu.myqcloud.com/%E5%85%B3%E8%81%94%E7%AE%97%E6%B3%95%E4%B9%8B-Apriori01.png" alt="集合{0,1,2,3}中所有可能项集的组合"><br>我们的目标是找到经常一起购买的商品,这里就可以使用集合的支持度来衡量一个组合出现的频率.即某个组合出现的概率占总交易量的比例就是其支持度.这个理解起来很简单,但是计算起来计算量可不小,这里才4种物品,我们需要计算$2^n-1$种情况,正常应用场景绝不可能才4种商品,这个时候就要提到<code>Apriori</code>原理,可以大大减少频繁项集的数目<br><strong>Apriori</strong>原理:如果某个项集是频繁项集,那么它所有的子集也是频繁的.举个例子就是如果<code>&#123;0,1&#125;</code>是频繁的,那么<code>&#123;0&#125;,&#123;1&#125;</code>也一定是频繁的,上面介绍过了,这里就不再细说了.正着看没什么用,但是反过来,即一个项集(例如{0},{1})是非频繁项集,则他的超集({0,1})也是非频繁的:<br><img src="https://blog-1254094716.cos.ap-chengdu.myqcloud.com/%E5%85%B3%E8%81%94%E7%AE%97%E6%B3%95%E4%B9%8B-Apriori02.png" alt="图中给出了所有可能的项集,其中蓝色表示非频繁项集,由于{0,1}非频繁,因此,它们的超集也是非频繁的,他们的支持度可以直接忽略,俗称减枝"></p>
+<h4 id="使用Apriori返回目录"><a href="#使用Apriori返回目录" class="headerlink" title="使用Apriori返回目录"></a>使用Apriori返回目录</h4><p>关联分析的两个目标:发现频繁项集和发现关联规则.首先要找到频繁项集,然后根据频繁项集找到关联规则.<br>Apriori寻找频繁项集的一般步骤是:</p>
+<ol>
+<li>首先生成所有单个物品的项集列表</li>
+<li>扫描交易记录查看哪些项集满足最小支持度要求,去掉那些不满足的项集</li>
+<li>对剩下的项集进行组合生成包含两个元素的项集</li>
+<li>重复2~3,直到所有项集都被去掉</li>
+</ol>
+<p>下面看看Python代码实现:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">loadDataSet</span>():</span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    创建一个用于测试的简单的数据集</span></span><br><span class="line"><span class="string">    如果需要从其他地方加载产生数据,只需要重写这个方法即可</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">return</span> [[<span class="number">1</span>, <span class="number">3</span>, <span class="number">4</span>], [<span class="number">2</span>, <span class="number">3</span>, <span class="number">5</span>], [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">5</span>], [<span class="number">2</span>, <span class="number">5</span>]]</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">createC1</span>(<span class="params">dataSet</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    构建初始候选项集(Candidate)的列表，即所有候选项集只包含一个元素，</span></span><br><span class="line"><span class="string">    C1是大小为1的所有候选项集的集合</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    C1 = []</span><br><span class="line">    <span class="keyword">for</span> transaction <span class="keyword">in</span> dataSet:</span><br><span class="line">        <span class="keyword">for</span> item <span class="keyword">in</span> transaction:</span><br><span class="line">            <span class="keyword">if</span> [item] <span class="keyword">not</span> <span class="keyword">in</span> C1:</span><br><span class="line">                C1.append([item])</span><br><span class="line">    C1.sort()</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">map</span>(<span class="built_in">frozenset</span>, C1)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">scanD</span>(<span class="params">D, Ck, minSupport</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    计算Ck中的项集在数据集合D(记录或者transactions)中的支持度,</span></span><br><span class="line"><span class="string">    返回满足最小支持度的项集的集合，和所有项集支持度信息的字典。</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    ssCnt = &#123;&#125;</span><br><span class="line">    <span class="keyword">for</span> tid <span class="keyword">in</span> D:</span><br><span class="line">        <span class="comment"># 对于每一条transaction</span></span><br><span class="line">        <span class="keyword">for</span> can <span class="keyword">in</span> Ck:</span><br><span class="line">            <span class="comment"># 对于每一个候选项集can，检查是否是transaction的一部分</span></span><br><span class="line">            <span class="comment"># 即该候选can是否得到transaction的支持</span></span><br><span class="line">            <span class="keyword">if</span> can.issubset(tid):</span><br><span class="line">                <span class="keyword">if</span> <span class="keyword">not</span> ssCnt.has_key(can):</span><br><span class="line">                    ssCnt[can] = <span class="number">1</span></span><br><span class="line">                <span class="keyword">else</span>:</span><br><span class="line">                    ssCnt[can] += <span class="number">1</span></span><br><span class="line">    numItems = <span class="built_in">float</span>(<span class="built_in">len</span>(D))</span><br><span class="line">    retList = []</span><br><span class="line">    supportData = &#123;&#125;</span><br><span class="line">    <span class="keyword">for</span> key <span class="keyword">in</span> ssCnt:</span><br><span class="line">        <span class="comment"># 每个项集的支持度</span></span><br><span class="line">        support = ssCnt[key] / numItems</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 将满足最小支持度的项集，加入retList</span></span><br><span class="line">        <span class="keyword">if</span> support &gt;= minSupport:</span><br><span class="line">            retList.insert(<span class="number">0</span>, key)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 汇总支持度数据</span></span><br><span class="line">        supportData[key] = support</span><br><span class="line">    <span class="keyword">return</span> retList, supportData</span><br></pre></td></tr></table></figure>
+<p>上面代码中 “frozenset”，是为了冻结集合，使集合由“可变”变为 “不可变”，这样，这些集合就可以作为字典的键值.测试一下上面的代码:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    <span class="comment"># 导入数据集</span></span><br><span class="line">    myDat = loadDataSet()</span><br><span class="line">    <span class="comment"># 构建第一个候选项集列表C1</span></span><br><span class="line">    C1 = createC1(myDat)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 构建集合表示的数据集 D</span></span><br><span class="line">    D = <span class="built_in">map</span>(<span class="built_in">set</span>, myDat)</span><br><span class="line">    <span class="comment"># 选择出支持度不小于0.5 的项集作为频繁项集</span></span><br><span class="line">    L, suppData = scanD(D, C1, <span class="number">0.5</span>)</span><br><span class="line"></span><br><span class="line">    <span class="built_in">print</span> <span class="string">u&quot;频繁项集L：&quot;</span>, L</span><br><span class="line">    <span class="built_in">print</span> <span class="string">u&quot;所有候选项集的支持度信息：&quot;</span>, suppData</span><br></pre></td></tr></table></figure>
+<p>看看运行出来的结果:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">频繁项集L： [frozenset([1]), frozenset([3]), frozenset([2]), frozenset([5])]</span><br><span class="line">所有候选项集的支持度信息： &#123;frozenset([4]): 0.25, frozenset([5]): 0.75, frozenset([2]): 0.75, frozenset([3]): 0.75, frozenset([1]): 0.5&#125;</span><br></pre></td></tr></table></figure>
+<p>可以看出，只有支持度不小于<code>0.5</code>的项集被选中到<code>L</code>中作为频繁项集，根据不同的需求，我们可以设定最小支持度的值，从而得到我们想要的频繁项集.<br>上面我们找出了只含有一个元素的频繁项集,下面需要整合一下代码,一次选择</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Python/" rel="tag"># Python</a>
+              <a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag"># 机器学习</a>
+              <a href="/tags/%E7%AE%97%E6%B3%95/" rel="tag"># 算法</a>
+              <a href="/tags/%E6%95%B0%E6%8D%AE%E6%8C%96%E6%8E%98/" rel="tag"># 数据挖掘</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2015/11/26/Linux-%E4%BD%9C%E4%B8%9A%E7%AE%A1%E7%90%86/" rel="prev" title="Linux 作业管理">
+                  <i class="fa fa-angle-left"></i> Linux 作业管理
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2015/12/07/MySQL-%E6%8C%89%E5%91%A8-%E6%9C%88-%E5%B9%B4%E7%BB%9F%E8%AE%A1%E6%95%B0%E6%8D%AE/" rel="next" title="MySQL 按周,月,年统计数据">
+                  MySQL 按周,月,年统计数据 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">LittleQ</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

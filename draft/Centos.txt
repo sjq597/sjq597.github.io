@@ -1,0 +1,14 @@
+locate centos 查找文件位置
+
+transmission
+service transmission-daemon start
+
+I am not sure if you have an old version of IntelliJ but If I go File => Settings... => Inspections => Serialization issues =>  Serializable class without 'serialVersionUID' enabled, the class you provide give me warnings
+.
+
+java header template
+文件上右击--New--Edit File Templates--Includes--File Header
+
+error command 'gcc' failed with exit status 1 centos lxml
+centos install lxml
+http://stackoverflow.com/questions/4642942/setup-py-install-lxml-with-python2-6-on-centos

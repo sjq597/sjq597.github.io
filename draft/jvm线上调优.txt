@@ -1,0 +1,92 @@
+[junqiang.shen@l-data6.pay.cn1 /home/q/infra/xflume]$ sudo jstat -gcutil 4718 1000
+  S0     S1     E      O      P     YGC     YGCT    FGC    FGCT     GCT   
+ 65.62   0.00  92.06  97.77  68.23 3720242 12865.659   384   24.268 12889.927
+ 56.25   0.00  16.01  97.80  68.23 3720244 12865.667   384   24.268 12889.935
+  0.00  62.50  40.02  97.81  68.23 3720245 12865.670   384   24.268 12889.938
+ 46.88   0.00  66.04  97.82  68.23 3720246 12865.675   384   24.268 12889.943
+  0.00  65.62  86.05  97.84  68.23 3720247 12865.679   384   24.268 12889.947
+  0.00  43.75  10.01  97.86  68.23 3720249 12865.686   384   24.268 12889.954
+ 43.75   0.00  36.02  97.87  68.23 3720250 12865.692   384   24.268 12889.960
+  0.00  46.88  62.04  97.88  68.23 3720251 12865.695   384   24.268 12889.963
+
+watcher图片
+
+启动参数
+root      4718  104  3.6 12340980 2389956 ?    Sl   Jun29 52609:39 /home/q/java/default/bin/java -Xss256k -Xmx2G -Xms2G -Xmn1G -XX:PermS
+ize=50m -XX:MaxPermSize=50m -XX:MaxDirectMemorySize=50M 
+
+改下配置
+
+Heap Usage:
+PS Young Generation
+Eden Space:
+   capacity = 1071644672 (1022.0MB)
+   used     = 192990208 (184.0498046875MB)
+   free     = 878654464 (837.9501953125MB)
+   18.008787151418787% used
+From Space:
+   capacity = 1048576 (1.0MB)
+   used     = 458752 (0.4375MB)
+   free     = 589824 (0.5625MB)
+   43.75% used
+To Space:
+   capacity = 1048576 (1.0MB)
+   used     = 0 (0.0MB)
+   free     = 1048576 (1.0MB)
+   0.0% used
+PS Old Generation
+   capacity = 1073741824 (1024.0MB)
+   used     = 1072625696 (1022.9355773925781MB)
+   free     = 1116128 (1.064422607421875MB)
+   99.89605247974396% used
+PS Perm Generation
+   capacity = 52428800 (50.0MB)
+   used     = 35772328 (34.115150451660156MB)
+   free     = 16656472 (15.884849548339844MB)
+   68.23030090332031% used
+
+CPU调优 
+[junqiang.shen@l-data1.pay.cn1 /home/q/data]$ logout
+top - 20:25:12 up 326 days,  5:30,  1 user,  load average: 7.18, 11.29, 11.06
+Tasks: 159 total,   1 running, 158 sleeping,   0 stopped,   0 zombie
+%Cpu(s): 25.1 us,  1.7 sy,  0.0 ni, 54.8 id, 18.0 wa,  0.0 hi,  0.2 si,  0.1 st
+KiB Mem : 12139036 total,   140980 free, 11772068 used,   225988 buff/cache
+KiB Swap:  4194300 total,  2146124 free,  2048176 used.    80076 avail Mem 
+
+  PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND                                                                      
+13134 root      20   0 8809256 4.045g      0 S  87.8 34.9  65:06.24 /home/q/java/default/bin/java -Xss256k -Xmx4g -Xms2g -XX:PermSize=50m -XX:M+ 
+13459 root      20   0 8805488 3.685g      0 S  62.2 31.8  54:00.94 /home/q/java/default/bin/java -Xss256k -Xmx4g -Xms2g -XX:PermSize=50m -XX:M+ 
+14053 root      20   0 8805228 3.265g      0 S  64.5 28.2  46:27.26 /home/q/java/default/bin/java -Xss256k -Xmx4g -Xms2g -XX:PermS
+
+
+top -H -p 13134
+
+top - 20:26:49 up 326 days,  5:31,  1 user,  load average: 8.49, 10.36, 10.73
+Threads:  67 total,   0 running,  67 sleeping,   0 stopped,   0 zombie
+%Cpu(s): 27.1 us,  3.9 sy,  0.0 ni, 39.3 id, 29.6 wa,  0.0 hi,  0.1 si,  0.1 st
+KiB Mem : 12139036 total,   191772 free, 11726508 used,   220756 buff/cache
+KiB Swap:  4194300 total,  2043816 free,  2150484 used.   128940 avail Mem 
+
+  PID USER      PR  NI    VIRT    RES    SHR S %CPU %MEM     TIME+ COMMAND                   
+13195 root      20   0 8809256 3.713g      0 S 44.4 32.1  42:55.79 /home/q/java/default/bin+ 
+13144 root      20   0 8809256 3.713g      0 D  2.2 32.1   2:07.27 /home/q/java/default/bin+ 
+21781 root      20   0 8809256 3.713g      0 S  1.9 32.1   0:00.19 /home/q/java/default/bin+ 
+13145 root      20   0 8809256 3.713g      0 D  1.3 32.1   1:53.27 /home/q/java/default/bin+
+
+
+printf "%x" 13195
+
+sudo jstack 13134
+
+"PollableSourceRunner-KafkaSyncerSource-r1" prio=10 tid=0x00007f2a9403d000 nid=0x338b runnable [0x00007f2af8d58000]
+   java.lang.Thread.State: RUNNABLE
+	at java.util.regex.Pattern$Curly.match0(Pattern.java:4166)
+	at java.util.regex.Pattern$Curly.match(Pattern.java:4132)
+	at java.util.regex.Pattern$Begin.match(Pattern.java:3472)
+	at java.util.regex.Pattern$GroupHead.match(Pattern.java:4556)
+	at java.util.regex.Pattern$Start.match(Pattern.java:3408)
+	at java.util.regex.Matcher.search(Matcher.java:1199)
+	at java.util.regex.Matcher.find(Matcher.java:592)
+	at com.qunar.pay.log.flume.core.source.KafkaSyncerSource.getPartitionKey(KafkaSyncerSource.java:90)
+	at com.qunar.pay.log.flume.core.source.KafkaSyncerSource.process(KafkaSyncerSource.java:139)
+

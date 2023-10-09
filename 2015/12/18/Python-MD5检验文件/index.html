@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"sjq597.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.18.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="今天看到了一个用Python校验文件md5的代码,但是本人Python不是很熟,所以里面有很多语法看的不是很懂,大概讲讲吧.首先要想校验一个文件的md5值在Linux下很方便,命令行就可以校验: 12➜  ~  md5sum 订单数据.xls 933ed658af57a9aec4d1ba9800fe5460  订单数据.xls 虽然你也可以调用Python来校验文件的md5,但是这样很不方便,也不">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Python MD5校验文件">
+<meta property="og:url" content="http://sjq597.github.io/2015/12/18/Python-MD5%E6%A3%80%E9%AA%8C%E6%96%87%E4%BB%B6/index.html">
+<meta property="og:site_name" content="LittleQ">
+<meta property="og:description" content="今天看到了一个用Python校验文件md5的代码,但是本人Python不是很熟,所以里面有很多语法看的不是很懂,大概讲讲吧.首先要想校验一个文件的md5值在Linux下很方便,命令行就可以校验: 12➜  ~  md5sum 订单数据.xls 933ed658af57a9aec4d1ba9800fe5460  订单数据.xls 虽然你也可以调用Python来校验文件的md5,但是这样很不方便,也不">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2015-12-18T12:32:38.000Z">
+<meta property="article:modified_time" content="2023-10-07T06:54:54.000Z">
+<meta property="article:author" content="LittleQ">
+<meta property="article:tag" content="Python">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://sjq597.github.io/2015/12/18/Python-MD5%E6%A3%80%E9%AA%8C%E6%96%87%E4%BB%B6/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://sjq597.github.io/2015/12/18/Python-MD5%E6%A3%80%E9%AA%8C%E6%96%87%E4%BB%B6/","path":"2015/12/18/Python-MD5检验文件/","title":"Python MD5校验文件"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Python MD5校验文件 | LittleQ</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">LittleQ</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">爱好：写代码</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AE%80%E5%8D%95%E7%9A%84MD5%E6%A0%A1%E9%AA%8C"><span class="nav-number">1.</span> <span class="nav-text">简单的MD5校验</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%94%B9%E8%BF%9B%E7%9A%84MD5%E6%A0%A1%E9%AA%8C"><span class="nav-number">2.</span> <span class="nav-text">改进的MD5校验</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8A%A0%E5%AF%86%E5%AD%97%E7%AC%A6%E4%B8%B2"><span class="nav-number">2.1.</span> <span class="nav-text">加密字符串</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8A%A0%E5%AF%86%E6%96%87%E4%BB%B6"><span class="nav-number">2.2.</span> <span class="nav-text">加密文件</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">3.</span> <span class="nav-text">总结</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">LittleQ</p>
+  <div class="site-description" itemprop="description">数据开发工程师的成长历程</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">145</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">51</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://sjq597.github.io/2015/12/18/Python-MD5%E6%A3%80%E9%AA%8C%E6%96%87%E4%BB%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="LittleQ">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LittleQ">
+      <meta itemprop="description" content="数据开发工程师的成长历程">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Python MD5校验文件 | LittleQ">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Python MD5校验文件
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2015-12-18 20:32:38" itemprop="dateCreated datePublished" datetime="2015-12-18T20:32:38+08:00">2015-12-18</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-10-07 14:54:54" itemprop="dateModified" datetime="2023-10-07T14:54:54+08:00">2023-10-07</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Python%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">Python笔记</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>今天看到了一个用Python校验文件md5的代码,但是本人Python不是很熟,所以里面有很多语法看的不是很懂,大概讲讲吧.<br>首先要想校验一个文件的md5值在Linux下很方便,命令行就可以校验:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">➜  ~  <span class="built_in">md5sum</span> 订单数据.xls </span><br><span class="line">933ed658af57a9aec4d1ba9800fe5460  订单数据.xls</span><br></pre></td></tr></table></figure>
+<p>虽然你也可以调用Python来校验文件的md5,但是这样很不方便,也不能保证windows下也可以运行吧,Python中也md5校验的函数,Python 2.5之后推荐使用<code>hashlib</code>来代替<code>md5</code>模块来做校验.</p>
+<h3 id="简单的MD5校验"><a href="#简单的MD5校验" class="headerlink" title="简单的MD5校验"></a>简单的MD5校验</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="comment"># coding=utf-8</span></span><br><span class="line"><span class="keyword">import</span> hashlib</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">md5sum</span>(<span class="params">file_name</span>):</span><br><span class="line">    fp = <span class="built_in">open</span>(file_name, <span class="string">&#x27;rb&#x27;</span>)</span><br><span class="line">    content = fp.read()</span><br><span class="line">    fp.close()</span><br><span class="line">    m = hashlib.md5(content)</span><br><span class="line">    file_md5 = m.hexdigest()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> file_md5</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    <span class="built_in">print</span> md5sum(<span class="string">&#x27;TCPServer.py&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<p> <strong>注意:</strong><code>hashlib.md5()</code>返回的是一个对象,要想得到md5值,还需要调用一下<code>hexdigest()</code>方法.还有一个地方需要注意一下,这个校验方法有个很大的缺陷,由于是要校验文件里面的内容,所以每次是把文件读到内存的,试想一下,如果这个文件很大,先不说慢,更有可能程序就直接卡死了.</p>
+<h3 id="改进的MD5校验"><a href="#改进的MD5校验" class="headerlink" title="改进的MD5校验"></a>改进的MD5校验</h3><p>下面的代码确实写的很牛逼,对于我这种刚学Python的渣渣来说,很多地方都看的不太明白,先把程序贴出来,后面有一些程序中不懂的地方的一些详尽的解释.优化之后的代码:</p>
+<h4 id="加密字符串"><a href="#加密字符串" class="headerlink" title="加密字符串"></a>加密字符串</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">md5hex</span>(<span class="params">word</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    MD5加密算法,返回32为小写16进制符号</span></span><br><span class="line"><span class="string">    :param word: 需要加密的字符串</span></span><br><span class="line"><span class="string">    :return: 返回32为小写16进制符号</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">isinstance</span>(word, unicode):</span><br><span class="line">        word = word.encode(<span class="string">&#x27;utf-8&#x27;</span>)</span><br><span class="line">    <span class="keyword">elif</span> <span class="keyword">not</span> <span class="built_in">isinstance</span>(word, <span class="built_in">str</span>):</span><br><span class="line">        word = <span class="built_in">str</span>(word)</span><br><span class="line"></span><br><span class="line">    m = hashlib.md5()</span><br><span class="line">    m.update(word)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> m.hexdigest()</span><br></pre></td></tr></table></figure>
+<p>**解释:**查了一下Python里关于<code>str</code>和<code>unicode</code>的区别,简单来说就是<code>str</code>类似于<code>byte[]</code>,即字节字符串.而<code>unicode</code>类似于<code>char[]</code>.说白了就是Python内部存储用<code>unicode</code>,而在和人交互的时候用<code>str</code>,str是字节串，由unicode经过编码(encode)后的字节组成的,所以它们的关系就是<code>unicode.encode()--&gt;str</code>或者<code>str.decode()--&gt;unicode()</code>.时刻记住:</p>
+<blockquote>
+<p><strong>unicode</strong>才是真正的字符串.</p>
+</blockquote>
+<h4 id="加密文件"><a href="#加密文件" class="headerlink" title="加密文件"></a>加密文件</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">def md5sum(file_name):</span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line">    根据给定文件名计算文件MD5值</span><br><span class="line">    :param file_name: 文件的路径</span><br><span class="line">    :return: 返回文件MD5校验值</span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line"></span><br><span class="line">    def read_chunks(fp):</span><br><span class="line">        fp.seek(0)</span><br><span class="line">        chunk = fp.read(8 * 1024)</span><br><span class="line">        while chunk:</span><br><span class="line">            yield chunk</span><br><span class="line">            chunk = fp.read(8 * 1024)</span><br><span class="line">        else:	# 最后要将游标放回文件开头</span><br><span class="line">            fp.seek(0)</span><br><span class="line"></span><br><span class="line">    m = hashlib.md5()</span><br><span class="line">    if isinstance(file_name, basestring) \</span><br><span class="line">            and os.path.exists(file_name):</span><br><span class="line">        with open(file_name, &#x27;rb&#x27;) as fp:</span><br><span class="line">            for chunk in read_chunks(fp):</span><br><span class="line">                m.update(chunk)</span><br><span class="line">    elif file_name.__class__.name__ in [&quot;StringIO&quot;, &quot;cStringIO&quot;] \</span><br><span class="line">            or isinstance(file_name, file):</span><br><span class="line">        for chunk in read_chunks(file_name):</span><br><span class="line">            m.update(chunk)</span><br><span class="line">    else:</span><br><span class="line">        return &quot;&quot;</span><br><span class="line"></span><br><span class="line">    return m.hexdigest()</span><br></pre></td></tr></table></figure>
+<p>这段程序写的确实很牛逼,我稍微解释一下:</p>
+<ol>
+<li><code>8~15</code>行:的意思就是每次返回读取的文件的8k的内容,下次从上次读取的地方继续读取,如果读完了,就把游标重新放到文件开头.注意这里面用到了<code>yield</code>,对这个关键字不熟的可以简单把他理解为关键字<code>return</code>.但是它和<code>return</code>不同的地方在于,再次调用函数的时候,上次调用的变量还是有效的,也就是说它不是从文件的开头重新读,而是接着上回读的地方再读8k的内容</li>
+<li><code>18</code>行:<code>isinstance(file_name, basestring)</code>这个是判断文件名是不是一个<code>basestring</code>类型,<code>basestring</code>是<code>str</code>和<code>unicode</code>的父类,这个类是个抽象类,不能被实例化,不过可以被用来判断一个对象是不是字符串.<code>with</code>关键字,简单理解为<code>try/catch</code>就可以了,即使发生了异常,文件也可以正常关闭.</li>
+<li><code>23</code>行:<code>StringIO</code>和<code>cStringIO</code>与<code>file</code>对象非常像,指内存里的文件,例如上传的文件缓存或者已经打开的文件流,那么就不用打开文件,直接读就行</li>
+</ol>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>这个程序其实就是每次读取8k的内容,然后更新已经读取的内容的<code>md5</code>值,核心代码:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> chunk <span class="keyword">in</span> read_chunks(fp):</span><br><span class="line">	m.update(chunk)</span><br></pre></td></tr></table></figure>
+<p>如果不明白<code>update()</code>的用法,可以测试一下:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; import hashlib</span><br><span class="line">&gt;&gt;&gt; x = hashlib.md5()</span><br><span class="line">&gt;&gt;&gt; x.update(<span class="string">&#x27;hello, &#x27;</span>)</span><br><span class="line">&gt;&gt;&gt; x.update(<span class="string">&#x27;python&#x27;</span>)</span><br><span class="line">&gt;&gt;&gt; x.hexdigest()</span><br><span class="line"><span class="string">&#x27;fb42758282ecd4646426112d0cbab865&#x27;</span></span><br><span class="line">&gt;&gt;&gt; hashlib.md5(<span class="string">&#x27;hello, python&#x27;</span>).hexdigest()</span><br><span class="line"><span class="string">&#x27;fb42758282ecd4646426112d0cbab865&#x27;</span></span><br><span class="line">&gt;&gt;&gt; </span><br></pre></td></tr></table></figure>
+<p>所以可以看到,<code>update()</code>方法其实并不会丢弃上一次校验的结果,就是在不停的累加,尤其适合处理大文件.</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Python/" rel="tag"># Python</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2015/12/17/Python-file-argument-1-must-be-encoded-string-without-NULL-bytes-not-str/" rel="prev" title="Python file() argument 1 must be encoded string without NULL bytes, not str">
+                  <i class="fa fa-angle-left"></i> Python file() argument 1 must be encoded string without NULL bytes, not str
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2015/12/20/Python-yield%E5%89%96%E6%9E%90/" rel="next" title="Python yield剖析">
+                  Python yield剖析 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">LittleQ</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

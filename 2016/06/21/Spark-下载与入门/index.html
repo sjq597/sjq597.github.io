@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"sjq597.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.18.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="开发环境:OS: Ubuntu 16.04 64bit 安装步骤下载解压123sudo wget http:&#x2F;&#x2F;d3kbcqa49mib13.cloudfront.net&#x2F;spark-1.6.1-bin-hadoop2.6.tgzsudo tar -xvf spark-1.6.1-bin-hadoop2.6.tgz -C &#x2F;usr&#x2F;dev sudo chown -R anonymous:anony">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spark 下载与入门">
+<meta property="og:url" content="http://sjq597.github.io/2016/06/21/Spark-%E4%B8%8B%E8%BD%BD%E4%B8%8E%E5%85%A5%E9%97%A8/index.html">
+<meta property="og:site_name" content="LittleQ">
+<meta property="og:description" content="开发环境:OS: Ubuntu 16.04 64bit 安装步骤下载解压123sudo wget http:&#x2F;&#x2F;d3kbcqa49mib13.cloudfront.net&#x2F;spark-1.6.1-bin-hadoop2.6.tgzsudo tar -xvf spark-1.6.1-bin-hadoop2.6.tgz -C &#x2F;usr&#x2F;dev sudo chown -R anonymous:anony">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2016-06-21T15:03:39.000Z">
+<meta property="article:modified_time" content="2023-10-07T06:54:54.000Z">
+<meta property="article:author" content="LittleQ">
+<meta property="article:tag" content="大数据">
+<meta property="article:tag" content="开发环境">
+<meta property="article:tag" content="Spark">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://sjq597.github.io/2016/06/21/Spark-%E4%B8%8B%E8%BD%BD%E4%B8%8E%E5%85%A5%E9%97%A8/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://sjq597.github.io/2016/06/21/Spark-%E4%B8%8B%E8%BD%BD%E4%B8%8E%E5%85%A5%E9%97%A8/","path":"2016/06/21/Spark-下载与入门/","title":"Spark 下载与入门"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Spark 下载与入门 | LittleQ</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">LittleQ</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">爱好：写代码</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E6%AD%A5%E9%AA%A4"><span class="nav-number">1.</span> <span class="nav-text">安装步骤</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%8B%E8%BD%BD%E8%A7%A3%E5%8E%8B"><span class="nav-number">1.1.</span> <span class="nav-text">下载解压</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BF%90%E8%A1%8CSpark"><span class="nav-number">1.2.</span> <span class="nav-text">运行Spark</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AE%80%E5%8D%95%E6%A0%B7%E4%BE%8B"><span class="nav-number">1.3.</span> <span class="nav-text">简单样例</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">LittleQ</p>
+  <div class="site-description" itemprop="description">数据开发工程师的成长历程</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">145</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">51</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://sjq597.github.io/2016/06/21/Spark-%E4%B8%8B%E8%BD%BD%E4%B8%8E%E5%85%A5%E9%97%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="LittleQ">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LittleQ">
+      <meta itemprop="description" content="数据开发工程师的成长历程">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Spark 下载与入门 | LittleQ">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Spark 下载与入门
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2016-06-21 23:03:39" itemprop="dateCreated datePublished" datetime="2016-06-21T23:03:39+08:00">2016-06-21</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-10-07 14:54:54" itemprop="dateModified" datetime="2023-10-07T14:54:54+08:00">2023-10-07</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83/" itemprop="url" rel="index"><span itemprop="name">开发环境</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>开发环境:<br>OS: Ubuntu 16.04 64bit</p>
+<h3 id="安装步骤"><a href="#安装步骤" class="headerlink" title="安装步骤"></a>安装步骤</h3><h4 id="下载解压"><a href="#下载解压" class="headerlink" title="下载解压"></a>下载解压</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo wget http://d3kbcqa49mib13.cloudfront.net/spark-1.6.1-bin-hadoop2.6.tgz</span><br><span class="line">sudo tar -xvf spark-1.6.1-bin-hadoop2.6.tgz -C /usr/dev </span><br><span class="line">sudo chown -R anonymous:anonymous spark-1.6.1-bin-hadoop2.6	# anonymous为当前用户名</span><br></pre></td></tr></table></figure>
+
+<h4 id="运行Spark"><a href="#运行Spark" class="headerlink" title="运行Spark"></a>运行Spark</h4><p>Spark支持多种语言,我们可以通过Python,Scala进入Spark交互式环境。</p>
+<ul>
+<li>Scala Shell</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd /usr/dev/spark-1.6.1-bin-hadoop2.6</span><br><span class="line">./bin/spark-shell	# 启动Scala Shell</span><br></pre></td></tr></table></figure>
+<p>**注意:**如果报错:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Tue Jun 21 23:30:04 CST 2016 Thread[main,5,main] java.io.FileNotFoundException: derby.log (权限不够)</span><br><span class="line">16/06/21 23:30:04 WARN Connection: BoneCP specified but not present in CLASSPATH (or one of dependencies)</span><br><span class="line">Tue Jun 21 23:30:04 CST 2016 Thread[main,5,main] Cleanup action starting</span><br><span class="line">ERROR XBM0H: Directory /usr/dev/spark-1.6.1-bin-hadoop2.6/bin/metastore_db cannot be created.</span><br></pre></td></tr></table></figure>
+<p>出现这个问题一般就是没有创建文件的权限,安装的最后一个命令就是起这个作用的</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo chown -R anonymous:anonymous spark-1.6.1-bin-hadoop2.6	# anonymous为当前用户名</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Python Shell</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./bin/pyspark</span><br></pre></td></tr></table></figure>
+<p>为了在Shell里面写Python有补全提示，强烈建议安装<code>ipython</code>,Ubuntu安装也很简单</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install -y ipython</span><br></pre></td></tr></table></figure>
+<p>然后启动的时候可以这样:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">IPYTHON=1 ./bin/pyspark</span><br></pre></td></tr></table></figure>
+<p>进入Shell大概是这样的:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">➜  spark-1.6.1-bin-hadoop2.6 IPYTHON=1 bin/pyspark</span><br><span class="line">Python 2.7.11+ (default, Apr 17 2016, 14:00:29) </span><br><span class="line">Type &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.</span><br><span class="line"></span><br><span class="line">IPython 2.4.1 -- An enhanced Interactive Python.</span><br><span class="line">?         -&gt; Introduction and overview of IPython&#x27;s features.</span><br><span class="line">%quickref -&gt; Quick reference.</span><br><span class="line">help      -&gt; Python&#x27;s own help system.</span><br><span class="line">object?   -&gt; Details about &#x27;object&#x27;, use &#x27;object??&#x27; for extra details.</span><br><span class="line">Using Spark&#x27;s default log4j profile: org/apache/spark/log4j-defaults.properties</span><br><span class="line">16/06/21 23:57:06 INFO SparkContext: Running Spark version 1.6.1</span><br><span class="line">16/06/21 23:57:06 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable</span><br><span class="line">Welcome to</span><br><span class="line">      ____              __</span><br><span class="line">     / __/__  ___ _____/ /__</span><br><span class="line">    _\ \/ _ \/ _ `/ __/  &#x27;_/</span><br><span class="line">   /__ / .__/\_,_/_/ /_/\_\   version 1.6.1</span><br><span class="line">      /_/</span><br><span class="line"></span><br><span class="line">Using Python version 2.7.11+ (default, Apr 17 2016 14:00:29)</span><br><span class="line">SparkContext available as sc, HiveContext available as sqlContext.</span><br><span class="line"></span><br><span class="line">In [1]: lines = sc.textFile(&quot;README.md&quot;)</span><br></pre></td></tr></table></figure>
+<p>如果你觉得这样也有些麻烦,可以在<code>~/.bashrc</code>里面加一行:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">alias ipython=&#x27;IPYTHON=1&#x27;</span><br></pre></td></tr></table></figure>
+<p>然后就可以这么启动:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">➜  ~ cd /usr/dev/spark-1.6.1-bin-hadoop2.6 </span><br><span class="line">➜  spark-1.6.1-bin-hadoop2.6 ipython bin/pyspark </span><br></pre></td></tr></table></figure>
+
+<h4 id="简单样例"><a href="#简单样例" class="headerlink" title="简单样例"></a>简单样例</h4><p>Scala也不熟，就以Python为例吧,注意我的当前目录是在<code>/usr/dev/spark-1.6.1-bin-hadoop2.6</code>:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line">In [1]: lines = sc.textFile(&quot;README.md&quot;)</span><br><span class="line"> n [2]: lines.count()</span><br><span class="line">16/06/21 23:57:41 INFO FileInputFormat: Total input paths to process : 1</span><br><span class="line">16/06/21 23:57:41 INFO SparkContext: Starting job: count at &lt;ipython-input-2-44aeefde846d&gt;:1</span><br><span class="line">16/06/21 23:57:41 INFO DAGScheduler: Got job 0 (count at &lt;ipython-input-2-44aeefde846d&gt;:1) with 2 output partitions</span><br><span class="line">16/06/21 23:57:41 INFO DAGScheduler: Final stage: ResultStage 0 (count at &lt;ipython-input-2-44aeefde846d&gt;:1)</span><br><span class="line">16/06/21 23:57:41 INFO DAGScheduler: Parents of final stage: List()</span><br><span class="line">16/06/21 23:57:41 INFO DAGScheduler: Missing parents: List()</span><br><span class="line">16/06/21 23:57:41 INFO DAGScheduler: Submitting ResultStage 0 (PythonRDD[2] at count at &lt;ipython-input-2-44aeefde846d&gt;:1), which has no missing parents</span><br><span class="line">16/06/21 23:57:41 INFO MemoryStore: Block broadcast_1 stored as values in memory (estimated size 5.6 KB, free 173.1 KB)</span><br><span class="line">16/06/21 23:57:41 INFO MemoryStore: Block broadcast_1_piece0 stored as bytes in memory (estimated size 3.4 KB, free 176.6 KB)</span><br><span class="line">16/06/21 23:57:41 INFO BlockManagerInfo: Added broadcast_1_piece0 in memory on localhost:36609 (size: 3.4 KB, free: 511.5 MB)</span><br><span class="line">16/06/21 23:57:41 INFO SparkContext: Created broadcast 1 from broadcast at DAGScheduler.scala:1006</span><br><span class="line">16/06/21 23:57:41 INFO DAGScheduler: Submitting 2 missing tasks from ResultStage 0 (PythonRDD[2] at count at &lt;ipython-input-2-44aeefde846d&gt;:1)</span><br><span class="line">16/06/21 23:57:41 INFO TaskSchedulerImpl: Adding task set 0.0 with 2 tasks</span><br><span class="line">16/06/21 23:57:41 INFO TaskSetManager: Starting task 0.0 in stage 0.0 (TID 0, localhost, partition 0,PROCESS_LOCAL, 2151 bytes)</span><br><span class="line">16/06/21 23:57:41 INFO TaskSetManager: Starting task 1.0 in stage 0.0 (TID 1, localhost, partition 1,PROCESS_LOCAL, 2151 bytes)</span><br><span class="line">16/06/21 23:57:41 INFO Executor: Running task 0.0 in stage 0.0 (TID 0)</span><br><span class="line">16/06/21 23:57:41 INFO Executor: Running task 1.0 in stage 0.0 (TID 1)</span><br><span class="line">16/06/21 23:57:41 INFO HadoopRDD: Input split: file:/usr/dev/spark-1.6.1-bin-hadoop2.6/README.md:0+1679</span><br><span class="line">16/06/21 23:57:41 INFO HadoopRDD: Input split: file:/usr/dev/spark-1.6.1-bin-hadoop2.6/README.md:1679+1680</span><br><span class="line">16/06/21 23:57:41 INFO deprecation: mapred.tip.id is deprecated. Instead, use mapreduce.task.id</span><br><span class="line">16/06/21 23:57:41 INFO deprecation: mapred.task.id is deprecated. Instead, use mapreduce.task.attempt.id</span><br><span class="line">16/06/21 23:57:41 INFO deprecation: mapred.task.is.map is deprecated. Instead, use mapreduce.task.ismap</span><br><span class="line">16/06/21 23:57:41 INFO deprecation: mapred.task.partition is deprecated. Instead, use mapreduce.task.partition</span><br><span class="line">16/06/21 23:57:41 INFO deprecation: mapred.job.id is deprecated. Instead, use mapreduce.job.id</span><br><span class="line">16/06/21 23:57:42 INFO PythonRunner: Times: total = 283, boot = 268, init = 14, finish = 1</span><br><span class="line">16/06/21 23:57:42 INFO PythonRunner: Times: total = 291, boot = 272, init = 19, finish = 0</span><br><span class="line">16/06/21 23:57:42 INFO Executor: Finished task 0.0 in stage 0.0 (TID 0). 2124 bytes result sent to driver</span><br><span class="line">16/06/21 23:57:42 INFO Executor: Finished task 1.0 in stage 0.0 (TID 1). 2124 bytes result sent to driver</span><br><span class="line">16/06/21 23:57:42 INFO TaskSetManager: Finished task 0.0 in stage 0.0 (TID 0) in 407 ms on localhost (1/2)</span><br><span class="line">16/06/21 23:57:42 INFO TaskSetManager: Finished task 1.0 in stage 0.0 (TID 1) in 393 ms on localhost (2/2)</span><br><span class="line">16/06/21 23:57:42 INFO DAGScheduler: ResultStage 0 (count at &lt;ipython-input-2-44aeefde846d&gt;:1) finished in 0.423 s</span><br><span class="line">16/06/21 23:57:42 INFO TaskSchedulerImpl: Removed TaskSet 0.0, whose tasks have all completed, from pool </span><br><span class="line">16/06/21 23:57:42 INFO DAGScheduler: Job 0 finished: count at &lt;ipython-input-2-44aeefde846d&gt;:1, took 0.489031 s</span><br><span class="line">Out[2]: 95</span><br><span class="line"></span><br><span class="line">In [3]: lines.first()</span><br><span class="line">16/06/21 23:58:15 INFO SparkContext: Starting job: runJob at PythonRDD.scala:393</span><br><span class="line">16/06/21 23:58:15 INFO DAGScheduler: Got job 1 (runJob at PythonRDD.scala:393) with 1 output partitions</span><br><span class="line">16/06/21 23:58:15 INFO DAGScheduler: Final stage: ResultStage 1 (runJob at PythonRDD.scala:393)</span><br><span class="line">16/06/21 23:58:15 INFO DAGScheduler: Parents of final stage: List()</span><br><span class="line">16/06/21 23:58:15 INFO DAGScheduler: Missing parents: List()</span><br><span class="line">16/06/21 23:58:15 INFO DAGScheduler: Submitting ResultStage 1 (PythonRDD[3] at RDD at PythonRDD.scala:43), which has no missing parents</span><br><span class="line">16/06/21 23:58:15 INFO MemoryStore: Block broadcast_2 stored as values in memory (estimated size 4.8 KB, free 181.3 KB)</span><br><span class="line">16/06/21 23:58:15 INFO MemoryStore: Block broadcast_2_piece0 stored as bytes in memory (estimated size 3.0 KB, free 184.3 KB)</span><br><span class="line">16/06/21 23:58:15 INFO BlockManagerInfo: Added broadcast_2_piece0 in memory on localhost:36609 (size: 3.0 KB, free: 511.5 MB)</span><br><span class="line">16/06/21 23:58:15 INFO SparkContext: Created broadcast 2 from broadcast at DAGScheduler.scala:1006</span><br><span class="line">16/06/21 23:58:15 INFO DAGScheduler: Submitting 1 missing tasks from ResultStage 1 (PythonRDD[3] at RDD at PythonRDD.scala:43)</span><br><span class="line">16/06/21 23:58:15 INFO TaskSchedulerImpl: Adding task set 1.0 with 1 tasks</span><br><span class="line">16/06/21 23:58:15 INFO TaskSetManager: Starting task 0.0 in stage 1.0 (TID 2, localhost, partition 0,PROCESS_LOCAL, 2151 bytes)</span><br><span class="line">16/06/21 23:58:15 INFO Executor: Running task 0.0 in stage 1.0 (TID 2)</span><br><span class="line">16/06/21 23:58:15 INFO HadoopRDD: Input split: file:/usr/dev/spark-1.6.1-bin-hadoop2.6/README.md:0+1679</span><br><span class="line">16/06/21 23:58:15 INFO PythonRunner: Times: total = 41, boot = -33244, init = 33285, finish = 0</span><br><span class="line">16/06/21 23:58:15 INFO Executor: Finished task 0.0 in stage 1.0 (TID 2). 2143 bytes result sent to driver</span><br><span class="line">16/06/21 23:58:15 INFO TaskSetManager: Finished task 0.0 in stage 1.0 (TID 2) in 67 ms on localhost (1/1)</span><br><span class="line">16/06/21 23:58:15 INFO DAGScheduler: ResultStage 1 (runJob at PythonRDD.scala:393) finished in 0.068 s</span><br><span class="line">16/06/21 23:58:15 INFO TaskSchedulerImpl: Removed TaskSet 1.0, whose tasks have all completed, from pool </span><br><span class="line">16/06/21 23:58:15 INFO DAGScheduler: Job 1 finished: runJob at PythonRDD.scala:393, took 0.082887 s</span><br><span class="line">Out[3]: u&#x27;# Apache Spark&#x27;</span><br></pre></td></tr></table></figure>
+<p>看看，其实很简单的，但是有个问题，每次输入一个操作，结果搞出这么一大堆的日志，看着确实影响输入，我们可以控制一下Spark的输出日志级别,编辑<code>spark-1.6.1-bin-hadoop2.6/conf/log4j.properties.template</code>文件,为了安全起见，我们直接拷贝一份模板作为我们的日志配置文件:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd conf/</span><br><span class="line">sudo cp log4j.properties.template log4j.properties</span><br></pre></td></tr></table></figure>
+<p>定位到这一行:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">log4j.rootCategory=INFO, console</span><br></pre></td></tr></table></figure>
+<p>改为:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">log4j.rootCategory=WARN, console</span><br></pre></td></tr></table></figure>
+<p>看看之前的操作:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">Using Python version 2.7.11+ (default, Apr 17 2016 14:00:29)</span><br><span class="line">SparkContext available as sc, HiveContext available as sqlContext.</span><br><span class="line"></span><br><span class="line">In [1]: lines = sc.textFile(&quot;README.md&quot;)</span><br><span class="line"></span><br><span class="line">In [2]: lines.count()</span><br><span class="line">Out[2]: 95</span><br><span class="line"></span><br><span class="line">In [3]: lines.first()</span><br><span class="line">Out[3]: u&#x27;# Apache Spark&#x27;</span><br><span class="line"></span><br><span class="line">In [4]: </span><br></pre></td></tr></table></figure>
+<p>这样就只会输出警告及以上的日志了。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/" rel="tag"># 大数据</a>
+              <a href="/tags/%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83/" rel="tag"># 开发环境</a>
+              <a href="/tags/Spark/" rel="tag"># Spark</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2016/06/19/CentOS-%E5%AE%89%E8%A3%85Anaconda2-4-0-0-Linux-x86-64-sh%E6%8A%A5%E9%94%99/" rel="prev" title="CentOS 安装Anaconda2-4.0.0-Linux-x86_64.sh报错">
+                  <i class="fa fa-angle-left"></i> CentOS 安装Anaconda2-4.0.0-Linux-x86_64.sh报错
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2016/06/26/Linux%E7%AB%AF%E5%8F%A3%E8%A2%AB%E5%8D%A0%E7%94%A8%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/" rel="next" title="Linux端口被占用解决方案">
+                  Linux端口被占用解决方案 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">LittleQ</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

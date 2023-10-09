@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"sjq597.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.18.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="通常对于一个标准的时间,例如2015-12-05 12:34:40,如果想获取它的年月日,我们可以采取取字串的形式,即: 123substr(create_time,1,10)	# 取2015-12-05substr(create_time,1,7)		# 取2015-12substr(create_time,1,4)		# 取2015 也确实,对于一般的需求这么处理也够用了,但是有一个问题,如果">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MySQL 按周,月,年统计数据">
+<meta property="og:url" content="http://sjq597.github.io/2015/12/07/MySQL-%E6%8C%89%E5%91%A8-%E6%9C%88-%E5%B9%B4%E7%BB%9F%E8%AE%A1%E6%95%B0%E6%8D%AE/index.html">
+<meta property="og:site_name" content="LittleQ">
+<meta property="og:description" content="通常对于一个标准的时间,例如2015-12-05 12:34:40,如果想获取它的年月日,我们可以采取取字串的形式,即: 123substr(create_time,1,10)	# 取2015-12-05substr(create_time,1,7)		# 取2015-12substr(create_time,1,4)		# 取2015 也确实,对于一般的需求这么处理也够用了,但是有一个问题,如果">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2015-12-07T14:14:27.000Z">
+<meta property="article:modified_time" content="2023-10-07T06:54:54.000Z">
+<meta property="article:author" content="LittleQ">
+<meta property="article:tag" content="SQL">
+<meta property="article:tag" content="Shell">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://sjq597.github.io/2015/12/07/MySQL-%E6%8C%89%E5%91%A8-%E6%9C%88-%E5%B9%B4%E7%BB%9F%E8%AE%A1%E6%95%B0%E6%8D%AE/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://sjq597.github.io/2015/12/07/MySQL-%E6%8C%89%E5%91%A8-%E6%9C%88-%E5%B9%B4%E7%BB%9F%E8%AE%A1%E6%95%B0%E6%8D%AE/","path":"2015/12/07/MySQL-按周-月-年统计数据/","title":"MySQL 按周,月,年统计数据"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>MySQL 按周,月,年统计数据 | LittleQ</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">LittleQ</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">爱好：写代码</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-overview-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">LittleQ</p>
+  <div class="site-description" itemprop="description">数据开发工程师的成长历程</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">145</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">51</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://sjq597.github.io/2015/12/07/MySQL-%E6%8C%89%E5%91%A8-%E6%9C%88-%E5%B9%B4%E7%BB%9F%E8%AE%A1%E6%95%B0%E6%8D%AE/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="LittleQ">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LittleQ">
+      <meta itemprop="description" content="数据开发工程师的成长历程">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="MySQL 按周,月,年统计数据 | LittleQ">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          MySQL 按周,月,年统计数据
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2015-12-07 22:14:27" itemprop="dateCreated datePublished" datetime="2015-12-07T22:14:27+08:00">2015-12-07</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-10-07 14:54:54" itemprop="dateModified" datetime="2023-10-07T14:54:54+08:00">2023-10-07</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/MySQL/" itemprop="url" rel="index"><span itemprop="name">MySQL</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>通常对于一个标准的时间,例如<code>2015-12-05 12:34:40</code>,如果想获取它的年月日,我们可以采取取字串的形式,即:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">substr(create_time,1,10)	# 取2015-12-05</span><br><span class="line">substr(create_time,1,7)		# 取2015-12</span><br><span class="line">substr(create_time,1,4)		# 取2015</span><br></pre></td></tr></table></figure>
+<p>也确实,对于一般的需求这么处理也够用了,但是有一个问题,如果要按周来统计,这个取字串就无法做到了,这个时候就需要用到<code>mysql</code>内置函数:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">date_format(date,format)</span><br></pre></td></tr></table></figure>
+<p>如果要按星期,天,月份来统计数据,可以这么来写,假设时间字段是<code>create_time</code>.</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> date_format(create_time,<span class="string">&#x27;%y%u&#x27;</span>) week,<span class="built_in">count</span>(id) <span class="keyword">FROM</span> <span class="keyword">table</span> <span class="keyword">GROUP</span> <span class="keyword">BY</span> week;		# 按星期统计</span><br><span class="line"><span class="keyword">SELECT</span> date_format(create_time,<span class="string">&#x27;%y%m%d&#x27;</span>) <span class="keyword">day</span>,<span class="built_in">count</span>(id) <span class="keyword">FROM</span> <span class="keyword">table</span> <span class="keyword">GROUP</span> <span class="keyword">BY</span> <span class="keyword">day</span>;		# 按天统计</span><br><span class="line"><span class="keyword">select</span> date_format(create_time,<span class="string">&#x27;%y%m&#x27;</span>) <span class="keyword">month</span>,<span class="built_in">count</span>(id) <span class="keyword">FROM</span> <span class="keyword">table</span> <span class="keyword">GROUP</span> <span class="keyword">BY</span> <span class="keyword">month</span>;	# 按月统计</span><br></pre></td></tr></table></figure>
+
+<p>详细参数:<br>根据<code>format</code>字符串格式化代<code>date</code>的值.具体的格式取值有:</p>
+<table>
+<thead>
+<tr>
+<th>format 取值</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>%M</td>
+<td>月名字(January…December)</td>
+</tr>
+<tr>
+<td>%W</td>
+<td>星期名字(Sunday…Saturday)</td>
+</tr>
+<tr>
+<td>%D</td>
+<td>有英语前缀的月份的日期(1st, 2nd, 3rd, 等等。）</td>
+</tr>
+<tr>
+<td>%Y</td>
+<td>年, 数字,4 位(2013,2014,2015)</td>
+</tr>
+<tr>
+<td>%y</td>
+<td>年, 数字, 2 位(13,14,15)</td>
+</tr>
+<tr>
+<td>%a</td>
+<td>缩写的星期名字(Sun…Sat)</td>
+</tr>
+<tr>
+<td>%d</td>
+<td>月份中的天数, 数字(00…31)</td>
+</tr>
+<tr>
+<td>%e</td>
+<td>月份中的天数, 数字(0…31)</td>
+</tr>
+<tr>
+<td>%m</td>
+<td>月, 数字(01…12)</td>
+</tr>
+<tr>
+<td>%c</td>
+<td>月, 数字(1…12)</td>
+</tr>
+<tr>
+<td>%b</td>
+<td>缩写的月份名字(Jan…Dec)</td>
+</tr>
+<tr>
+<td>%j</td>
+<td>一年中的天数(001…366)</td>
+</tr>
+<tr>
+<td>%H</td>
+<td>小时(00…23)</td>
+</tr>
+<tr>
+<td>%k</td>
+<td>小时(0…23)</td>
+</tr>
+<tr>
+<td>%h</td>
+<td>小时(01…12)</td>
+</tr>
+<tr>
+<td>%I</td>
+<td>小时(01…12)</td>
+</tr>
+<tr>
+<td>%l</td>
+<td>小时(1…12)</td>
+</tr>
+<tr>
+<td>%i</td>
+<td>分钟, 数字(00…59)</td>
+</tr>
+<tr>
+<td>%r</td>
+<td>时间,12 小时(hh:mm:ss [AP]M)</td>
+</tr>
+<tr>
+<td>%T</td>
+<td>时间,24 小时(hh:mm:ss)</td>
+</tr>
+<tr>
+<td>%S</td>
+<td>秒(00…59)</td>
+</tr>
+<tr>
+<td>%s</td>
+<td>秒(00…59)</td>
+</tr>
+<tr>
+<td>%p</td>
+<td>AM或PM</td>
+</tr>
+<tr>
+<td>%w</td>
+<td>一个星期中的天数(0&#x3D;Sunday…6&#x3D;Saturday ）</td>
+</tr>
+<tr>
+<td>%U</td>
+<td>星期(0…52), 这里星期天是星期的第一天</td>
+</tr>
+<tr>
+<td>%u</td>
+<td>星期(0…52), 这里星期一是星期的第一天</td>
+</tr>
+<tr>
+<td>%%</td>
+<td>一个文字“%”。</td>
+</tr>
+</tbody></table>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/SQL/" rel="tag"># SQL</a>
+              <a href="/tags/Shell/" rel="tag"># Shell</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2015/12/01/%E5%85%B3%E8%81%94%E7%AE%97%E6%B3%95%E4%B9%8B-Apriori/" rel="prev" title="关联算法之-Apriori">
+                  <i class="fa fa-angle-left"></i> 关联算法之-Apriori
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2015/12/16/Python-Socket-%E6%96%87%E4%BB%B6%E4%BC%A0%E8%BE%93%E5%AE%9E%E7%8E%B0/" rel="next" title="Python Socket 文件传输实现">
+                  Python Socket 文件传输实现 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">LittleQ</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

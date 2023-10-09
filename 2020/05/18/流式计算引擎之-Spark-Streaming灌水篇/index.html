@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"sjq597.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.18.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="废话一直想写一篇关于Spark Streaming的文章，但是实在是事情太多，当然主要还是我比较懒，身边的同事已经明示我博客好久都不更新来催更了，技术都快荒废了，所以先水一篇。这篇文章虽然是叫灌水篇，但实际上都是我在实际项目中学习和总结到的一些切身经验，如果你真的想在生产环境去用Spark Streaming实现一些简单的实时计算或者实时监控，看板之类的，有一些问题是你一开始就得考虑到的，并且得有">
+<meta property="og:type" content="article">
+<meta property="og:title" content="流式计算引擎之-Spark Streaming灌水篇">
+<meta property="og:url" content="http://sjq597.github.io/2020/05/18/%E6%B5%81%E5%BC%8F%E8%AE%A1%E7%AE%97%E5%BC%95%E6%93%8E%E4%B9%8B-Spark-Streaming%E7%81%8C%E6%B0%B4%E7%AF%87/index.html">
+<meta property="og:site_name" content="LittleQ">
+<meta property="og:description" content="废话一直想写一篇关于Spark Streaming的文章，但是实在是事情太多，当然主要还是我比较懒，身边的同事已经明示我博客好久都不更新来催更了，技术都快荒废了，所以先水一篇。这篇文章虽然是叫灌水篇，但实际上都是我在实际项目中学习和总结到的一些切身经验，如果你真的想在生产环境去用Spark Streaming实现一些简单的实时计算或者实时监控，看板之类的，有一些问题是你一开始就得考虑到的，并且得有">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-05-18T14:44:52.000Z">
+<meta property="article:modified_time" content="2023-10-07T06:54:54.000Z">
+<meta property="article:author" content="LittleQ">
+<meta property="article:tag" content="大数据">
+<meta property="article:tag" content="Spark">
+<meta property="article:tag" content="流计算">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://sjq597.github.io/2020/05/18/%E6%B5%81%E5%BC%8F%E8%AE%A1%E7%AE%97%E5%BC%95%E6%93%8E%E4%B9%8B-Spark-Streaming%E7%81%8C%E6%B0%B4%E7%AF%87/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://sjq597.github.io/2020/05/18/%E6%B5%81%E5%BC%8F%E8%AE%A1%E7%AE%97%E5%BC%95%E6%93%8E%E4%B9%8B-Spark-Streaming%E7%81%8C%E6%B0%B4%E7%AF%87/","path":"2020/05/18/流式计算引擎之-Spark-Streaming灌水篇/","title":"流式计算引擎之-Spark Streaming灌水篇"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>流式计算引擎之-Spark Streaming灌水篇 | LittleQ</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">LittleQ</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">爱好：写代码</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BA%9F%E8%AF%9D"><span class="nav-number">1.</span> <span class="nav-text">废话</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AD%A3%E6%96%87"><span class="nav-number">2.</span> <span class="nav-text">正文</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Spark-Streaming%E4%BC%9A%E4%B8%A2%E6%95%B0%E6%8D%AE%E5%90%97"><span class="nav-number">2.1.</span> <span class="nav-text">Spark Streaming会丢数据吗</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%BB%8B%E7%BB%8D"><span class="nav-number">2.1.1.</span> <span class="nav-text">介绍</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%A1%88%E4%BE%8B%E5%88%86%E6%9E%90"><span class="nav-number">2.1.2.</span> <span class="nav-text">案例分析</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88"><span class="nav-number">2.1.3.</span> <span class="nav-text">解决方案</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%99%90%E9%80%9F%E5%92%8C%E8%83%8C%E5%8E%8B%E8%AE%BE%E7%BD%AE"><span class="nav-number">2.2.</span> <span class="nav-text">限速和背压设置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Exactly-once%E7%9C%9F%E7%9A%84%E5%BF%85%E8%A6%81%E5%90%97"><span class="nav-number">2.3.</span> <span class="nav-text">Exactly once真的必要吗</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Speculative%E6%9C%BA%E5%88%B6%E6%9C%89%E4%BB%80%E4%B9%88%E9%97%AE%E9%A2%98"><span class="nav-number">2.4.</span> <span class="nav-text">Speculative机制有什么问题</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">LittleQ</p>
+  <div class="site-description" itemprop="description">数据开发工程师的成长历程</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">145</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">51</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://sjq597.github.io/2020/05/18/%E6%B5%81%E5%BC%8F%E8%AE%A1%E7%AE%97%E5%BC%95%E6%93%8E%E4%B9%8B-Spark-Streaming%E7%81%8C%E6%B0%B4%E7%AF%87/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="LittleQ">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LittleQ">
+      <meta itemprop="description" content="数据开发工程师的成长历程">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="流式计算引擎之-Spark Streaming灌水篇 | LittleQ">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          流式计算引擎之-Spark Streaming灌水篇
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2020-05-18 22:44:52" itemprop="dateCreated datePublished" datetime="2020-05-18T22:44:52+08:00">2020-05-18</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-10-07 14:54:54" itemprop="dateModified" datetime="2023-10-07T14:54:54+08:00">2023-10-07</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%95%B0%E6%8D%AE%E6%9E%B6%E6%9E%84/" itemprop="url" rel="index"><span itemprop="name">数据架构</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h3 id="废话"><a href="#废话" class="headerlink" title="废话"></a>废话</h3><p>一直想写一篇关于<code>Spark Streaming</code>的文章，但是实在是事情太多，当然主要还是我比较懒，身边的同事已经明示我博客好久都不更新来催更了，技术都快荒废了，所以先水一篇。这篇文章虽然是叫灌水篇，但实际上都是我在实际项目中学习和总结到的一些切身经验，如果你真的想在生产环境去用Spark Streaming实现一些简单的实时计算或者实时监控，看板之类的，有一些问题是你一开始就得考虑到的，并且得有非常可靠的解决方案。</p>
+<p>算起来差不多有快两年没用过<code>Spark Streaming</code>了，毕竟现在的公司也是主推<code>Flink</code>了，从趋势来看，的确是<code>Flink</code>的势头更猛一些，虽说<code>Spark Streaming</code>后来引入<code>Structed Streaming</code>，据说性能提升不少,这个我也没用过，暂时就不做深入讨论了。</p>
+<p>其实这个系列计划后面还有一篇<code>JStorm</code>，一篇<code>Flink</code>，之所以把<code>Spark Streaming</code>放在第一篇来讲主要是有两个原因：首先是这个框架算是在实际做项目中钻研过一段时间，对其使用中的坑也算踩了不少，最后也算圆满完成了项目；其次是之前在招人的时候面试过很多人，简历上写了做过的一些<code>Spark Streaming</code>项目，在考察他们项目的时候，问的深了慢慢就懵了，从来没有碰到过一个人有认真思考过那些问题，当然这里面有很多人的简历大概率是培训机构的一些模板(数仓分层 + Spark Streaming + 用户画像，基本是这个结构，技术选型一模一样,另外也吐槽下那些培训机构，你告诉别人用户画像放在<code>HBase</code>这没啥问题，问题是你总得好好讲下<code>rowkey</code>这个吧，连怎么设计，为什么要这么设计也不讲讲，一问就完蛋)，本身也没真正做过<code>Spark Streaming</code>的项目，对框架的一些设计理念和底层的东西更加没有了解过。</p>
+<h3 id="正文"><a href="#正文" class="headerlink" title="正文"></a>正文</h3><p>所以这篇文章主要会说一下一些实际项目中比较关注的问题，这些问题大概率也是面试官比较喜欢问的，做实时计算的确也绕不开那几个问题,好久没用了，想到什么写什么，截图是肯定没有了,但是如果你看到这篇文章，又或者在找解决方案，我想没有图应该也看得懂,下面就讲几个比较重要的问题。</p>
+<h4 id="Spark-Streaming会丢数据吗"><a href="#Spark-Streaming会丢数据吗" class="headerlink" title="Spark Streaming会丢数据吗"></a>Spark Streaming会丢数据吗</h4><p>相信每个做实时计算的人都会碰到这个问题，或者说被别人追问过这个问题:为什么我从xxx能查到数据，从你实时处理之后就查不到了?又或者是这段时间的指标看着好像有问题，线上实时计算程序没漏掉数据吧？如果你非常自信的告诉别人，不可能丢的，这个<code>Spark Streaming</code>官网说了，xxx和xxx机制可以保证即使程序挂了，也能恢复，数据不会丢的。但是实际情况会比较复杂，很可能会被立马打脸，或者说运气好，丢了一两条也没人看的出来，但是其实有一些项目是连一条数据都不能丢的。</p>
+<p>这里先说下结论，其实<code>Spark Streaming</code>是会丢数据的，要想保证数据100%不丢失，你需要根据实际情况，也就是输入输出的存储系统来做很多的处理，否则，丢数据的情况会有很多种，丢不丢数取决于你的集群和系统的稳定性。</p>
+<p>所以每次碰到简历上写着<code>Spark Streaming</code>项目的人，我的第一个问题就是：你这个程序会丢数据吗？他们一开始都会很确定的告诉我不会，并且会开始讲自己是通过<code>Direct</code>的方式去消费<code>Kafka</code>的数据，手动维护<code>offset</code>的，只有当数据处理成功了才会提交offset,所以即使程序挂了，重启之后还是会从之前的offset开始消费，数据不会丢。当然有时候也会顺带问下他们<code>Receiver</code>模式和<code>Direct</code>的区别和为什么选后者，算是比较基本的问题，但是有的培训机构居然连这个也没讲明白。很多人都认为是不能手动维护<code>offset</code>，所以有丢数的风险,其实主要原因并不是这个，这里就不展开讲了。</p>
+<p>但是我们面临的实际问题是，手动维护<code>offset</code>,确保每次处理成功了才提交<code>offset</code>就真的不会丢数据吗？从表面上来看，这个想法确实没什么问题，但是如果你对<code>Spark Sgreaming</code>了解的够深，就会发现这个想法是错的。其实要想知道会不会丢数，就得稍微了解一下底层的东西，或者说多看看监控和SparkUI界面的信息，了解一下<code>Application</code>,<code>Job</code>,<code>Task</code>,<code>Batch</code>这些概念，如果你把这几个东西搞清楚了，我相信你应该可以大致判断出来你写的程序是否有丢数据的风险以及在什么情况下会丢数据。</p>
+<h5 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h5><p>正式讲问题之前，先得看几个基本概念</p>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Application</td>
+<td>应用程序，也就是你每次提交一个Spark Streaming任务的时候，运行在集群上的一个计算任务</td>
+</tr>
+<tr>
+<td>Batch</td>
+<td><code>Spark Streaming</code>核心理念就是<code>micro batch</code>也就是算子和程序并不是时时刻刻都在计算和处理数据的，而是每隔一段时间成成一个批次</td>
+</tr>
+<tr>
+<td>Job</td>
+<td>一个计算任务可能会包含多个Job,大部分应该就是一个</td>
+</tr>
+<tr>
+<td>Task</td>
+<td>任务最终执行计算最小单位，对于<code>source</code>是<code>kafka</code>的情况，总的数量一般和需要消费的分区数相等，最大同时执行<code>task</code>个数可以通过一些参数来设置</td>
+</tr>
+</tbody></table>
+<p>所以其实是每次开始调度执行一个Batch，会生成job，然后job会分stage,最细粒度就是到task执行具体的逻辑。因为我写<code>Spark Streaming</code>程序中也没见过有两个job的，所以暂且以只有一个job的程序为例，讨论下什么场景下会丢数据以及深层次的原因，下面主要介绍下<code>Task</code>和<code>Batch</code>：</p>
+<ol>
+<li>Task<br>作为最终消费和处理数据的执行单元，也就是你程序里面真正处理数据的算子和最终的<code>action</code>操作，对于手动维护<code>offset</code>来说，一般就是在所有数据处理完，就调用Kafka的api来<code>commit offset</code>，这样就确保了如果程序出现异常情况挂掉，<code>offset</code>不会更新，当程序再次重启，会从zk上读取消费的信息，从上一次最后提交的<code>offset</code>后开始消费数据。这也就是大家普遍认为不会丢数的依据;</li>
+<li>Batch<br>一般会在程序中设置批次的间隔，也就是多长时间生成一个批次，这个取决于实际场景，假设是5min一个批次，所以每隔5分钟程序会自动生成新的批次，然后根据资源情况和上一个批次的执行情况来决定是否开始调度此批次。需要说明下，大部分情况，也就是默认情况下，同时执行的批次只能是一个，也就是如果数据太多导致上一个批次没有执行完，后面生成的批次就会被pending住。并且默认的调度算法是FIFO，所以基本上就是按数据的消费顺序来处理数据;</li>
+<li>异常<br>可以看到其实整个<code>Spark Streaming</code>程序从表格上来看，从上到下是一个任务的逐渐细化过程，所以问题来了，计算任务失败是如何定义的,<code>Task</code>失败了<code>Job</code>会失败吗？<code>Batch</code>会失败吗？<code>Application</code>会失败吗？</li>
+</ol>
+<ul>
+<li>Task会有默认的重试次数，好像是4次，可能不同的平台会额外设置，这个参数是可以设置的。Task执行失败了会自动重试，如果超过了最大重试次数还是执行失败，那这个Task所在的Job就失败了,所以当前批次的状态就是<code>Failed</code>；</li>
+<li>Job失败了就失败了，因为Task已经重试过了仍然失败，最终这个<code>Batch</code>失败了, 但是<code>Application</code>并不会失败，一般而言，Task重试了很多次，会耗费很多时间，所以会有pending状态的Batch，这个时候其实会直接调用下一个pending的批次继续执行。</li>
+</ul>
+<h5 id="案例分析"><a href="#案例分析" class="headerlink" title="案例分析"></a>案例分析</h5><p>所以到这里你就应该明白了为什么说，即使你使用直连方式消费kafka，手动维护offset,仍然会丢数据。这里还需要再额外讲一下，每个批次在生成之前，就会计算出这个批次当前需要消费的数据范围，也就是[offset1,offset2]这种，对应到kafka的每个分区，哪怕你上一个batch还没执行完，下一个批次他会算出他此时需要消费的数据。至于怎么算的，有时间后面展开说，总之不是每次开始执行才去zk里面读取最新offset开始消费，这里记住就行了，因为和丢数有关。</p>
+<p>上面讲到了每个批次要处理的数据其实是根据以往任务执行的情况来估算出来的，假设第一个批次在执行过程中由于在不停的重试，时间超过了一个批次，后面又生成了几个批次，并且由于同时最多只能有一个batch在执行，其他的都在pending状态。这个时候当Task的失败重试次数超过了设置的最大失败重试次数，即最终还是失败了，于是第一个批次就挂了。并且由于程序设置的是执行成功之后才会commit offset,导致偏移量也没有提交，到此为止还算正常毕竟虽然失败了，但是offset也没有更新，如果重启的话，还是会从上一次成功的地方接着消费。</p>
+<p>但事实是紧接着由于第一个批次失败了，资源空闲出来了，后面pending的第一个批次就开始调度了，然后呢比较顺利，马上就执行成功了，这个时候程序触发了<code>commit offset</code>,将最新的消费情况更新到了zk。依次类推，后面的批次按照之前算好的消息范围继续消费，成功后<code>commit offset</code>。于是在执行成功了几个批次之后，突然发现，第一个批次失败了，offset被第二个和后面的批次更新覆盖了，然而实际上消息并没有被消费处理，因为第二个批次处理的消息是提前算好的，这就是数据丢失的真实场景。</p>
+<h5 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h5><p>要怎么做才可以保证数据不丢失呢？其实通过上面的分析，会导致丢数据的根本原因其实是因为Batch失败了，但是Application并没有失败，后续执行的Batch成功了把offset给覆盖了。所以解决问题的方法其实有两种:</p>
+<ol>
+<li>不让Batch失败，这样就不会存在前面的批次失败了，后面的批次成功了这种情况。但是实际情况下总会存在程序出异常的情况，所以可以在程序出问题的时候将程序hang住，比如将Task的最大失败重试次数设置成int最大值。不过这样也有问题，一是如果就是程序的确就有问题，重试也不会成功，白白重试浪费资源；另外就是如果程序计算很快，那么重试也会有试完的时候，然后开始调度下一个<code>Batch</code>，所以并不推荐这种方式；</li>
+<li><code>Batch</code>失败了让<code>Application</code>也失败，根本原因其实是<code>Batch</code>失败了<code>Application</code>没有失败，继续调度后续<code>Batch</code>导致<code>offset</code>被覆盖。这里需要借助因为第二个批次处理的消息是提前算好的，</li>
+</ol>
+<p>这里需要借助下<code>StreamingListener</code>这个类，你需要继承这个接口，来监听Job的执行状态，从而来控制当Job失败了，程序直接重启，不要直接调度下一个<code>Batch</code>。</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Batch</span> <span class="keyword">extends</span> <span class="title">Serializable</span> </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> failedCnt: <span class="type">Long</span> = <span class="number">0</span></span><br><span class="line">  <span class="keyword">var</span> successCnt: <span class="type">Long</span> = <span class="number">0</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">BasedataSparkBatchListener</span>(<span class="params">ssc: <span class="type">StreamingContext</span></span>) <span class="keyword">extends</span> <span class="title">StreamingListener</span> </span>&#123;</span><br><span class="line">  <span class="keyword">val</span> batch = <span class="keyword">new</span> <span class="type">Batch</span>()</span><br><span class="line">  <span class="comment">/** Called when a batch of jobs has been submitted for processing. */</span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">onBatchSubmitted</span></span>(batchSubmitted: <span class="type">StreamingListenerBatchSubmitted</span>) &#123; &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/** Called when processing of a batch of jobs has started.  */</span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">onBatchStarted</span></span>(batchStarted: <span class="type">StreamingListenerBatchStarted</span>) &#123; &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/** Called when processing of a batch of jobs has completed. */</span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">onBatchCompleted</span></span>(batchCompleted: <span class="type">StreamingListenerBatchCompleted</span>) &#123; </span><br><span class="line">   <span class="keyword">val</span> batchInfo = batchCompleted.batchInfo</span><br><span class="line">    <span class="keyword">val</span> outputOperations = batchInfo.outputOperationInfos</span><br><span class="line">    <span class="keyword">val</span> numFailedOutputOp = outputOperations.values.count(_.failureReason.nonEmpty)</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">if</span> (numFailedOutputOp != <span class="number">0</span>) &#123;</span><br><span class="line">      batch.failedCnt += <span class="number">1</span></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      batch.failedCnt += <span class="number">1</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+<p>可以看到有很多方法，这里其实只需要实现<code>onBatchCompleted</code>方法获取失败的Batch数量就行,然后主程序需要注册下这个<code>listener</code>:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">val listener = new BasedataSparkBatchListener(ssc)</span><br><span class="line">ssc.addStreamingListener(listener)</span><br></pre></td></tr></table></figure>
+<p>然后在提交offset的地方需要做一个判断，如果是<code>listener.batch.failedCnt &gt; 0</code>，执行<code>ssc.stop()</code>将程序杀掉，如果<code>listener.batch.failedCnt = 0</code>,则执行<code>commit offset</code>操作。</p>
+<h4 id="限速和背压设置"><a href="#限速和背压设置" class="headerlink" title="限速和背压设置"></a>限速和背压设置</h4><h4 id="Exactly-once真的必要吗"><a href="#Exactly-once真的必要吗" class="headerlink" title="Exactly once真的必要吗"></a>Exactly once真的必要吗</h4><h4 id="Speculative机制有什么问题"><a href="#Speculative机制有什么问题" class="headerlink" title="Speculative机制有什么问题"></a>Speculative机制有什么问题</h4>
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/" rel="tag"># 大数据</a>
+              <a href="/tags/Spark/" rel="tag"># Spark</a>
+              <a href="/tags/%E6%B5%81%E8%AE%A1%E7%AE%97/" rel="tag"># 流计算</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2019/12/30/CentOS7-%E5%AE%89%E8%A3%85transmission-%E8%BF%9C%E7%A8%8B%E4%B8%8B%E8%BD%BD/" rel="prev" title="CentOS7 安装transmission 远程下载">
+                  <i class="fa fa-angle-left"></i> CentOS7 安装transmission 远程下载
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">LittleQ</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

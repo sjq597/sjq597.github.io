@@ -1,0 +1,38 @@
+plt.legend(prop=fm.FontProperties(fname='msyh.ttf'), loc='upper left')
+
+在画一些曲线图 (line charts) 时，常常会出现多条曲线同时画在一张图上面，这时候就需要对不同的曲线进行不同的标注，以使读者能够清晰地知道每条曲线代表的含义。当你画很少的几条曲线时，这时画图命令中自动产生的legend能够基本满足你的需要，此时，你不需要做什么；但当你将很多个曲线画在一张图上时，自动产生的legend矩形框往往会覆盖住已经画出来的曲线，很不美观，这时你就需要写专门的代码对legend的位置进行精确的控制，而不能再依靠系统帮你自动控制了。
+
+本文所讲的就是要解决如何在一张图上画多条曲线时，如何控制legend的位置。当你采用Python中的matplotlib包画图时，采用下面的代码即可控制legend的位置：
+
+plt.legend(loc='upper center', bbox_to_anchor=(0.6,0.95),ncol=3,fancybox=True,shadow=True)
+1
+上面bbox_to_anchor被赋予的二元组中，第一个数值用于控制legend的左右移动，值越大越向右边移动，第二个数值用于控制legend的上下移动，值越大，越向上移动。上述示例代码产生的legend样例如下： ncol=3 表示一行最多三个标签
+
+title 位置 y=1.08 表示在y=1.08的位置
+plt.xticks(fontsize=12) 设定x轴字体大小
+
+
+Traceback (most recent call last):
+  File "uc_order_overview.py", line 25, in <module>
+    from CommonUtils.utils.DrawImage import DrawImage
+  File "../CommonUtils/utils/DrawImage.py", line 46, in <module>
+    import matplotlib.pyplot as plt
+  File "/usr/lib64/python2.6/site-packages/matplotlib/pyplot.py", line 78, in <module>
+    new_figure_manager, draw_if_interactive, show = pylab_setup()
+  File "/usr/lib64/python2.6/site-packages/matplotlib/backends/__init__.py", line 25, in pylab_setup
+    globals(),locals(),[backend_name])
+  File "/usr/lib64/python2.6/site-packages/matplotlib/backends/backend_gtkagg.py", line 10, in <module>
+    from matplotlib.backends.backend_gtk import gtk, FigureManagerGTK, FigureCanvasGTK,\
+  File "/usr/lib64/python2.6/site-packages/matplotlib/backends/backend_gtk.py", line 8, in <module>
+    import gtk; gdk = gtk.gdk
+  File "/usr/lib64/python2.6/site-packages/gtk-2.0/gtk/__init__.py", line 64, in <module>
+    _init()
+  File "/usr/lib64/python2.6/site-packages/gtk-2.0/gtk/__init__.py", line 52, in _init
+    _gtk.init_check()
+RuntimeError: could not open display
+
+raise RuntimeError('Invalid DISPLAY variable')
+
+import matplotlib
+matplotlib.use('Agg')
+

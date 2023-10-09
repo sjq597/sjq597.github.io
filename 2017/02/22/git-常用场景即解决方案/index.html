@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"sjq597.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.18.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="熟悉了怎么使用git,在基本了解了git的原理的基础上，要解决一些办法其实是知道一些方案的，只是有时候我们对git的众多命令记得不是那么熟。其实常用的一些场景也就那么几个，出了问题也一般就那些，记录一下，方便日后查找。 merge错了分支有时候我们在自己的分支A上开发了一段时间，然后我们想把B分支merge到我们的分支A上，然后测试完没啥问题就把此次的结果一起merge到master上。但是在操作">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Git 常用场景即解决方案">
+<meta property="og:url" content="http://sjq597.github.io/2017/02/22/git-%E5%B8%B8%E7%94%A8%E5%9C%BA%E6%99%AF%E5%8D%B3%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/index.html">
+<meta property="og:site_name" content="LittleQ">
+<meta property="og:description" content="熟悉了怎么使用git,在基本了解了git的原理的基础上，要解决一些办法其实是知道一些方案的，只是有时候我们对git的众多命令记得不是那么熟。其实常用的一些场景也就那么几个，出了问题也一般就那些，记录一下，方便日后查找。 merge错了分支有时候我们在自己的分支A上开发了一段时间，然后我们想把B分支merge到我们的分支A上，然后测试完没啥问题就把此次的结果一起merge到master上。但是在操作">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2017-02-22T12:09:41.000Z">
+<meta property="article:modified_time" content="2023-10-07T06:54:54.000Z">
+<meta property="article:author" content="LittleQ">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="Git">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://sjq597.github.io/2017/02/22/git-%E5%B8%B8%E7%94%A8%E5%9C%BA%E6%99%AF%E5%8D%B3%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://sjq597.github.io/2017/02/22/git-%E5%B8%B8%E7%94%A8%E5%9C%BA%E6%99%AF%E5%8D%B3%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/","path":"2017/02/22/git-常用场景即解决方案/","title":"Git 常用场景即解决方案"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Git 常用场景即解决方案 | LittleQ</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">LittleQ</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">爱好：写代码</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#merge%E9%94%99%E4%BA%86%E5%88%86%E6%94%AF"><span class="nav-number">1.</span> <span class="nav-text">merge错了分支</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Git%E4%BB%93%E5%BA%93%E6%97%A0%E6%9D%83%E9%99%90"><span class="nav-number">2.</span> <span class="nav-text">Git仓库无权限</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%87%E6%8D%A2%E7%9B%B8%E5%85%B3"><span class="nav-number">3.</span> <span class="nav-text">切换相关</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">LittleQ</p>
+  <div class="site-description" itemprop="description">数据开发工程师的成长历程</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">145</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">51</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://sjq597.github.io/2017/02/22/git-%E5%B8%B8%E7%94%A8%E5%9C%BA%E6%99%AF%E5%8D%B3%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="LittleQ">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LittleQ">
+      <meta itemprop="description" content="数据开发工程师的成长历程">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Git 常用场景即解决方案 | LittleQ">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Git 常用场景即解决方案
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2017-02-22 20:09:41" itemprop="dateCreated datePublished" datetime="2017-02-22T20:09:41+08:00">2017-02-22</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-10-07 14:54:54" itemprop="dateModified" datetime="2023-10-07T14:54:54+08:00">2023-10-07</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Git/" itemprop="url" rel="index"><span itemprop="name">Git</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>熟悉了怎么使用git,在基本了解了git的原理的基础上，要解决一些办法其实是知道一些方案的，只是有时候我们对git的众多命令记得不是那么熟。其实常用的一些场景也就那么几个，出了问题也一般就那些，记录一下，方便日后查找。</p>
+<h3 id="merge错了分支"><a href="#merge错了分支" class="headerlink" title="merge错了分支"></a>merge错了分支</h3><p>有时候我们在自己的分支A上开发了一段时间，然后我们想把B分支merge到我们的分支A上，然后测试完没啥问题就把此次的结果一起merge到master上。但是在操作的时候不小心把master先merge到了分支A,如果再去merge分支B，那按照正常的流程，只能先把第一次的merge冲突解完了然后才能去merge分支B,然后再解冲突。这样就完全乱了，如何撤销某次merge呢,即让各个分支回到merge之前的状态?</p>
+<ul>
+<li>reset直接重置到merge之前的版本号</li>
+</ul>
+<p>此方法比较暴力，即抛弃掉merge之前那个版本号之后的所有提交，如果你在merge之后没有做什么其他的操作，可以直接简单一点，舍弃掉后面的所有提交,不会产生新的commit.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git checkout branch-A</span><br><span class="line">git reset --hard &lt;merge前的版本号&gt;</span><br></pre></td></tr></table></figure>
+<p>**备注:**其实reset的意思就是用把当前分支的指针设置为你制定的那个版本号，以此达到还原或者说撤销目的。</p>
+<ul>
+<li>git revert 撤销之前的merge操作</li>
+</ul>
+<p>如果你在merge错了之后并没有立即发现，然后又提交了几次，然后才发现合并错了，这个时候就不能重置舍弃掉merge后面的提交了，可以使用<code>revert</code>只撤销掉merge那次的变更,此次操作会产生一个commit.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git revert -m &lt;用1或2指定需要保留的主线&gt; &lt;需要撤销的合并的sha版本号&gt;</span><br></pre></td></tr></table></figure>
+<p><strong>备注:</strong> 分支的编号一般是按时间顺序决定的，parent分支是1，后面的那个分支是2.这个方法比较绕，一般不会用这个。</p>
+<ul>
+<li>git revert一般做法</li>
+</ul>
+<p>一般我们的解决办法其实只是处理我们弄错了的分支，因为虽然我们合并错了，但是master,分支B都是好的，没有多余的提交的，我么你只需要把分支A的问题搞定就行了，此操作也会产生一个新的commit:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git revert &lt;merge操作的版本号&gt;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Git仓库无权限"><a href="#Git仓库无权限" class="headerlink" title="Git仓库无权限"></a>Git仓库无权限</h3><p>这个问题会经常出现，就算是很多用了好几年的程序员，有时候在出现这个问题的时候也不知道怎么解决，一般也就是去网上查一下，然后照着帖子里面弄一下，如果可以了，就再也不管了，如果不行，就接着找，试下一个方法，反正就这么一直试，试到后面总会莫名奇妙的解决了。如果实在不行可能就放大招重装系统或者git了。其实出现这个问题的根本原因就是ssh私钥和公钥的问题，要么是找不到，要么是找到了文件的权限不对.所以在出现这个问题的时候就知道怎么解决了.<br>首先得说明一下下面的两个命令的区别:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo git pull	// 读取的配置文件为/root/.ssh/id_rsa</span><br><span class="line">git pull	// 读取的配置文件为~/.ssh/id_rsa</span><br></pre></td></tr></table></figure>
+<p>可以试一下有什么区别:</p>
+<ul>
+<li>ssh -vT <a href="mailto:&#103;&#105;&#x74;&#64;&#103;&#x69;&#116;&#108;&#x61;&#98;&#46;&#120;&#x78;&#x78;&#46;&#120;&#120;&#x78;&#46;&#x63;&#111;&#109;">&#103;&#105;&#x74;&#64;&#103;&#x69;&#116;&#108;&#x61;&#98;&#46;&#120;&#x78;&#x78;&#46;&#120;&#120;&#x78;&#46;&#x63;&#111;&#109;</a></li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">debug1: identity file /home/anonymous/.ssh/id_rsa type 1</span><br><span class="line">debug1: key_load_public: No such file or directory</span><br><span class="line">debug1: identity file /home/anonymous/.ssh/id_rsa-cert type -1</span><br><span class="line">debug1: key_load_public: No such file or directory</span><br><span class="line">debug1: identity file /home/anonymous/.ssh/id_dsa type -1</span><br><span class="line">debug1: key_load_public: No such file or directory</span><br><span class="line">debug1: identity file /home/anonymous/.ssh/id_dsa-cert type -1</span><br><span class="line">debug1: key_load_public: No such file or directory</span><br><span class="line">debug1: identity file /home/anonymous/.ssh/id_ecdsa type -1</span><br><span class="line">debug1: key_load_public: No such file or directory</span><br><span class="line">debug1: identity file /home/anonymous/.ssh/id_ecdsa-cert type -1</span><br><span class="line">debug1: key_load_public: No such file or directory</span><br><span class="line">debug1: identity file /home/anonymous/.ssh/id_ed25519 type -1</span><br><span class="line">debug1: key_load_public: No such file or directory</span><br><span class="line">debug1: identity file /home/anonymous/.ssh/id_ed25519-cert type -1</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>sudo ssh -vT <a href="mailto:&#x67;&#105;&#x74;&#64;&#103;&#105;&#x74;&#108;&#97;&#98;&#46;&#120;&#120;&#120;&#x2e;&#120;&#x78;&#x78;&#46;&#99;&#111;&#x6d;">&#x67;&#105;&#x74;&#64;&#103;&#105;&#x74;&#108;&#97;&#98;&#46;&#120;&#120;&#120;&#x2e;&#120;&#x78;&#x78;&#46;&#99;&#111;&#x6d;</a></li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">debug1: key_load_public: No such file or directory</span><br><span class="line">debug1: identity file /root/.ssh/id_rsa type -1</span><br><span class="line">debug1: key_load_public: No such file or directory</span><br><span class="line">debug1: identity file /root/.ssh/id_rsa-cert type -1</span><br><span class="line">debug1: key_load_public: No such file or directory</span><br><span class="line">debug1: identity file /root/.ssh/id_dsa type -1</span><br><span class="line">debug1: key_load_public: No such file or directory</span><br><span class="line">debug1: identity file /root/.ssh/id_dsa-cert type -1</span><br><span class="line">debug1: key_load_public: No such file or directory</span><br><span class="line">debug1: identity file /root/.ssh/id_ecdsa type -1</span><br><span class="line">debug1: key_load_public: No such file or directory</span><br><span class="line">debug1: identity file /root/.ssh/id_ecdsa-cert type -1</span><br><span class="line">debug1: key_load_public: No such file or directory</span><br><span class="line">debug1: identity file /root/.ssh/id_ed25519 type -1</span><br><span class="line">debug1: key_load_public: No such file or directory</span><br><span class="line">debug1: identity file /root/.ssh/id_ed25519-cert type -1</span><br><span class="line">debug1: Enabling compatibility mode for protocol 2.0</span><br></pre></td></tr></table></figure>
+<p>不同权限加载的文件是不一样的，所以为了知道问题出在哪，首先你得知道在和git仓库同步代码的时候加载的是哪个地方的秘钥文件.<br>知道了加载哪个地方的文件之后，还有一个很重要的问题需要知道,秘钥文件的权限必须是<code>600</code>,很多时候可能关键的问题还是因为秘钥文件的权限不对</p>
+<h3 id="切换相关"><a href="#切换相关" class="headerlink" title="切换相关"></a>切换相关</h3><p>切换有很多，主要是分支切换，版本切换以及文件的切换</p>
+<ul>
+<li>不同分支间文件切换</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git checkout &lt;branch_name&gt; -- &lt;paths&gt;</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Linux/" rel="tag"># Linux</a>
+              <a href="/tags/Git/" rel="tag"># Git</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2017/02/13/fedroa-25-%E5%BC%80%E5%8F%91%E5%B8%B8%E7%94%A8%E9%85%8D%E7%BD%AE%E5%8F%8A%E9%97%AE%E9%A2%98/" rel="prev" title="fedroa 25 开发常用配置及问题">
+                  <i class="fa fa-angle-left"></i> fedroa 25 开发常用配置及问题
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2017/03/11/Ubuntu-16-04-aria2-%E7%99%BE%E5%BA%A6%E7%9B%98%E4%B8%8B%E8%BD%BD/" rel="next" title="Ubuntu 16.04 aria2 百度盘下载">
+                  Ubuntu 16.04 aria2 百度盘下载 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">LittleQ</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

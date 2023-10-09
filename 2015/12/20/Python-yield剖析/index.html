@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"sjq597.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.18.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="首先,这个东西在其他的面向对象的语言里好像没有,所以第一次碰到难免会有些不好理解,网上看到的教程,做个笔记整理以后不懂再来看看.要讲yield就必须先讲讲Python中的迭代器(iterator)和生成器(generator) 迭代器(iterator)在Python中,for循环比其他的语言中的都要强大,可以用来遍历Python中的任何类型,包括列表,元祖等,其实根本的判断原则就是:  for">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Python yield剖析">
+<meta property="og:url" content="http://sjq597.github.io/2015/12/20/Python-yield%E5%89%96%E6%9E%90/index.html">
+<meta property="og:site_name" content="LittleQ">
+<meta property="og:description" content="首先,这个东西在其他的面向对象的语言里好像没有,所以第一次碰到难免会有些不好理解,网上看到的教程,做个笔记整理以后不懂再来看看.要讲yield就必须先讲讲Python中的迭代器(iterator)和生成器(generator) 迭代器(iterator)在Python中,for循环比其他的语言中的都要强大,可以用来遍历Python中的任何类型,包括列表,元祖等,其实根本的判断原则就是:  for">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2015-12-20T07:21:58.000Z">
+<meta property="article:modified_time" content="2023-10-07T06:54:54.000Z">
+<meta property="article:author" content="LittleQ">
+<meta property="article:tag" content="Python">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://sjq597.github.io/2015/12/20/Python-yield%E5%89%96%E6%9E%90/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://sjq597.github.io/2015/12/20/Python-yield%E5%89%96%E6%9E%90/","path":"2015/12/20/Python-yield剖析/","title":"Python yield剖析"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Python yield剖析 | LittleQ</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">LittleQ</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">爱好：写代码</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%AD%E4%BB%A3%E5%99%A8-iterator"><span class="nav-number">1.</span> <span class="nav-text">迭代器(iterator)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%9F%E6%88%90%E5%99%A8-generator"><span class="nav-number">2.</span> <span class="nav-text">生成器(generator)</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">LittleQ</p>
+  <div class="site-description" itemprop="description">数据开发工程师的成长历程</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">145</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">51</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://sjq597.github.io/2015/12/20/Python-yield%E5%89%96%E6%9E%90/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="LittleQ">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LittleQ">
+      <meta itemprop="description" content="数据开发工程师的成长历程">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Python yield剖析 | LittleQ">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Python yield剖析
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2015-12-20 15:21:58" itemprop="dateCreated datePublished" datetime="2015-12-20T15:21:58+08:00">2015-12-20</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-10-07 14:54:54" itemprop="dateModified" datetime="2023-10-07T14:54:54+08:00">2023-10-07</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Python%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">Python笔记</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>首先,这个东西在其他的面向对象的语言里好像没有,所以第一次碰到难免会有些不好理解,网上看到的教程,做个笔记整理以后不懂再来看看.<br>要讲<code>yield</code>就必须先讲讲Python中的迭代器(iterator)和生成器(generator)</p>
+<h3 id="迭代器-iterator"><a href="#迭代器-iterator" class="headerlink" title="迭代器(iterator)"></a>迭代器(iterator)</h3><p>在Python中,for循环比其他的语言中的都要强大,可以用来遍历Python中的任何类型,包括列表,元祖等,其实根本的判断原则就是:</p>
+<blockquote>
+<p>for 循环可以用于任何 <strong>可迭代对象</strong></p>
+</blockquote>
+<p>这个含义就是迭代器,迭代器是一个实现了迭代器协议的对象,Python中的迭代器协议规定了必须有<code>next()</code>方法,调用这个方法会前进到下一个结果,当迭代器到达末尾的时候,会触发<code>StopIteration</code>.具有这些特性的对象在Python中都可以用for循环或其他遍历工具迭代,迭代的时候,每次都会调用<code>next()</code>方法,并且一旦捕捉到<code>StopIteration</code>异常就会停止迭代.<br>使用迭代器除了在写代码的时候看上去更简洁,优雅,更大的一个好处就是:每次只从对象中读取一条数据,不会造成过大的开销.<br>举个读文件的例子,一般我们会经常用到逐行读取一个文件的内容,利用<code>readlines()</code>方法,可以这么写:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> line <span class="keyword">in</span> <span class="built_in">open</span>(<span class="string">&#x27;test.txt&#x27;</span>,<span class="string">&#x27;r&#x27;</span>).readlines():</span><br><span class="line">	<span class="built_in">print</span> line</span><br></pre></td></tr></table></figure>
+<p>看上去代码确实很优雅,简洁,但其实这并不是最好的方法,因为这其实也是一次把文件加载到了内存,然后再逐行遍历打印的,内存卡销很大,碰上一个很大的文件,程序有可能会崩溃.<br>这个时候我们可以利用<code>file</code>迭代器,优化之后的代码:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> line <span class="keyword">in</span> <span class="built_in">open</span>(<span class="string">&#x27;test.txt&#x27;</span>,<span class="string">&#x27;r&#x27;</span>):</span><br><span class="line">	<span class="built_in">print</span> line</span><br></pre></td></tr></table></figure>
+<p>虽然代码改动很小,甚至还去掉了一些代码,但是这个是运行速度最快的读文件的一种方法,没有显示的去读文件,而是利用迭代器每次读取下一行.</p>
+<h3 id="生成器-generator"><a href="#生成器-generator" class="headerlink" title="生成器(generator)"></a>生成器(generator)</h3><p>生成器函数在Python中与迭代器协议的概念联系在一起.简而言之,包含<code>yield</code>语句的函数会被特地编译成生成器.于是当我们调用这类函数的时候,会返回一个生成器对象,这个对象支持迭代器接口.而且就算函数有个<code>return</code>,它的作用也是用来<code>yield</code>产生值的.也就是不像一般的函数会生成值后退出,生成器函数在生成值后会自动挂起并暂停它们的执行状态,本地变量会保存状态信息,当函数恢复时将再度有效:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">g</span>(<span class="params">n</span>):</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(n):</span><br><span class="line">        <span class="keyword">yield</span> i **<span class="number">2</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> g(<span class="number">5</span>):</span><br><span class="line">    <span class="built_in">print</span> i, <span class="string">&#x27;:&#x27;</span>,</span><br><span class="line"></span><br><span class="line"><span class="number">0</span>:<span class="number">1</span>:<span class="number">4</span>:<span class="number">9</span>:<span class="number">16</span>:</span><br></pre></td></tr></table></figure>
+<p>这么看好像也不太容易懂,我们用迭代器的<code>next()</code>方法来看看具体的运行原理:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>t = g(<span class="number">5</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>t.<span class="built_in">next</span>()</span><br><span class="line"><span class="number">0</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>t.<span class="built_in">next</span>()</span><br><span class="line"><span class="number">1</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>t.<span class="built_in">next</span>()</span><br><span class="line"><span class="number">4</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>t.<span class="built_in">next</span>()</span><br><span class="line"><span class="number">9</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>t.<span class="built_in">next</span>()</span><br><span class="line"><span class="number">16</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>t.<span class="built_in">next</span>()</span><br><span class="line">Traceback (most recent call last):</span><br><span class="line">  File <span class="string">&quot;&lt;stdin&gt;&quot;</span>, line <span class="number">1</span>, <span class="keyword">in</span> &lt;module&gt;</span><br><span class="line">  StopIteration</span><br></pre></td></tr></table></figure>
+<p>在运行完5次<code>next()</code>之后，生成器抛出了一个<code>StopIteration</code>异常，迭代终止。再来看一个<code>yield</code>的例子，用生成器生成一个<code>Fibonacci</code>数列：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">def</span> <span class="title function_">fab</span>(<span class="params"><span class="built_in">max</span></span>):</span><br><span class="line"><span class="meta">... </span>    n, a, b = <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span></span><br><span class="line"><span class="meta">... </span>    <span class="keyword">while</span> n &lt;= <span class="built_in">max</span>:</span><br><span class="line"><span class="meta">... </span>            <span class="keyword">yield</span> b</span><br><span class="line"><span class="meta">... </span>            a, b = b, a + b</span><br><span class="line"><span class="meta">... </span>            n += <span class="number">1</span></span><br><span class="line"><span class="meta">... </span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">for</span> n <span class="keyword">in</span> fab(<span class="number">5</span>):</span><br><span class="line"><span class="meta">... </span>    <span class="built_in">print</span> n,</span><br><span class="line"><span class="meta">... </span></span><br><span class="line"><span class="number">1</span> <span class="number">1</span> <span class="number">2</span> <span class="number">3</span> <span class="number">5</span> <span class="number">8</span></span><br></pre></td></tr></table></figure>
+<p> **解释:**在<code>for</code>循环执行时，每次循环都会执行<code>fab</code>函数内部的代码，执行到<code>yield b</code>时，<code>fab</code>函数就返回一个迭代值，下次迭代时，代码从<code>yield b</code>的下一条语句继续执行，而函数的本地变量看起来和上次中断执行前是完全一样的，于是函数继续执行，直到再次遇到<code>yield</code>.</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Python/" rel="tag"># Python</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2015/12/18/Python-MD5%E6%A3%80%E9%AA%8C%E6%96%87%E4%BB%B6/" rel="prev" title="Python MD5校验文件">
+                  <i class="fa fa-angle-left"></i> Python MD5校验文件
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2015/12/29/Ubuntu-14-04-64%E4%BD%8D-%E5%AE%89%E8%A3%85WPS/" rel="next" title="Ubuntu 14.04 64位 安装WPS">
+                  Ubuntu 14.04 64位 安装WPS <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">LittleQ</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"sjq597.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.18.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Python崇尚的是代码越少越好，借鉴了其他各类语言的特性，另外考虑到日常编程中的一些非常繁琐的操作，Python对有一些非常常用的操作提供了简单的实现。 Python高级特性切片取一个list或tuple中的部分元素，当然其他语言，例如java也可以使用截取函数，传入区间进行截取，但是Python提供了一个更简单的操作 123&gt;&gt;&gt; L &#x3D; [&amp;#x27;Michael&amp;#x2">
+<meta property="og:type" content="article">
+<meta property="og:title" content="高级特性:切片,迭代,生成式">
+<meta property="og:url" content="http://sjq597.github.io/2015/10/12/Python-%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7:%E5%88%87%E7%89%87,%E8%BF%AD%E4%BB%A3,%E7%94%9F%E6%88%90%E5%BC%8F/index.html">
+<meta property="og:site_name" content="LittleQ">
+<meta property="og:description" content="Python崇尚的是代码越少越好，借鉴了其他各类语言的特性，另外考虑到日常编程中的一些非常繁琐的操作，Python对有一些非常常用的操作提供了简单的实现。 Python高级特性切片取一个list或tuple中的部分元素，当然其他语言，例如java也可以使用截取函数，传入区间进行截取，但是Python提供了一个更简单的操作 123&gt;&gt;&gt; L &#x3D; [&amp;#x27;Michael&amp;#x2">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2015-10-12T06:26:14.000Z">
+<meta property="article:modified_time" content="2023-10-07T06:54:54.000Z">
+<meta property="article:author" content="LittleQ">
+<meta property="article:tag" content="Python">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://sjq597.github.io/2015/10/12/Python-%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7:%E5%88%87%E7%89%87,%E8%BF%AD%E4%BB%A3,%E7%94%9F%E6%88%90%E5%BC%8F/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://sjq597.github.io/2015/10/12/Python-%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7:%E5%88%87%E7%89%87,%E8%BF%AD%E4%BB%A3,%E7%94%9F%E6%88%90%E5%BC%8F/","path":"2015/10/12/Python-高级特性:切片,迭代,生成式/","title":"高级特性:切片,迭代,生成式"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>高级特性:切片,迭代,生成式 | LittleQ</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">LittleQ</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">爱好：写代码</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Python%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7"><span class="nav-number">1.</span> <span class="nav-text">Python高级特性</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%87%E7%89%87"><span class="nav-number">1.1.</span> <span class="nav-text">切片</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BF%AD%E4%BB%A3"><span class="nav-number">1.2.</span> <span class="nav-text">迭代</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%97%E8%A1%A8%E7%94%9F%E6%88%90%E5%BC%8F"><span class="nav-number">1.3.</span> <span class="nav-text">列表生成式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%94%9F%E6%88%90%E5%99%A8"><span class="nav-number">1.4.</span> <span class="nav-text">生成器</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">LittleQ</p>
+  <div class="site-description" itemprop="description">数据开发工程师的成长历程</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">145</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">51</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://sjq597.github.io/2015/10/12/Python-%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7:%E5%88%87%E7%89%87,%E8%BF%AD%E4%BB%A3,%E7%94%9F%E6%88%90%E5%BC%8F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="LittleQ">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LittleQ">
+      <meta itemprop="description" content="数据开发工程师的成长历程">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="高级特性:切片,迭代,生成式 | LittleQ">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          高级特性:切片,迭代,生成式
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2015-10-12 14:26:14" itemprop="dateCreated datePublished" datetime="2015-10-12T14:26:14+08:00">2015-10-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-10-07 14:54:54" itemprop="dateModified" datetime="2023-10-07T14:54:54+08:00">2023-10-07</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Python%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">Python笔记</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>Python崇尚的是代码越少越好，借鉴了其他各类语言的特性，另外考虑到日常编程中的一些非常繁琐的操作，Python对有一些非常常用的操作提供了简单的实现。</p>
+<h3 id="Python高级特性"><a href="#Python高级特性" class="headerlink" title="Python高级特性"></a>Python高级特性</h3><h4 id="切片"><a href="#切片" class="headerlink" title="切片"></a>切片</h4><p>取一个<code>list</code>或<code>tuple</code>中的部分元素，当然其他语言，例如<code>java</code>也可以使用截取函数，传入区间进行截取，但是Python提供了一个更简单的操作</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; L = [<span class="string">&#x27;Michael&#x27;</span>, <span class="string">&#x27;Sarah&#x27;</span>, <span class="string">&#x27;Tracy&#x27;</span>, <span class="string">&#x27;Bob&#x27;</span>, <span class="string">&#x27;Jack&#x27;</span>]</span><br><span class="line">&gt;&gt;&gt; L[0:3]</span><br><span class="line">[<span class="string">&#x27;Michael&#x27;</span>, <span class="string">&#x27;Sarah&#x27;</span>, <span class="string">&#x27;Tracy&#x27;</span>]</span><br></pre></td></tr></table></figure>
+<p>注意，3表示的不是截取的元素个数，而是索引结束位置，即不包括索引为3的元素，如果开始索引为0，还可以省略</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; L[1:3]</span><br><span class="line">[<span class="string">&#x27;Sarah&#x27;</span>, <span class="string">&#x27;Tracy&#x27;</span>]</span><br><span class="line">&gt;&gt;&gt; L[:3]</span><br><span class="line">[<span class="string">&#x27;Michael&#x27;</span>, <span class="string">&#x27;Sarah&#x27;</span>, <span class="string">&#x27;Tracy&#x27;</span>]</span><br></pre></td></tr></table></figure>
+<p>前面也提到过，Python取元素还支持<code>L[-1]</code>这种取倒数第一个元素的操作</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; L[-2:]</span><br><span class="line">[<span class="string">&#x27;Bob&#x27;</span>, <span class="string">&#x27;Jack&#x27;</span>]</span><br><span class="line">&gt;&gt;&gt; L[-2:-1]</span><br><span class="line">[<span class="string">&#x27;Bob&#x27;</span>]</span><br></pre></td></tr></table></figure>
+<p><code>L[:]</code>，这个表示复制一个<code>list</code>，其实就是默认把整个<code>list</code>切片。</p>
+<h4 id="迭代"><a href="#迭代" class="headerlink" title="迭代"></a>迭代</h4><p>这个和Java也差不多，在Java中也有迭代器以及<code>foreach(element: elements)</code>这种循环语句,在Python中，使用<code>for ... in</code>。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; <span class="keyword">for</span> ch <span class="keyword">in</span> <span class="string">&#x27;abc&#x27;</span>:</span><br><span class="line">...     <span class="built_in">print</span> ch</span><br><span class="line">... </span><br><span class="line">a</span><br><span class="line">b</span><br><span class="line">c</span><br></pre></td></tr></table></figure>
+<p>默认情况下，<code>dict</code>通过<code>key</code>迭代。也可以通过<code>value</code>来迭代：<code>for value in d.itervalues()</code>。也可以同时迭代<code>key</code>和<code>value</code>：<code>for k, v in d.iteritems()</code>。<br>所以，只要判断一个对象是可迭代对象就可以使用<code>for ... in</code>这种循环，通过<code>collections</code>模块的<code>Iterable</code>类型判断：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; from collections import Iterable</span><br><span class="line">&gt;&gt;&gt; isinstance(<span class="string">&#x27;abc&#x27;</span>, Iterable) <span class="comment"># str是否可迭代</span></span><br><span class="line">True</span><br><span class="line">&gt;&gt;&gt; isinstance([1,2,3], Iterable) <span class="comment"># list是否可迭代</span></span><br><span class="line">True</span><br><span class="line">&gt;&gt;&gt; isinstance(123, Iterable) <span class="comment"># 整数是否可迭代</span></span><br><span class="line">False</span><br></pre></td></tr></table></figure>
+<p>有时候也需要里列表里的下标，这点Python也提供了一个内置的<code>enumerate</code>函数，可以把一个<code>list</code>变成<code>索引-元素对</code>，这样就可以做到在<code>for</code>循环中迭代索引和元素本身。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; <span class="keyword">for</span> i, value <span class="keyword">in</span> enumerate([<span class="string">&#x27;A&#x27;</span>, <span class="string">&#x27;B&#x27;</span>, <span class="string">&#x27;C&#x27;</span>]):</span><br><span class="line">...     <span class="built_in">print</span> i, value</span><br><span class="line">... </span><br><span class="line">0 A</span><br><span class="line">1 B</span><br><span class="line">2 C</span><br></pre></td></tr></table></figure>
+<p>还可以同时引用两个变量</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; <span class="keyword">for</span> x, y <span class="keyword">in</span> [(1, 1), (2, 4), (3, 9)]:</span><br><span class="line">...     <span class="built_in">print</span> x, y</span><br><span class="line">...</span><br><span class="line">1 1</span><br><span class="line">2 4</span><br><span class="line">3 9</span><br></pre></td></tr></table></figure>
+
+<h4 id="列表生成式"><a href="#列表生成式" class="headerlink" title="列表生成式"></a>列表生成式</h4><p>即创建列表的方式，最笨的方法就是写循环逐个生成，前面也介绍过可以使用<code>range()</code>函数来生成，不过只能生成线性列表，下面看看更为高级的生成方式：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; [x * x <span class="keyword">for</span> x <span class="keyword">in</span> range(1, 11)]</span><br><span class="line">[1, 4, 9, 16, 25, 36, 49, 64, 81, 100]</span><br></pre></td></tr></table></figure>
+<p>写列表生成式时，把要生成的元素<code>x * x</code>放到前面，后面跟<code>for</code>循环，就可以把<code>list</code>创建出来，十分有用，多写几次，很快就可以熟悉这种语法。<br>你甚至可以在后面加上<code>if</code>判断：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; [x * x <span class="keyword">for</span> x <span class="keyword">in</span> range(1, 11) <span class="keyword">if</span> x % 2 == 0]</span><br><span class="line">[4, 16, 36, 64, 100]</span><br></pre></td></tr></table></figure>
+<p>循环嵌套，全排列：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; [m + n <span class="keyword">for</span> m <span class="keyword">in</span> <span class="string">&#x27;ABC&#x27;</span> <span class="keyword">for</span> n <span class="keyword">in</span> <span class="string">&#x27;XYZ&#x27;</span>]</span><br><span class="line">[<span class="string">&#x27;AX&#x27;</span>, <span class="string">&#x27;AY&#x27;</span>, <span class="string">&#x27;AZ&#x27;</span>, <span class="string">&#x27;BX&#x27;</span>, <span class="string">&#x27;BY&#x27;</span>, <span class="string">&#x27;BZ&#x27;</span>, <span class="string">&#x27;CX&#x27;</span>, <span class="string">&#x27;CY&#x27;</span>, <span class="string">&#x27;CZ&#x27;</span>]</span><br></pre></td></tr></table></figure>
+<p>看一个简单应用，列出当前目录下所有文件和目录：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; import os</span><br><span class="line">&gt;&gt;&gt; [d <span class="keyword">for</span> d <span class="keyword">in</span> os.listdir(<span class="string">&#x27;.&#x27;</span>)]</span><br><span class="line">[<span class="string">&#x27;README.md&#x27;</span>, <span class="string">&#x27;.git&#x27;</span>, <span class="string">&#x27;image&#x27;</span>, <span class="string">&#x27;os&#x27;</span>, <span class="string">&#x27;lib&#x27;</span>, <span class="string">&#x27;sublime-imfix&#x27;</span>, <span class="string">&#x27;src&#x27;</span>]</span><br></pre></td></tr></table></figure>
+
+<p>前面也说过Python里循环中可以同时引用两个变量，所以生成变量也可以：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; d = &#123;<span class="string">&#x27;x&#x27;</span>: <span class="string">&#x27;A&#x27;</span>, <span class="string">&#x27;y&#x27;</span>: <span class="string">&#x27;B&#x27;</span>, <span class="string">&#x27;z&#x27;</span>: <span class="string">&#x27;C&#x27;</span> &#125;</span><br><span class="line">&gt;&gt;&gt; [k + <span class="string">&#x27;=&#x27;</span> + v <span class="keyword">for</span> k, v <span class="keyword">in</span> d.iteritems()]</span><br><span class="line">[<span class="string">&#x27;y=B&#x27;</span>, <span class="string">&#x27;x=A&#x27;</span>, <span class="string">&#x27;z=C&#x27;</span>]</span><br></pre></td></tr></table></figure>
+<p>也可以通过一个<code>list</code>生成另一个<code>list</code>，例如把一个list中所有字符串变为小写：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; L = [<span class="string">&#x27;Hello&#x27;</span>, <span class="string">&#x27;World&#x27;</span>, <span class="string">&#x27;IBM&#x27;</span>, <span class="string">&#x27;Apple&#x27;</span>]</span><br><span class="line">&gt;&gt;&gt; [s.lower() <span class="keyword">for</span> s <span class="keyword">in</span> L]</span><br><span class="line">[<span class="string">&#x27;hello&#x27;</span>, <span class="string">&#x27;world&#x27;</span>, <span class="string">&#x27;ibm&#x27;</span>, <span class="string">&#x27;apple&#x27;</span>]</span><br></pre></td></tr></table></figure>
+<p>但是这里有个问题，<code>list</code>中如果有其他非字符串类型，那么<code>lower()</code>会报错，解决办法：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; L = [<span class="string">&#x27;Hello&#x27;</span>, <span class="string">&#x27;World&#x27;</span>, <span class="string">&#x27;IBM&#x27;</span>, <span class="string">&#x27;Apple&#x27;</span>, 12, 34]</span><br><span class="line">&gt;&gt;&gt; [s.lower() <span class="keyword">if</span> isinstance(s,str) <span class="keyword">else</span> s <span class="keyword">for</span> s <span class="keyword">in</span> L]</span><br><span class="line">[<span class="string">&#x27;hello&#x27;</span>, <span class="string">&#x27;world&#x27;</span>, <span class="string">&#x27;ibm&#x27;</span>, <span class="string">&#x27;apple&#x27;</span>, 12, 34]</span><br></pre></td></tr></table></figure>
+
+<h4 id="生成器"><a href="#生成器" class="headerlink" title="生成器"></a>生成器</h4><p>列表生成式虽然强大，但是也会有一个问题，当我们想生成一个很大的列表时，会非常耗时，并且占用很大的存储空间，关键是这里面的元素可能你只需要用到前面很少的一部分，大部分的空间和时间都浪费了。Python提供了一种边计算边使用的机制，称为生成器(Generator)，创建一个Generator最简单的方法就是把<code>[]</code>改为<code>()</code>：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; g = (x * x <span class="keyword">for</span> x <span class="keyword">in</span> range(10))</span><br><span class="line">&gt;&gt;&gt; g</span><br><span class="line">&lt;generator object &lt;genexpr&gt; at 0x7fe73eb85cd0&gt;</span><br></pre></td></tr></table></figure>
+
+<p>如果要一个一个打印出来，可以通过generator的next()方法：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; g.next()</span><br><span class="line">0</span><br><span class="line">&gt;&gt;&gt; g.next()</span><br><span class="line">1</span><br><span class="line">&gt;&gt;&gt; g.next()</span><br><span class="line">4</span><br><span class="line">&gt;&gt;&gt; g.next()</span><br><span class="line">9</span><br><span class="line">&gt;&gt;&gt; g.next()</span><br><span class="line">16</span><br><span class="line">&gt;&gt;&gt; g.next()</span><br><span class="line">25</span><br><span class="line">&gt;&gt;&gt; g.next()</span><br><span class="line">36</span><br><span class="line">&gt;&gt;&gt; g.next()</span><br><span class="line">49</span><br><span class="line">&gt;&gt;&gt; g.next()</span><br><span class="line">64</span><br><span class="line">&gt;&gt;&gt; g.next()</span><br><span class="line">81</span><br><span class="line">&gt;&gt;&gt; g.next()</span><br><span class="line">Traceback (most recent call last):</span><br><span class="line">  File <span class="string">&quot;&lt;stdin&gt;&quot;</span>, line 1, <span class="keyword">in</span> &lt;module&gt;</span><br><span class="line">StopIteration</span><br></pre></td></tr></table></figure>
+<p>其实<code>generator object</code>也是可迭代的，所以可以用循环打印，还不会报错。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; g = (x * x <span class="keyword">for</span> x <span class="keyword">in</span> range(10))</span><br><span class="line">&gt;&gt;&gt; <span class="keyword">for</span> n <span class="keyword">in</span> g:</span><br><span class="line">...     <span class="built_in">print</span> n</span><br><span class="line">...</span><br><span class="line">0</span><br><span class="line">1</span><br><span class="line">4</span><br><span class="line">9</span><br><span class="line">16</span><br><span class="line">25</span><br><span class="line">36</span><br><span class="line">49</span><br><span class="line">64</span><br><span class="line">81</span><br></pre></td></tr></table></figure>
+<p>这是简单的推算算法，但是如果算法比较复杂，写在<code>()</code>里就不太合适了，我们可以换一种方式，使用函数来实现。<br>比如，著名的斐波拉契数列（Fibonacci），除第一个和第二个数外，任意一个数都可由前两个数相加得到：</p>
+<blockquote>
+<p>1, 1, 2, 3, 5, 8, 13, 21, 34, …</p>
+</blockquote>
+<p>斐波拉契数列用列表生成式写不出来，但是，用函数把它打印出来却很容易：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">fib</span>(<span class="params"><span class="built_in">max</span></span>):</span><br><span class="line">    n, a, b = <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span></span><br><span class="line">    <span class="keyword">while</span> n &lt; <span class="built_in">max</span>:</span><br><span class="line">        <span class="built_in">print</span> b</span><br><span class="line">        a, b = b, a + b</span><br><span class="line">        n = n + <span class="number">1</span></span><br></pre></td></tr></table></figure>
+<p>上面的函数可以输出斐波那契数列的前N个数,这个也是通过前面的数推算出后面的，所以可以把函数变成<code>generator object</code>，只需要把<code>print b</code>改为<code>yield b</code>即可。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">fib</span>(<span class="params"><span class="built_in">max</span></span>):</span><br><span class="line">    n, a, b = <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span></span><br><span class="line">    <span class="keyword">while</span> n &lt; <span class="built_in">max</span>:</span><br><span class="line">        <span class="keyword">yield</span> b</span><br><span class="line">        a, b = b, a + b</span><br><span class="line">        n = n + <span class="number">1</span></span><br></pre></td></tr></table></figure>
+<p>如果一个函数定义中包含了<code>yield</code>关键字，这个函数就不在是普通函数，而是一个<code>generator object</code>。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; fib(6)</span><br><span class="line">&lt;generator object fib at 0x7fa1c3fcdaf0&gt;</span><br><span class="line">&gt;&gt;&gt; fib(6).next()</span><br><span class="line">1</span><br></pre></td></tr></table></figure>
+<p>所以要想调用这个函数，需要使用<code>next()</code>函数，并且遇到<code>yield</code>语句返回(可以把yield理解为return):</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">odd</span>():</span><br><span class="line">    <span class="built_in">print</span> <span class="string">&#x27;step 1&#x27;</span></span><br><span class="line">    <span class="keyword">yield</span> <span class="number">1</span></span><br><span class="line">    <span class="built_in">print</span> <span class="string">&#x27;step 2&#x27;</span></span><br><span class="line">    <span class="keyword">yield</span> <span class="number">3</span></span><br><span class="line">    <span class="built_in">print</span> <span class="string">&#x27;step 3&#x27;</span></span><br><span class="line">    <span class="keyword">yield</span> <span class="number">5</span></span><br></pre></td></tr></table></figure>
+<p>看看调用输出结果：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; o = odd()</span><br><span class="line">&gt;&gt;&gt; o.next()</span><br><span class="line">step 1</span><br><span class="line">1</span><br><span class="line">&gt;&gt;&gt; o.next()</span><br><span class="line">step 2</span><br><span class="line">3</span><br><span class="line">&gt;&gt;&gt; o.next()</span><br><span class="line">step 3</span><br><span class="line">5</span><br><span class="line">&gt;&gt;&gt; o.next()</span><br><span class="line">Traceback (most recent call last):</span><br><span class="line">  File <span class="string">&quot;&lt;stdin&gt;&quot;</span>, line 1, <span class="keyword">in</span> &lt;module&gt;</span><br><span class="line">StopIteration</span><br></pre></td></tr></table></figure>
+<p>同样也可以改为<code>for</code>循环语句输出。例如：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">odd</span>():</span><br><span class="line">    <span class="built_in">print</span> <span class="string">&#x27;step 1&#x27;</span></span><br><span class="line">    <span class="keyword">yield</span> <span class="number">1</span></span><br><span class="line">    <span class="built_in">print</span> <span class="string">&#x27;step 2&#x27;</span></span><br><span class="line">    <span class="keyword">yield</span> <span class="number">2</span></span><br><span class="line">    <span class="built_in">print</span> <span class="string">&#x27;step 3&#x27;</span></span><br><span class="line">    <span class="keyword">yield</span> <span class="number">3</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    o = odd()</span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            <span class="built_in">print</span> o.<span class="built_in">next</span>()</span><br><span class="line">        <span class="keyword">except</span>:</span><br><span class="line">            <span class="keyword">break</span></span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Python/" rel="tag"># Python</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2015/10/10/Python-%E9%BB%98%E8%AE%A4%E5%8F%82%E6%95%B0%E9%99%B7%E9%98%B1/" rel="prev" title="Python 默认参数陷阱">
+                  <i class="fa fa-angle-left"></i> Python 默认参数陷阱
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2015/10/13/Hive-%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4-01/" rel="next" title="Hive 常用命令 01">
+                  Hive 常用命令 01 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">LittleQ</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

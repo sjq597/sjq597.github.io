@@ -1,0 +1,23 @@
+with app.app_context():
+  # call your method here
+
+app 不是flask下面的app,而是程序中的全局變量
+
+
+up vote
+3
+down vote
+accepted
+From the Flask source code in flask/globals.py:
+
+_app_ctx_err_msg = '''\
+Working outside of application context.
+
+This typically means that you attempted to use functionality that needed
+to interface with the current application object in a way.  To solve
+this set up an application context with app.app_context().  See the
+documentation for more information.\
+'''
+Following the documentation, you can see that you need to make flask.current_app point to your application and it currently doesn't.
+
+You're probably calling your DB function before Flask has initialized. My guess is that your app object has not been created yet with the Flask constructor.

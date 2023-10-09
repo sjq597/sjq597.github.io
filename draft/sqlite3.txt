@@ -1,0 +1,12 @@
+find / -name _sqlite3.so
+/usr/lib64/python2.6/lib-dynload/_sqlite3.so
+
+[root@littleq WebHubBot]# whereis python
+python: /usr/bin/python /usr/bin/python2.6 /usr/bin/python2.6-config /usr/lib/python2.6 /usr/lib64/p
+ython2.6 /usr/include/python2.6 /usr/local/python2.7 /usr/share/man/man1/python.1.gz
+
+ls /usr/local/python2.7/lib/python2.7/lib-dynload/| grep sqlite3 
+
+cp /usr/lib64/python2.6/lib-dynload/_sqlite3.so /usr/local/python2.7/lib/python2.7/lib-dynload/
+
+

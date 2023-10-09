@@ -1,0 +1,5 @@
+module错误导致
+本来是父子工程，导入代码时将main test识别成了module
+
+解决办法，在Project Structure中将main test移除就行，只留下本来的父module和子module
+

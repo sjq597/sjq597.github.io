@@ -1,0 +1,6 @@
+Bad owner or permissions on $HOME/.ssh/config
+The ssh with RHEL 4 is a lot more anal about security checking. In my case, it was the fact that $HOME/.ssh/config was group-writable which was causing it to barf. To fix:
+
+$ cd ~/.ssh
+$ chmod 600 *
+Note that this error message is kind of stupid, since $HOME/.ssh had permissions 700 on it, and $HOME had 750 permissions on it. If any process managed to evade those permissions, changing the permissions on the config file would be similarly defeated.

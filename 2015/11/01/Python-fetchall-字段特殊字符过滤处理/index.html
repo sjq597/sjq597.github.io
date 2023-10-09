@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"sjq597.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.18.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="最近在做数据仓库的迁移工作,之前数据仓库的数据都是用的shell脚本来抽取,后来换了python脚本.但是在把数据抽取存放到hadoop时,出现了一个问题:由于数据库字段很多,提前也不知道数据库字段会存储什么内容,hive建表是以\t\n做分隔,这就导致了一个问题,如果mysql字段内容里面本身含有\t\n,那么就会出现字段错位情况,并且很头疼的是mysql有100多个字段,也不知道哪个字段会出现">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Python fetchall()字段特殊字符过滤处理">
+<meta property="og:url" content="http://sjq597.github.io/2015/11/01/Python-fetchall-%E5%AD%97%E6%AE%B5%E7%89%B9%E6%AE%8A%E5%AD%97%E7%AC%A6%E8%BF%87%E6%BB%A4%E5%A4%84%E7%90%86/index.html">
+<meta property="og:site_name" content="LittleQ">
+<meta property="og:description" content="最近在做数据仓库的迁移工作,之前数据仓库的数据都是用的shell脚本来抽取,后来换了python脚本.但是在把数据抽取存放到hadoop时,出现了一个问题:由于数据库字段很多,提前也不知道数据库字段会存储什么内容,hive建表是以\t\n做分隔,这就导致了一个问题,如果mysql字段内容里面本身含有\t\n,那么就会出现字段错位情况,并且很头疼的是mysql有100多个字段,也不知道哪个字段会出现">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2015-11-01T02:50:04.000Z">
+<meta property="article:modified_time" content="2023-10-07T06:54:54.000Z">
+<meta property="article:author" content="LittleQ">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="SQL">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://sjq597.github.io/2015/11/01/Python-fetchall-%E5%AD%97%E6%AE%B5%E7%89%B9%E6%AE%8A%E5%AD%97%E7%AC%A6%E8%BF%87%E6%BB%A4%E5%A4%84%E7%90%86/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://sjq597.github.io/2015/11/01/Python-fetchall-%E5%AD%97%E6%AE%B5%E7%89%B9%E6%AE%8A%E5%AD%97%E7%AC%A6%E8%BF%87%E6%BB%A4%E5%A4%84%E7%90%86/","path":"2015/11/01/Python-fetchall-字段特殊字符过滤处理/","title":"Python fetchall()字段特殊字符过滤处理"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Python fetchall()字段特殊字符过滤处理 | LittleQ</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">LittleQ</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">爱好：写代码</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-overview-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">LittleQ</p>
+  <div class="site-description" itemprop="description">数据开发工程师的成长历程</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">145</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">51</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://sjq597.github.io/2015/11/01/Python-fetchall-%E5%AD%97%E6%AE%B5%E7%89%B9%E6%AE%8A%E5%AD%97%E7%AC%A6%E8%BF%87%E6%BB%A4%E5%A4%84%E7%90%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="LittleQ">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LittleQ">
+      <meta itemprop="description" content="数据开发工程师的成长历程">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Python fetchall()字段特殊字符过滤处理 | LittleQ">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Python fetchall()字段特殊字符过滤处理
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2015-11-01 10:50:04" itemprop="dateCreated datePublished" datetime="2015-11-01T10:50:04+08:00">2015-11-01</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-10-07 14:54:54" itemprop="dateModified" datetime="2023-10-07T14:54:54+08:00">2023-10-07</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Python%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">Python笔记</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>最近在做数据仓库的迁移工作,之前数据仓库的数据都是用的shell脚本来抽取,后来换了python脚本.<br>但是在把数据抽取存放到hadoop时,出现了一个问题:<br>由于数据库字段很多,提前也不知道数据库字段会存储什么内容,hive建表是以<code>\t\n</code>做分隔,这就导致了一个问题,如果mysql字段内容里面本身含有<code>\t\n</code>,那么就会出现字段错位情况,并且很头疼的是mysql有100多个字段,也不知道哪个字段会出现这个问题.<br>shell脚本里的做法是在需要抽取的字段上用mysql的replace函数对字段进行替换,例如,假设mysql里的字段是<code>column1 varchar(2000)</code>,那么很可能就会出现有特殊字符的情况,在查询的sql语句里加上</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> replace(replace(replace(column1,<span class="string">&#x27;\r&#x27;</span>,<span class="string">&#x27;&#x27;</span>),<span class="string">&#x27;\n&#x27;</span>,<span class="string">&#x27;&#x27;</span>),<span class="string">&#x27;\t&#x27;</span>,<span class="string">&#x27;&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<p>之前一直是这么干的,但是这样写sql特别长,特别是有100多个字段,也不知道哪个有特殊字符,只要都加上.<br>所以在python中对字段不加处理,最终导致hive表字段对应出现偏差,所以在python里从mysql查询到的字段在写到文件之前需要对每个字段进行过滤处理</p>
+<p>看个例子,我就以mysql测试为例,首先建一张测试表</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> `filter_fields` (</span><br><span class="line">  `field1` <span class="type">varchar</span>(<span class="number">50</span>) <span class="keyword">DEFAULT</span> <span class="keyword">NULL</span>,</span><br><span class="line">  `field2` <span class="type">varchar</span>(<span class="number">50</span>) <span class="keyword">DEFAULT</span> <span class="keyword">NULL</span>,</span><br><span class="line">  `field3` <span class="type">varchar</span>(<span class="number">50</span>) <span class="keyword">DEFAULT</span> <span class="keyword">NULL</span>,</span><br><span class="line">  `field4` <span class="type">varchar</span>(<span class="number">50</span>) <span class="keyword">DEFAULT</span> <span class="keyword">NULL</span>,</span><br><span class="line">  `field5` <span class="type">varchar</span>(<span class="number">50</span>) <span class="keyword">DEFAULT</span> <span class="keyword">NULL</span>,</span><br><span class="line">  `field6` <span class="type">varchar</span>(<span class="number">50</span>) <span class="keyword">DEFAULT</span> <span class="keyword">NULL</span></span><br><span class="line">) ENGINE<span class="operator">=</span>InnoDB <span class="keyword">DEFAULT</span> CHARSET<span class="operator">=</span>utf8;</span><br></pre></td></tr></table></figure>
+<p>有六个字段,都是<code>varchar</code>类型,插入新数据可以在里面插入特殊字符.简单插入条数据测试看看:</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> filter_fields(field1,field2,field3,field4,field5,field6) <span class="keyword">VALUES</span></span><br><span class="line">(<span class="string">&#x27;test01&#x27;</span>,<span class="string">&#x27;test02&#x27;</span>,<span class="string">&#x27;test03&#x27;</span>,<span class="string">&#x27;test04&#x27;</span>,<span class="string">&#x27;test05&#x27;</span>,<span class="string">&#x27;test06&#x27;</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> filter_fields(field1,field2,field3,field4,field5,field6) <span class="keyword">VALUES</span></span><br><span class="line">(<span class="string">&#x27;test11\ntest11&#x27;</span>,<span class="string">&#x27;test12\n\n&#x27;</span>,<span class="string">&#x27;test13&#x27;</span>,<span class="string">&#x27;test14&#x27;</span>,<span class="string">&#x27;test15&#x27;</span>,<span class="string">&#x27;test16&#x27;</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> filter_fields(field1,field2,field3,field4,field5,field6) <span class="keyword">VALUES</span></span><br><span class="line">(<span class="string">&#x27;test21\ttest21&#x27;</span>,<span class="string">&#x27;test22\ttest22\ttest22&#x27;</span>,<span class="string">&#x27;test23\t\t\t&#x27;</span>,<span class="string">&#x27;test4&#x27;</span>,<span class="string">&#x27;test5&#x27;</span>,<span class="string">&#x27;test6&#x27;</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> filter_fields(field1,field2,field3,field4,field5,field6) <span class="keyword">VALUES</span></span><br><span class="line">(<span class="string">&#x27;test21\rest21&#x27;</span>,<span class="string">&#x27;test22\r\rest22\r\rest22&#x27;</span>,<span class="string">&#x27;test23\r\r\r&#x27;</span>,<span class="string">&#x27;test4&#x27;</span>,<span class="string">&#x27;test5&#x27;</span>,<span class="string">&#x27;test6&#x27;</span>);</span><br></pre></td></tr></table></figure>
+<p>其中数据里插入的特殊字符,可能连在一起,也有不连在一起的.</p>
+<p>python测试代码:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># coding=utf-8</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> MySQLdb</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"></span><br><span class="line">db_host = <span class="string">&#x27;127.0.0.1&#x27;</span>   <span class="comment"># 数据库地址</span></span><br><span class="line">db_port = <span class="number">3306</span>          <span class="comment"># 数据库端口</span></span><br><span class="line">db_user = <span class="string">&#x27;root&#x27;</span>        <span class="comment"># mysql用户名</span></span><br><span class="line">db_pwd = <span class="string">&#x27;yourpassword&#x27;</span> <span class="comment"># mysql用户密码,换成你的密码</span></span><br><span class="line">db_name = <span class="string">&#x27;test&#x27;</span>        <span class="comment"># 数据库名</span></span><br><span class="line">db_table = <span class="string">&#x27;filter_fields&#x27;</span>  <span class="comment"># 数据库表</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 过滤sql字段结果中的\t\n</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">extract_data</span>(<span class="params">table_name</span>):</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        conn = MySQLdb.connect(host=db_host, port = db_port, user=db_user,</span><br><span class="line">                               passwd = db_pwd, db = db_name, charset = <span class="string">&quot;utf8&quot;</span>)</span><br><span class="line">        cursor = conn.cursor()</span><br><span class="line">    <span class="keyword">except</span> MySQLdb.Error, e:</span><br><span class="line">        <span class="built_in">print</span> <span class="string">&#x27;数据库连接异常&#x27;</span></span><br><span class="line">        sys.exit(<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        sql = <span class="string">&#x27;select * from %s;&#x27;</span>%(table_name)</span><br><span class="line">        cursor.execute(sql)</span><br><span class="line">        rows = cursor.fetchall()</span><br><span class="line"></span><br><span class="line">        <span class="built_in">print</span> <span class="string">&#x27;====字段未过滤查询结果====&#x27;</span></span><br><span class="line">        <span class="keyword">for</span> row <span class="keyword">in</span> rows:</span><br><span class="line">            <span class="built_in">print</span> row</span><br><span class="line"></span><br><span class="line">        <span class="built_in">print</span> <span class="string">&#x27;====字段过滤之后结果====&#x27;</span></span><br><span class="line">        rows_list = []</span><br><span class="line">        <span class="keyword">for</span> row <span class="keyword">in</span> rows:</span><br><span class="line">            row_list = []</span><br><span class="line">            <span class="keyword">for</span> column <span class="keyword">in</span> row:</span><br><span class="line">                row_list.append(column.replace(<span class="string">&#x27;\t&#x27;</span>, <span class="string">&#x27;&#x27;</span>).replace(<span class="string">&#x27;\n&#x27;</span>, <span class="string">&#x27;&#x27;</span>).replace(<span class="string">&#x27;\r&#x27;</span>, <span class="string">&#x27;&#x27;</span>))</span><br><span class="line">            rows_list.append(row_list)</span><br><span class="line">            <span class="built_in">print</span> rows_list[-<span class="number">1</span>]		<span class="comment"># [-1]表示列表最后一个元素</span></span><br><span class="line">        <span class="keyword">return</span> rows_list</span><br><span class="line">    <span class="keyword">except</span> MySQLdb.Error, e:</span><br><span class="line">        <span class="built_in">print</span> <span class="string">&#x27;执行sql语句失败&#x27;</span></span><br><span class="line">        cursor.close()</span><br><span class="line">        conn.close()</span><br><span class="line">        sys.exit(<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    <span class="built_in">print</span> <span class="string">&#x27;begin:&#x27;</span></span><br><span class="line">    rows = extract_data(db_table)</span><br><span class="line">    <span class="keyword">pass</span></span><br></pre></td></tr></table></figure>
+<p>看看输出结果:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">====字段未过滤查询结果====</span><br><span class="line">(u&#x27;test01&#x27;, u&#x27;test02&#x27;, u&#x27;test03&#x27;, u&#x27;test04&#x27;, u&#x27;test05&#x27;, u&#x27;test06&#x27;)</span><br><span class="line">(u&#x27;test11\ntest11&#x27;, u&#x27;test12\n\n&#x27;, u&#x27;test13&#x27;, u&#x27;test14&#x27;, u&#x27;test15&#x27;, u&#x27;test16&#x27;)</span><br><span class="line">(u&#x27;test21\ttest21&#x27;, u&#x27;test22\ttest22\ttest22&#x27;, u&#x27;test23\t\t\t&#x27;, u&#x27;test4&#x27;, u&#x27;test5&#x27;, u&#x27;test6&#x27;)</span><br><span class="line">(u&#x27;test21\rest21&#x27;, u&#x27;test22\r\rest22\r\rest22&#x27;, u&#x27;test23\r\r\r&#x27;, u&#x27;test4&#x27;, u&#x27;test5&#x27;, u&#x27;test6&#x27;)</span><br><span class="line">====字段过滤之后结果====</span><br><span class="line">[u&#x27;test01&#x27;, u&#x27;test02&#x27;, u&#x27;test03&#x27;, u&#x27;test04&#x27;, u&#x27;test05&#x27;, u&#x27;test06&#x27;]</span><br><span class="line">[u&#x27;test11test11&#x27;, u&#x27;test12&#x27;, u&#x27;test13&#x27;, u&#x27;test14&#x27;, u&#x27;test15&#x27;, u&#x27;test16&#x27;]</span><br><span class="line">[u&#x27;test21test21&#x27;, u&#x27;test22test22test22&#x27;, u&#x27;test23&#x27;, u&#x27;test4&#x27;, u&#x27;test5&#x27;, u&#x27;test6&#x27;]</span><br><span class="line">[u&#x27;test21est21&#x27;, u&#x27;test22est22est22&#x27;, u&#x27;test23&#x27;, u&#x27;test4&#x27;, u&#x27;test5&#x27;, u&#x27;test6&#x27;]</span><br></pre></td></tr></table></figure>
+<p>可以看到,制表符,换行符,回车都被过滤了.<br>**建议:**最后说点题外话,不要小视<code>\r</code>,回车符.很多人以为回车符就是换行符,其实不是的,<code>\r</code>表示回车符,<code>\n</code>表示新行.之前代码里其实是过滤掉了<code>\t\n</code>的,但是抽取的数据还是不对,后来看了源码之后才发现,原来是没有过滤<code>\r</code>,就这个不同导致了很多数据抽取不对.</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Python/" rel="tag"># Python</a>
+              <a href="/tags/SQL/" rel="tag"># SQL</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2015/10/27/Linux-%E6%9C%AC%E5%9C%B0%E5%92%8C%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%BA%92%E4%BC%A0%E6%96%87%E4%BB%B6%E5%91%BD%E4%BB%A4-scp/" rel="prev" title="Linux 本地和服务器互传文件命令:scp">
+                  <i class="fa fa-angle-left"></i> Linux 本地和服务器互传文件命令:scp
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2015/11/02/Ubuntu-14-04-%E5%8D%87%E7%BA%A7gcc/" rel="next" title="Ubuntu 14.04 升级gcc">
+                  Ubuntu 14.04 升级gcc <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">LittleQ</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

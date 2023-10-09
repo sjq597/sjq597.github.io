@@ -1,0 +1,50 @@
+sudo apt-get install python-matplotlib
+add_subplot(m,n,p) 一般写成add_subplot(mnp)
+subplot是将多个图画到一个平面上的工具。其中，m表示是图排成m行，n表示图排成n列，也就是整个figure中有n个图是排成一行的，一共m行，如果m=2就是表示2行图。p表示图所在的位置，p=1表示从左到右从上到下的第一个位置(假设有四个格子,序号顺时针增加)。
+
+plot
+plt.plot([1,2,3,4])
+您可能想知道为什么x轴范围从[0,3]和 y轴[1,4]轴。如果你提供单个列表或数组,matplotlib假定它是y值的序列,并自动生成x值。由于python范围从0开始,默认x向量具有相同的长度y但是从0开始。因此,x数据[0,1,2,3]。
+
+通用的,可以提供多个参数,例如,你可以提供一组x,与之对应的y值数组
+plt.plot([1, 2, 3, 4], [1, 4, 9, 16])	# y=x*x
+
+还可以跟第三个参数,画图的线的风格和颜色,例如:默认就是'b-'黑色的实线,前面是颜色,后面是点的形状,可以组合的
+可以画很多线,依此写在括号里,类似于这样:
+
+# red dashes, blue squares and green triangles
+plt.plot(t, t, 'r--', t, t**2, 'bs', t, t**3, 'g^')
+
+在一张画板上绘制多幅子图
+import numpy as np
+import matplotlib.pyplot as plt
+
+def f(t):
+    return np.exp(-t) * np.cos(2*np.pi*t)
+
+t1 = np.arange(0.0, 5.0, 0.1)
+t2 = np.arange(0.0, 5.0, 0.02)
+plt.figure(1)
+plt.subplot(211)
+plt.plot(t1, f(t1), 'bo', t2, f(t2), 'k')
+plt.subplot(212)
+plt.plot(t2, np.cos(2*np.pi*t2), 'r--')
+plt.show()
+
+
+文本及标签使用
+import numpy as np
+import matplotlib.pyplot as plt
+mu, sigma = 100, 15
+x = mu + sigma * np.random.randn(10000)
+# the histogram of the data
+n, bins, patches = plt.hist(x, 50, normed=1, facecolor='g', alpha=0.75)
+plt.xlabel('Smarts')
+plt.ylabel('Probability')
+plt.title('Histogram of IQ')
+plt.text(60, .025, r'$\mu=100,\ \sigma=15$')
+plt.axis([40, 160, 0, 0.03])
+plt.grid(True)
+plt.show()
+
+

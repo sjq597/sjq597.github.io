@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"sjq597.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.18.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="最近貌似用Kylin来搭建OLAP数据分析已经成为了大多数公司采取的做法了，这个东西搭建起来还有些&#x3D;麻烦,因为它需要你先配置好Hadoop,Hive,Hbase这三个东西，任何一个配置的不对的话可能会出问题，下面介绍一下我的安装和配置过程 环境准备主要是依赖的环境的一些版本 123456OS: Ubuntu 16.04 64bitJava: 1.7.0_40Hive: 2.1.0Hado">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Ubuntu 16.04 安装Apache Kylin">
+<meta property="og:url" content="http://sjq597.github.io/2016/10/23/Ubuntu-16-04-%E5%AE%89%E8%A3%85Apache-Kylin/index.html">
+<meta property="og:site_name" content="LittleQ">
+<meta property="og:description" content="最近貌似用Kylin来搭建OLAP数据分析已经成为了大多数公司采取的做法了，这个东西搭建起来还有些&#x3D;麻烦,因为它需要你先配置好Hadoop,Hive,Hbase这三个东西，任何一个配置的不对的话可能会出问题，下面介绍一下我的安装和配置过程 环境准备主要是依赖的环境的一些版本 123456OS: Ubuntu 16.04 64bitJava: 1.7.0_40Hive: 2.1.0Hado">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2016-10-23T07:57:27.000Z">
+<meta property="article:modified_time" content="2023-10-07T06:54:54.000Z">
+<meta property="article:author" content="LittleQ">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="Hadoop">
+<meta property="article:tag" content="大数据">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://sjq597.github.io/2016/10/23/Ubuntu-16-04-%E5%AE%89%E8%A3%85Apache-Kylin/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://sjq597.github.io/2016/10/23/Ubuntu-16-04-%E5%AE%89%E8%A3%85Apache-Kylin/","path":"2016/10/23/Ubuntu-16-04-安装Apache-Kylin/","title":"Ubuntu 16.04 安装Apache Kylin"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Ubuntu 16.04 安装Apache Kylin | LittleQ</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">LittleQ</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">爱好：写代码</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%8E%AF%E5%A2%83%E5%87%86%E5%A4%87"><span class="nav-number">1.</span> <span class="nav-text">环境准备</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E6%AD%A5%E9%AA%A4"><span class="nav-number">2.</span> <span class="nav-text">安装步骤</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AEKylin"><span class="nav-number">3.</span> <span class="nav-text">配置Kylin</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E8%BF%90%E8%A1%8C"><span class="nav-number">4.</span> <span class="nav-text">测试运行</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">LittleQ</p>
+  <div class="site-description" itemprop="description">数据开发工程师的成长历程</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">145</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">51</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://sjq597.github.io/2016/10/23/Ubuntu-16-04-%E5%AE%89%E8%A3%85Apache-Kylin/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="LittleQ">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LittleQ">
+      <meta itemprop="description" content="数据开发工程师的成长历程">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Ubuntu 16.04 安装Apache Kylin | LittleQ">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Ubuntu 16.04 安装Apache Kylin
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2016-10-23 15:57:27" itemprop="dateCreated datePublished" datetime="2016-10-23T15:57:27+08:00">2016-10-23</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-10-07 14:54:54" itemprop="dateModified" datetime="2023-10-07T14:54:54+08:00">2023-10-07</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83/" itemprop="url" rel="index"><span itemprop="name">开发环境</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>最近貌似用Kylin来搭建OLAP数据分析已经成为了大多数公司采取的做法了，这个东西搭建起来还有些&#x3D;麻烦,因为它需要你先配置好Hadoop,Hive,Hbase这三个东西，任何一个配置的不对的话可能会出问题，下面介绍一下我的安装和配置过程</p>
+<h3 id="环境准备"><a href="#环境准备" class="headerlink" title="环境准备"></a>环境准备</h3><p>主要是依赖的环境的一些版本</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">OS: Ubuntu 16.04 64bit</span><br><span class="line">Java: 1.7.0_40</span><br><span class="line">Hive: 2.1.0</span><br><span class="line">Hadoop: 2.6.4</span><br><span class="line">Hbase: 0.98.22-hadoop2</span><br><span class="line">Kylin: 1.5.4.1</span><br></pre></td></tr></table></figure>
+
+<p>**备注:**这里Hbase并没有用官方的1.x版本，而是采用了Kylin官方建议的0.98版本，因为我第一次安装的时候由于hbase的问题而失败了，所以就换了一个低版本的，你在安装的时候也可以使用最新版，但是如果安装不成功，可以考虑采纳官方建议的组合版本</p>
+<h3 id="安装步骤"><a href="#安装步骤" class="headerlink" title="安装步骤"></a>安装步骤</h3><p>Hadoop,Hive,Hbase的安装这里就不讲了，可以参考我以前的文章，我采用的都是本地为分布式运行模式,去<a target="_blank" rel="noopener" href="http://kylin.apache.org/download/">Kylin官方下载</a>最新版本:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo tar -xvf apache-kylin-1.5.4.1-bin.tar.gz -C /usr/dev</span><br></pre></td></tr></table></figure>
+<p>解压好了，然后就是配置环境变量了，注意我都配置在<code>/etc/profile</code>这个文件里面了，主要是有些时候环境变量读取不到，所以干脆来个最狠的，直接全局配置了:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">### 大数据相关</span><br><span class="line">## Hbase</span><br><span class="line">export HBASE_HOME=/usr/dev/hbase-1.2.3</span><br><span class="line">export HBASE_CONF_DIR=$&#123;HBASE_HOME&#125;/conf</span><br><span class="line"></span><br><span class="line">## Hadoop</span><br><span class="line">export HADOOP_HOME=/usr/dev/hadoop-2.6.4</span><br><span class="line">export HADOOP_CONF_DIR=$&#123;HADOOP_HOME&#125;/etc/hadoop</span><br><span class="line">export YARN_CONF_DIR=$&#123;HADOOP_HOME&#125;/etc/hadoop</span><br><span class="line"></span><br><span class="line">## Hive</span><br><span class="line">export HIVE_HOME=/usr/dev/apache-hive-2.1.0-bin</span><br><span class="line">export HCAT_HOME=$&#123;HIVE_HOME&#125;/hcatalog</span><br><span class="line">export HIVE_CONF=$&#123;HIVE_HOME&#125;/conf</span><br><span class="line"></span><br><span class="line">## Kylin</span><br><span class="line">export KYLIN_HOME=/usr/dev/apache-kylin-1.5.4.1-bin</span><br></pre></td></tr></table></figure>
+<p>上面的目录如果不一致，改成你自己对应的目录,然后<code>source /etc/profile</code>使配置生效。</p>
+<h3 id="配置Kylin"><a href="#配置Kylin" class="headerlink" title="配置Kylin"></a>配置Kylin</h3><p>配置Kylin使用Hive的数据库名</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cd $&#123;KYLIN_HOME&#125;/conf</span><br><span class="line">vim kylin.properties</span><br><span class="line">kylin.job.hive.database.for.intermediatetable=kylin_middle</span><br></pre></td></tr></table></figure>
+<p>然后记得要手动在Hive中创建数据库<code>kylin_middle</code>.</p>
+<p>然后创建一个目录并赋给当前用户权限,假设当前用户为<code>anonymous</code>:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">hadoop fs -mkdir /kylin</span><br><span class="line">hadoop fs -chown -R anonymous:anonymous /kylin</span><br></pre></td></tr></table></figure>
+<p>然后检测一下Kylin的环境变量:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd $&#123;KYLIN_HOME&#125;/bin</span><br><span class="line">./check-env.sh</span><br></pre></td></tr></table></figure>
+<p>如果你的系统也报错:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">KYLIN_HOME is set to /usr/dev/apache-kylin-1.5.4.1-bin</span><br><span class="line">cat：无效选项 -- 1</span><br><span class="line">Try &#x27;cat --help&#x27; for more information.</span><br><span class="line">-mkdir: Not enough arguments: expected 1 but got 0</span><br><span class="line">Usage: hadoop fs [generic options] -mkdir [-p] &lt;path&gt; ...</span><br><span class="line">failed to create , Please make sure the user has right to access</span><br></pre></td></tr></table></figure>
+<p>那可能也是由于sh调用的问题，需要把所有sh脚本里面的<code>sh</code>替换成<code>bash</code>，我这里用<code>sed</code>命令来替换:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sed -i &#x27;s/`sh /`bash /g&#x27; *.sh</span><br></pre></td></tr></table></figure>
+<p>这样就把所有的替换了，并且替换结果也直接写回文件了.然后运行环境检测脚本</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./check-env.sh</span><br></pre></td></tr></table></figure>
+<p>如果没报什么错误，就可以正式运行了，记得先把hadoop hbase服务启动<br>然后再启动kylin</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./kylin.sh start</span><br></pre></td></tr></table></figure>
+<p>然后访问<a href="127.0.0.1:7070/kylin">127.0.0.1:7070&#x2F;kylin</a><br>第一次会有点儿慢，需要在hbase中创建表，稍微等大概10s就会弹出登陆界面<br>ADMIN&#x2F;KYLIN登陆就可以了</p>
+<h3 id="测试运行"><a href="#测试运行" class="headerlink" title="测试运行"></a>测试运行</h3><p>官方也提供了官方测试例子，如果你可以顺利登入系统，那么在<code>$&#123;KYLIN_HOME&#125;/bin</code>下面有个测试脚本<code>sample.sh</code>,运行这个脚本</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">cd $&#123;KYLIN_HOME&#125;/bin</span><br><span class="line">./sample.sh</span><br><span class="line">./kylin.sh stop</span><br><span class="line">./kylin.sh start</span><br></pre></td></tr></table></figure>
+<p>一次执行上面三个命令，运行成功之后重新进入系统或者刷新即可，会有一个<code>learn_kylin</code>工程，你只需要在<code>Model</code>里面<code>Actions</code>里面<code>Build</code>这个Cube即可，然后在Monitor里面可以看编译的进度，只有到100%才说明你编译成功，双击可以查看每一步的编译具体步骤，可以查看具体的日志，如果你编译失败了，可以查看具体的日志，直到编译成功为止，然后在Insight里面可以写sql查询:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select part_dt,sum(price) from kylin_sales group by part_dt;</span><br></pre></td></tr></table></figure>
+<p>可以看看这句，这个放到hive里面起码要30s,但是这个在Kylin里面基本就秒出结果了,Kylin提供的是sql接口,下一节讲一讲怎么集成上层的多维分析工具。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Linux/" rel="tag"># Linux</a>
+              <a href="/tags/Hadoop/" rel="tag"># Hadoop</a>
+              <a href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/" rel="tag"># 大数据</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2016/10/09/Ubuntu-16-04-Hbase-%E6%9C%AC%E5%9C%B0%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE/" rel="prev" title="Ubuntu 16.04 Hbase 本地安装配置">
+                  <i class="fa fa-angle-left"></i> Ubuntu 16.04 Hbase 本地安装配置
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2016/11/04/DataTables-%E6%94%B9%E5%8F%98%E5%88%97%E6%B8%B2%E6%9F%93/" rel="next" title="DataTables 常用操作">
+                  DataTables 常用操作 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">LittleQ</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"sjq597.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.18.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="经常在服务器上登陆,操作,有些命令一旦执行,就一直在屏幕上输出内容,如果想切换到终端去干其他的事,新手通常是直接Ctrl+c强制删除任务,然后再回来重新执行.其实完全没这个必要,我们可以把任务切换到后台挂起,然后去干我们自己的事情,干完了之后再切回来,继续执行之前没执行完的任务就行了,听上去是不是像操作系统的进程和线程调度,下面是一些常用的Shell作业管理命令. 作业管理 将当前作业放到后台暂停">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux 作业管理">
+<meta property="og:url" content="http://sjq597.github.io/2015/11/26/Linux-%E4%BD%9C%E4%B8%9A%E7%AE%A1%E7%90%86/index.html">
+<meta property="og:site_name" content="LittleQ">
+<meta property="og:description" content="经常在服务器上登陆,操作,有些命令一旦执行,就一直在屏幕上输出内容,如果想切换到终端去干其他的事,新手通常是直接Ctrl+c强制删除任务,然后再回来重新执行.其实完全没这个必要,我们可以把任务切换到后台挂起,然后去干我们自己的事情,干完了之后再切回来,继续执行之前没执行完的任务就行了,听上去是不是像操作系统的进程和线程调度,下面是一些常用的Shell作业管理命令. 作业管理 将当前作业放到后台暂停">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2015-11-26T07:38:15.000Z">
+<meta property="article:modified_time" content="2023-10-07T06:54:54.000Z">
+<meta property="article:author" content="LittleQ">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="Shell">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://sjq597.github.io/2015/11/26/Linux-%E4%BD%9C%E4%B8%9A%E7%AE%A1%E7%90%86/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://sjq597.github.io/2015/11/26/Linux-%E4%BD%9C%E4%B8%9A%E7%AE%A1%E7%90%86/","path":"2015/11/26/Linux-作业管理/","title":"Linux 作业管理"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Linux 作业管理 | LittleQ</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">LittleQ</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">爱好：写代码</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%9C%E4%B8%9A%E7%AE%A1%E7%90%86"><span class="nav-number">1.</span> <span class="nav-text">作业管理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E5%9C%BA%E5%90%88"><span class="nav-number">2.</span> <span class="nav-text">应用场合</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">LittleQ</p>
+  <div class="site-description" itemprop="description">数据开发工程师的成长历程</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">145</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">51</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://sjq597.github.io/2015/11/26/Linux-%E4%BD%9C%E4%B8%9A%E7%AE%A1%E7%90%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="LittleQ">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LittleQ">
+      <meta itemprop="description" content="数据开发工程师的成长历程">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Linux 作业管理 | LittleQ">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Linux 作业管理
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2015-11-26 15:38:15" itemprop="dateCreated datePublished" datetime="2015-11-26T15:38:15+08:00">2015-11-26</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-10-07 14:54:54" itemprop="dateModified" datetime="2023-10-07T14:54:54+08:00">2023-10-07</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Linux%E4%BD%BF%E7%94%A8/" itemprop="url" rel="index"><span itemprop="name">Linux使用</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>经常在服务器上登陆,操作,有些命令一旦执行,就一直在屏幕上输出内容,如果想切换到终端去干其他的事,新手通常是直接<code>Ctrl+c</code>强制删除任务,然后再回来重新执行.其实完全没这个必要,我们可以把任务切换到后台挂起,然后去干我们自己的事情,干完了之后再切回来,继续执行之前没执行完的任务就行了,听上去是不是像操作系统的进程和线程调度,下面是一些常用的Shell作业管理命令.</p>
+<h3 id="作业管理"><a href="#作业管理" class="headerlink" title="作业管理"></a>作业管理</h3><ol>
+<li><p>将<strong>当前</strong>作业放到后台<strong>暂停</strong>:<code>Ctrl+z</code></p>
+</li>
+<li><p>观察当前前后台作业状态:<code>jobs</code></p>
+<blockquote>
+</blockquote>
+<p>-l	除了列出作业号之外同时列出PID<br>-r	列出仅在后台运行(run)的作业<br>-s	仅列出暂停的作业</p>
+</li>
+<li><p>将后台作业拿到前台处理:<code>fg</code></p>
+<blockquote>
+<p>fg %jobnumber (%可有可无)</p>
+</blockquote>
+</li>
+<li><p>让作业在后台运行:<code>bg</code></p>
+<blockquote>
+<p>Ctrl+z让当前作业到后台去暂停,bg作业号就可以在后台run</p>
+</blockquote>
+</li>
+<li><p>管理后台作业:<code>kill</code><br>前面讲的都是把作业放到后台,或者切换到前台,要么挂起,要么执行.如果要删除作业或者重启作业,需要给作业发送特定信号<br><code>kill -signal %jobnumber</code></p>
+<blockquote>
+</blockquote>
+<p>-l	列出当前kill能够使用的信号<br>signal	表示给后台作业什么指示,用man 7 signal可知<br>-1	重新读取一次参数的设置文件,类似 reload<br>-2	表示与由键盘输入Ctrl+c同样的作用<br>-9	立刻强制删除一个作业<br>-15	以正常方式终止一项作业,与-9不一样</p>
+</li>
+</ol>
+<h3 id="应用场合"><a href="#应用场合" class="headerlink" title="应用场合"></a>应用场合</h3><p>有些程序没办法通过应用图标运行,只能调用脚本运行,并且一堆输出日志,当你在服务器上使用<code>Vim</code>编辑一个文件时,想去运行一个脚本,可以先保存<code>Vim</code>内容,然后把<code>Vim</code>切换到后台挂起,去执行脚本之后再且回来继续编辑<code>Vim</code>.</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Linux/" rel="tag"># Linux</a>
+              <a href="/tags/Shell/" rel="tag"># Shell</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2015/11/25/Linux-chown%E5%91%BD%E4%BB%A4/" rel="prev" title="Linux chown命令">
+                  <i class="fa fa-angle-left"></i> Linux chown命令
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2015/12/01/%E5%85%B3%E8%81%94%E7%AE%97%E6%B3%95%E4%B9%8B-Apriori/" rel="next" title="关联算法之-Apriori">
+                  关联算法之-Apriori <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">LittleQ</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

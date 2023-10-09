@@ -1,0 +1,19 @@
+@JSONField(name = "status")
+    public int getStatus() {
+        return statusCode.getCode();
+    }
+
+    @JSONField(name = "status")
+    public void setStatus(int code) {
+        this.statusCode = StatusCodeEnum.getEnum(code);
+    }
+
+    @JSONField(serialize = false)
+    public StatusCodeEnum getStatusCode() {
+        return statusCode;
+    }
+
+    @JSONField(deserialize = false)
+    public void setStatusCode(StatusCodeEnum statusCode) {
+        this.statusCode = statusCode;
+    }

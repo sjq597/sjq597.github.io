@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"sjq597.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.18.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="要不是为了用Flask开发系统，要不是涉及到各种表，估计也没人愿意用ORM框架吧，简单的查询估计直接写sql,用MySQLdb了。但是当你的系统大了，功能复杂了，表多了之后，这个东西还是很有必要的。如果你做了一个还算不太复杂的系统，里面各种表，你还手写sql,那我敬你是一条汉子，毕竟我们都喜欢踏实肯干的小伙子啊，请务必把简历发到我们公司HR的邮箱。好了，前面都是扯淡的，现在我要一本正经的说重点了，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Python SQLALchemy理解">
+<meta property="og:url" content="http://sjq597.github.io/2016/08/20/Python-SQLALchemy%E7%90%86%E8%A7%A3/index.html">
+<meta property="og:site_name" content="LittleQ">
+<meta property="og:description" content="要不是为了用Flask开发系统，要不是涉及到各种表，估计也没人愿意用ORM框架吧，简单的查询估计直接写sql,用MySQLdb了。但是当你的系统大了，功能复杂了，表多了之后，这个东西还是很有必要的。如果你做了一个还算不太复杂的系统，里面各种表，你还手写sql,那我敬你是一条汉子，毕竟我们都喜欢踏实肯干的小伙子啊，请务必把简历发到我们公司HR的邮箱。好了，前面都是扯淡的，现在我要一本正经的说重点了，">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2016-08-20T04:19:18.000Z">
+<meta property="article:modified_time" content="2023-10-07T06:54:54.000Z">
+<meta property="article:author" content="LittleQ">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="Web">
+<meta property="article:tag" content="Flask">
+<meta property="article:tag" content="SQL">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://sjq597.github.io/2016/08/20/Python-SQLALchemy%E7%90%86%E8%A7%A3/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://sjq597.github.io/2016/08/20/Python-SQLALchemy%E7%90%86%E8%A7%A3/","path":"2016/08/20/Python-SQLALchemy理解/","title":"Python SQLALchemy理解"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Python SQLALchemy理解 | LittleQ</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">LittleQ</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">爱好：写代码</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#SQLALChemy%E7%94%A8%E6%B3%95"><span class="nav-number">1.</span> <span class="nav-text">SQLALChemy用法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B3%E7%B3%BB%E6%98%A0%E5%B0%84relationship"><span class="nav-number">2.</span> <span class="nav-text">关系映射relationship</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A1%A8%E5%85%B3%E8%81%94"><span class="nav-number">2.1.</span> <span class="nav-text">表关联</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BB%B6%E8%BF%9F%E5%8A%A0%E8%BD%BD"><span class="nav-number">2.2.</span> <span class="nav-text">延迟加载</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%8D%E5%90%91%E6%9F%A5%E8%AF%A2"><span class="nav-number">2.3.</span> <span class="nav-text">反向查询</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%A4%9A%E5%AF%B9%E5%AF%B9%E6%98%A0%E5%B0%84"><span class="nav-number">2.3.1.</span> <span class="nav-text">多对对映射</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">LittleQ</p>
+  <div class="site-description" itemprop="description">数据开发工程师的成长历程</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">145</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">51</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://sjq597.github.io/2016/08/20/Python-SQLALchemy%E7%90%86%E8%A7%A3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="LittleQ">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LittleQ">
+      <meta itemprop="description" content="数据开发工程师的成长历程">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Python SQLALchemy理解 | LittleQ">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Python SQLALchemy理解
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2016-08-20 12:19:18" itemprop="dateCreated datePublished" datetime="2016-08-20T12:19:18+08:00">2016-08-20</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-10-07 14:54:54" itemprop="dateModified" datetime="2023-10-07T14:54:54+08:00">2023-10-07</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Flask/" itemprop="url" rel="index"><span itemprop="name">Flask</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>要不是为了用Flask开发系统，要不是涉及到各种表，估计也没人愿意用<code>ORM</code>框架吧，简单的查询估计直接写sql,用<code>MySQLdb</code>了。但是当你的系统大了，功能复杂了，表多了之后，这个东西还是很有必要的。如果你做了一个还算不太复杂的系统，里面各种表，你还手写sql,那我敬你是一条汉子，毕竟我们都喜欢踏实肯干的小伙子啊，请务必把简历发到我们公司HR的邮箱。好了，前面都是扯淡的，现在我要一本正经的说重点了，Flask的ORM框架也不止一个，为啥多说人都推荐用<code>SQLALChemy</code>这个ORM框架呢？其实原因很简单:因为它非常的灵活，这直接导致了它的功能非常的强大，当然，间接导致了这个框架学习成本很高。其实主要是参数很多，很多人不知道什么场景用什么参数，所以才有这篇笔记，我也不知道这些参数都是干啥的，但是作者既然留了这么多参数，必然是有场景需要，不然人家吃饱了撑得？</p>
+<h3 id="SQLALChemy用法"><a href="#SQLALChemy用法" class="headerlink" title="SQLALChemy用法"></a>SQLALChemy用法</h3><p>虽然是因为Flask而去用这个框架，但是我这里主要讲<code>SQLALChemy</code>怎么用，并没有涉及到<code>Flask</code>.前面说了一堆，无非就是想告诉你，这个框架真的很牛逼，用的人很多，出了问题你也不是第一个踩坑的，毕竟每个坑下面躺着不少你的前辈，有了问题也好解决。直接说有些空洞，先上个简单的代码:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line">#!/usr/bin/env python</span><br><span class="line"># -*- coding: utf-8 -*-</span><br><span class="line"></span><br><span class="line">from sqlalchemy import Integer, ForeignKey, String, Column</span><br><span class="line">from sqlalchemy import create_engine</span><br><span class="line">from sqlalchemy.ext.declarative import declarative_base</span><br><span class="line">from sqlalchemy.orm import relationship</span><br><span class="line">from sqlalchemy.orm import sessionmaker</span><br><span class="line"></span><br><span class="line">engine = create_engine(&#x27;sqlite:///:memory:&#x27;, echo=False)</span><br><span class="line">Base = declarative_base()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">class User(Base):</span><br><span class="line">    __tablename__ = &#x27;user&#x27;</span><br><span class="line">    id = Column(Integer, primary_key=True)</span><br><span class="line">    name = Column(String)</span><br><span class="line"></span><br><span class="line">    def __init__(self, name=None):</span><br><span class="line">        self.name = name</span><br><span class="line"></span><br><span class="line">    def __repr__(self):</span><br><span class="line">        return &#x27;&lt;User:id=&#123;0&#125;,name=&#123;1&#125;&gt;&#x27;.format(self.id, self.name)</span><br><span class="line"></span><br><span class="line">    addresses = relationship(&#x27;Address&#x27;)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">class Address(Base):</span><br><span class="line">    __tablename__ = &#x27;address&#x27;</span><br><span class="line">    id = Column(Integer, primary_key=True)</span><br><span class="line">    email = Column(String)</span><br><span class="line">    user_id = Column(Integer, ForeignKey(&#x27;user.id&#x27;))</span><br><span class="line"></span><br><span class="line">    def __init__(self, email=None, user_id=None):</span><br><span class="line">        self.email = email</span><br><span class="line">        self.user_id = user_id</span><br><span class="line"></span><br><span class="line">    def __repr__(self):</span><br><span class="line">        return &#x27;&lt;Address:id=&#123;0&#125;,email=&#123;1&#125;,user_id=&#123;2&#125;&gt;&#x27;.format(self.id, self.email, self.user_id)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">if __name__ == &#x27;__main__&#x27;:</span><br><span class="line"></span><br><span class="line">    Base.metadata.create_all(engine)</span><br><span class="line">    Session = sessionmaker(bind=engine)</span><br><span class="line">    session = Session()</span><br><span class="line"></span><br><span class="line">    session.add_all([</span><br><span class="line">        User(name=&#x27;san.zhang&#x27;),</span><br><span class="line">        User(name=&#x27;si.li&#x27;),</span><br><span class="line">        User(name=&#x27;wu.wang&#x27;)</span><br><span class="line">    ])</span><br><span class="line"></span><br><span class="line">    session.add_all([</span><br><span class="line">        Address(email=&#x27;123@qq.com&#x27;, user_id=1),</span><br><span class="line">        Address(email=&#x27;456@qq.com&#x27;, user_id=2),</span><br><span class="line">        Address(email=&#x27;789@qq.com&#x27;, user_id=2)</span><br><span class="line">    ])</span><br><span class="line">    session.commit()</span><br><span class="line"></span><br><span class="line">    print &#x27;查询1:%s&#x27; % session.query(User).all()</span><br><span class="line">    print &#x27;查询2:%s&#x27; % session.query(User).filter_by(id=1).first().addresses</span><br><span class="line">    print &#x27;查询3:%s&#x27; % session.query(User).filter_by(id=2).first().addresses</span><br><span class="line">    print &#x27;查询4:%s&#x27; % session.query(User).filter_by(id=3).first().addresses</span><br></pre></td></tr></table></figure>
+<p>解释一下:</p>
+<ul>
+<li>第10行我直接创建了一个内存数据库，这东西用法就是一个数据库链接，用过jdbc的都应该知道我在说什么，不知道的就当你知道了。具体的链接不同数据库不同，我就举个MySQL的例子:</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SQLALCHEMY_DATABASE_URI = &#x27;mysql://&lt;user_name&gt;:&lt;passward&gt;@&lt;host&gt;:&lt;port&gt;/&lt;database&gt;&#x27;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p><code>echo</code>:这个参数就是是否打印出执行的sql,其实orm框架到最后也是执行sql(好像是废话哈),所以你如果平时调试的时候想看这个底层执行的sql是不是符合你的逻辑，你可以把这个参数设置成<code>True</code>,这样在控制台就会打印出你每次执行的代码对应的sql</p>
+</li>
+<li><p>实体类<br>这里创建了两个实体类<code>User</code>,<code>Address</code>,分别对应数据库里面的两个表，这就完成了简单的<code>ORM</code>关系映射，把实体类和表对应起来了,注意这里有个映射关系，一个用户可能对应多个地址,这里还有个很重要的东西<code>relationship(&#39;Address&#39;)</code>.这个东西很复杂，其实<code>SQLALChemy</code>的复杂主要就是体现在这个地方，关系映射这个东西不太好理解，后面会细讲</p>
+</li>
+<li><p>数据库操作<br>这个其实比较简单了，需要一个操作句柄，<code>session</code>,修改操作只有在<code>session.commit()</code>之后才会真正提交到数据库中，类似与Spring里面的事务管理.</p>
+</li>
+</ul>
+<p>具体使用上就比较简单了，先创建了几个对象，然后调用<code>add_all()</code>把数据写到数据库里面，后面就可以查询了</p>
+<h3 id="关系映射relationship"><a href="#关系映射relationship" class="headerlink" title="关系映射relationship"></a>关系映射relationship</h3><p>前面也说了，这个东西复杂主要就是复杂在<code>relationship</code>这个类的使用上，总的来说，关系型数据库当然少不了关系这个桥梁，而ORM框架里面的这个R就显得很重要了，网上的一些教程吧，说的很含糊，我自己学的时候看了很多，那些人以为自己理解了，讲清楚了，但是说出来的话模棱两可，对于新手来说具有很大的迷惑性，我只能自己验证一下:</p>
+<h4 id="表关联"><a href="#表关联" class="headerlink" title="表关联"></a>表关联</h4><p>首先强调一点，在实体类里面用<code>relationship()</code>申明的属性并不是这个类对应的数据库里面的真实字段，也就是说上面的<code>User</code>类里面有<code>addresses</code>这个属性，但是数据库表<code>user</code>里面并没有<code>addresses</code>字段，这个只是ORM框架替你做了一个映射，你可以通过<code>User</code>里面的属性拿到和它关联的地址，但是你没办法通过<code>Address</code>类来获取它对应的用户信息，这就是关系映射,看看运行结果:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">查询1:[&lt;User:id=1,name=san.zhang&gt;, &lt;User:id=2,name=si.li&gt;, &lt;User:id=3,name=wu.wang&gt;]</span><br><span class="line">查询2:[&lt;Address:id=1,email=123@qq.com,user_id=1&gt;]</span><br><span class="line">查询3:[&lt;Address:id=2,email=456@qq.com,user_id=2&gt;, &lt;Address:id=3,email=789@qq.com,user_id=2&gt;]</span><br><span class="line">查询4:[]</span><br></pre></td></tr></table></figure>
+<p>我这里把输出sql的开关设置成<code>Flase</code>了，所以比较整洁，只有输出结果，如果打开的话，就会有对应的查询语句.</p>
+<h4 id="延迟加载"><a href="#延迟加载" class="headerlink" title="延迟加载"></a>延迟加载</h4><p>这个东西比较有意思,我们把<code>User</code>类里面的东西该成下面这样:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">addresses = relationship(&#x27;Address&#x27;, lazy=&#x27;dynamic&#x27;)</span><br></pre></td></tr></table></figure>
+<p>我们不仅加了关系映射，还加了一个属性<code>lazy=&#39;dynamic&#39;</code>,这个是个啥意思呢？其实就是延迟加载，想象一个场景，如果一个人对应了1w条地址信息，那么每当我们查一个用户的地址，访问<code>addresses</code>字段时，就会返回那1w条记录，但是正常情况下这1w条记录里面并不都是你要的，如果加上了上面这个属性，意思就是你访问<code>addresses</code>属性不再返回数据了，而是返回一个查询对象，你可以在这个查询对象上应用过滤啊，条件啥的，找到你真正要的那部分数据，这样性能上也会更好，不用每次把所有的数据都返回，具体可以看下面的例子,上面的查询语句输出结果如下:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">查询1:[&lt;User:id=1,name=san.zhang&gt;, &lt;User:id=2,name=si.li&gt;, &lt;User:id=3,name=wu.wang&gt;]</span><br><span class="line">查询2:SELECT address.id AS address_id, address.email AS address_email, address.user_id AS address_user_id </span><br><span class="line">FROM address </span><br><span class="line">WHERE :param_1 = address.user_id</span><br><span class="line">查询3:SELECT address.id AS address_id, address.email AS address_email, address.user_id AS address_user_id </span><br><span class="line">FROM address </span><br><span class="line">WHERE :param_1 = address.user_id</span><br><span class="line">查询4:SELECT address.id AS address_id, address.email AS address_email, address.user_id AS address_user_id </span><br><span class="line">FROM address </span><br><span class="line">WHERE :param_1 = address.user_id AND address.email = :email_1</span><br></pre></td></tr></table></figure>
+<p>可以看到，并没有输出我们查询到的结果，而是返回了查处对象，那么如果要获取查询结果怎么办呢？其实也很简单，既然是查询对象，那像上面一样调用<code>first(),all()</code>就可以了，把查询语句改一下:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">print &#x27;查询1:%s&#x27; % session.query(User).all()</span><br><span class="line">print &#x27;查询2:%s&#x27; % session.query(User).filter_by(id=1).first().addresses.all()</span><br><span class="line">print &#x27;查询3:%s&#x27; % session.query(User).filter_by(id=2).first().addresses.all()</span><br><span class="line">print &#x27;查询4:%s&#x27; % session.query(User).filter_by(id=2).first().addresses.filter_by(email=&#x27;456@qq.com&#x27;).all()</span><br></pre></td></tr></table></figure>
+<p>输出结果为:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">查询1:[&lt;User:id=1,name=san.zhang&gt;, &lt;User:id=2,name=si.li&gt;, &lt;User:id=3,name=wu.wang&gt;]</span><br><span class="line">查询2:[&lt;Address:id=1,email=123@qq.com,user_id=1&gt;]</span><br><span class="line">查询3:[&lt;Address:id=2,email=456@qq.com,user_id=2&gt;, &lt;Address:id=3,email=789@qq.com,user_id=2&gt;]</span><br><span class="line">查询4:[&lt;Address:id=2,email=456@qq.com,user_id=2&gt;]</span><br></pre></td></tr></table></figure>
+<p>注意第四个查询语句，我们在获取<code>addresses</code>属性之后调用了过滤函数，最后的结果确实只返回了一个，所以说这个延迟加载的确很方便，可以在查询结果返回前过滤掉不用的数据</p>
+<h4 id="反向查询"><a href="#反向查询" class="headerlink" title="反向查询"></a>反向查询</h4><p>我们知道，通过<code>User</code>类可以访问到<code>addresses</code>属性，其实返回的就是<code>Address</code>对象，那么问题来了，如果想通过<code>Address</code>来反查某个地址下面的用户怎么办，当然你可以查询到这些<code>user_id</code>再去<code>user</code>表里面查对应的<code>user</code>信息，但是这样很麻烦，<code>sqlalchemy</code>也提供了一种反查机制,<code>backref</code>参数,类似于在<code>Address</code>中添加了<code>user</code>属性，同样的把<code>User</code>实体类改一下:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">addresses = relationship(&#x27;Address&#x27;, backref=db.backref(&#x27;user&#x27;, lazy=&#x27;joined&#x27;), lazy=&#x27;dynamic&#x27;)</span><br></pre></td></tr></table></figure>
+<p>注意到最外层的<code>lazy=&#39;dynamic&#39;</code>是针对<code>User</code>查询多个地址时延迟加载策略,<code>db.backref(&#39;user&#39;, lazy=&#39;joined&#39;)</code>这个虽然定义在了<code>User</code>类里面，但是此处的作用是定义一个反向引用关系，这样就可通过<code>Address</code>来访问到对应的<code>User</code>类了，并且里面也定了一个策略<code>lazy=&#39;joined&#39;</code>，这是告诉<code>Address</code>查找对应的<code>User</code>时采用连接查询，如果不加，那就会采用子查询的方式来查询。可以测试一下，需要打开<code>echo=True</code>设置,这里就查一个吧，因为要输出查询语句，所以输出信息有点儿多,假设查询语句为:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">print &#x27;查询1:%s&#x27; % db.session.query(Address).filter_by(id=2).first().user</span><br></pre></td></tr></table></figure>
+<p>看看相信的输出结果:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">2016-08-20 15:45:29,194 INFO sqlalchemy.engine.base.Engine SELECT address.id AS address_id, address.email AS address_email, address.user_id AS address_user_id, user_1.id AS user_1_id, user_1.name AS user_1_name </span><br><span class="line">FROM address LEFT OUTER JOIN user AS user_1 ON user_1.id = address.user_id </span><br><span class="line">WHERE address.id = ?</span><br><span class="line"> LIMIT ? OFFSET ?</span><br><span class="line">2016-08-20 15:45:29,194 INFO sqlalchemy.engine.base.Engine (2, 1, 0)</span><br><span class="line">查询1:&lt;User:id=2,name=si.li&gt;</span><br></pre></td></tr></table></figure>
+<p>看到没有，用的是<code>LEFT OUTER JOIN</code>来查询的，那如果去掉<code>lazy=&#39;joined&#39;</code>呢？看看输出结果:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">2016-08-20 15:47:33,246 INFO sqlalchemy.engine.base.Engine SELECT address.id AS address_id, address.email AS address_email, address.user_id AS address_user_id </span><br><span class="line">FROM address </span><br><span class="line">WHERE address.id = ?</span><br><span class="line"> LIMIT ? OFFSET ?</span><br><span class="line">2016-08-20 15:47:33,246 INFO sqlalchemy.engine.base.Engine (2, 1, 0)</span><br><span class="line">2016-08-20 15:47:33,247 INFO sqlalchemy.engine.base.Engine SELECT user.id AS user_id, user.name AS user_name </span><br><span class="line">FROM user </span><br><span class="line">WHERE user.id = ?</span><br><span class="line">2016-08-20 15:47:33,247 INFO sqlalchemy.engine.base.Engine (2,)</span><br><span class="line">查询1:&lt;User:id=2,name=si.li&gt;</span><br></pre></td></tr></table></figure>
+<p>看到没有，这个里面有两个sql,先查<code>address</code>表，可以获取到<code>user_id</code>字段，然后再用这些去<code>user</code>表里面查,所以这里的<code>lazy=&#39;joined&#39;</code>相当于反向查询的惰性加载。<br>还有个奇特的用法，就是自引用，就是类似于无限目录这种机制:</p>
+<h5 id="多对对映射"><a href="#多对对映射" class="headerlink" title="多对对映射"></a>多对对映射</h5><p>很多时候用ORM框架就是因为业务结构太复杂，复杂性一般体现在表与表之间很多都是多对多映射，如果两个对象是多对多的话怎么映射这个关系呢？难道是在两个实体类里面都用<code>relationship</code>互相声明吗？当然不用，<code>SQLALChecmy</code>里面提供了一个更简单的方法,中间表关联法,还是以<code>User</code>和<code>Address</code>来说明:<br>新来增加一张中间表</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">user_address = db.Table(</span><br><span class="line">    &#x27;user_address&#x27;,</span><br><span class="line">    db.Column(&#x27;User&#x27;, db.Integer, db.ForeignKey(&#x27;user.id&#x27;)),</span><br><span class="line">    db.Column(&#x27;Address&#x27;, db.Integer, db.ForeignKey(&#x27;address.id&#x27;))</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p>这个就不用实体类了，直接用中间表了,然后修改<code>User</code>表的定义:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">addresses = relationship(&#x27;Address&#x27;, secondary=user_address, backref=db.backref(&#x27;user&#x27;, lazy=&#x27;joined&#x27;),</span><br><span class="line">                         lazy=&#x27;dynamic&#x27;)</span><br></pre></td></tr></table></figure>
+<p>然后修改<code>Address</code>实体类定义:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">class Address(db.Model):</span><br><span class="line">    __tablename__ = &#x27;address&#x27;</span><br><span class="line">    id = Column(Integer, primary_key=True)</span><br><span class="line">    email = Column(String)</span><br><span class="line"></span><br><span class="line">    def __init__(self, email=None):</span><br><span class="line">        self.email = email</span><br><span class="line"></span><br><span class="line">    def __repr__(self):</span><br><span class="line">        return &#x27;&lt;Address:id=&#123;0&#125;,email=&#123;1&#125;&gt;&#x27;.format(self.id, self.email)</span><br></pre></td></tr></table></figure>
+<p>去掉了之前在这里面定义的外键<code>user_id</code>，然后我们来测试一下:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">if __name__ == &#x27;__main__&#x27;:</span><br><span class="line">    db.create_all()</span><br><span class="line"></span><br><span class="line">    add_list = []</span><br><span class="line">    for item in [&#x27;123@qq.com&#x27;, &#x27;456@qq.com&#x27;, &#x27;789@qq.com&#x27;]:</span><br><span class="line">        address = Address()</span><br><span class="line">        address.email = item</span><br><span class="line"></span><br><span class="line">        add_list.append(address)</span><br><span class="line">        db.session.add(address)</span><br><span class="line"></span><br><span class="line">    user = User()</span><br><span class="line">    user.addresses = add_list[:2]</span><br><span class="line">    db.session.add(user)</span><br><span class="line"></span><br><span class="line">    user = User()</span><br><span class="line">    user.addresses = add_list[1:]</span><br><span class="line"></span><br><span class="line">    db.session.commit()</span><br><span class="line"></span><br><span class="line">    print &#x27;查询1:%s&#x27; % User.query.first().addresses.all()</span><br><span class="line">    print &#x27;查询2:%s&#x27; % Address.query.filter_by(email=&#x27;456@qq.com&#x27;).first().user</span><br></pre></td></tr></table></figure>
+<p>创建了3个地址，每个用户拥有2个地址，并且这两个用户都有中间的地址，看看查询结果:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">查询1:[&lt;Address:id=1,email=123@qq.com&gt;, &lt;Address:id=2,email=456@qq.com&gt;]</span><br><span class="line">查询2:[&lt;User:id=1,name=None&gt;, &lt;User:id=2,name=None&gt;]</span><br></pre></td></tr></table></figure>
+<p>可以看到反查，正查都可以差多多对多的结果。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Python/" rel="tag"># Python</a>
+              <a href="/tags/Web/" rel="tag"># Web</a>
+              <a href="/tags/Flask/" rel="tag"># Flask</a>
+              <a href="/tags/SQL/" rel="tag"># SQL</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2016/08/07/Flask-Blueprint%E7%AC%94%E8%AE%B0/" rel="prev" title="Flask Blueprint笔记">
+                  <i class="fa fa-angle-left"></i> Flask Blueprint笔记
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2016/08/23/Flask-%E5%BE%AA%E7%8E%AF%E4%BE%9D%E8%B5%96%E5%AF%BC%E5%85%A5%E8%A7%A3%E5%86%B3%E5%8A%9E%E6%B3%95/" rel="next" title="Flask 循环依赖导入解决办法">
+                  Flask 循环依赖导入解决办法 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">LittleQ</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

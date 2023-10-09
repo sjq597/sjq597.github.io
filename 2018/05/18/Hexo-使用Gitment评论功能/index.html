@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"sjq597.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.18.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="一直想整一下博客的评论系统,以前听说多说比较有名气．但是当我想搞的时候发现多说居然关闭了，找了一圈发现除了Gitment这个Github自家的东西比较靠谱,所以就折腾了一下,期间碰到不少问题. 安装Gitment安装模块在你的blog根目录安装 1npm i --save gitment  申请应用首先去New OAuth App为你的博客应用一个密钥: 1234Application name:">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hexo 使用Gitment评论功能">
+<meta property="og:url" content="http://sjq597.github.io/2018/05/18/Hexo-%E4%BD%BF%E7%94%A8Gitment%E8%AF%84%E8%AE%BA%E5%8A%9F%E8%83%BD/index.html">
+<meta property="og:site_name" content="LittleQ">
+<meta property="og:description" content="一直想整一下博客的评论系统,以前听说多说比较有名气．但是当我想搞的时候发现多说居然关闭了，找了一圈发现除了Gitment这个Github自家的东西比较靠谱,所以就折腾了一下,期间碰到不少问题. 安装Gitment安装模块在你的blog根目录安装 1npm i --save gitment  申请应用首先去New OAuth App为你的博客应用一个密钥: 1234Application name:">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2018-05-18T14:11:36.000Z">
+<meta property="article:modified_time" content="2023-10-07T06:54:54.000Z">
+<meta property="article:author" content="LittleQ">
+<meta property="article:tag" content="Hexo">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://sjq597.github.io/2018/05/18/Hexo-%E4%BD%BF%E7%94%A8Gitment%E8%AF%84%E8%AE%BA%E5%8A%9F%E8%83%BD/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://sjq597.github.io/2018/05/18/Hexo-%E4%BD%BF%E7%94%A8Gitment%E8%AF%84%E8%AE%BA%E5%8A%9F%E8%83%BD/","path":"2018/05/18/Hexo-使用Gitment评论功能/","title":"Hexo 使用Gitment评论功能"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Hexo 使用Gitment评论功能 | LittleQ</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">LittleQ</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">爱好：写代码</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85Gitment"><span class="nav-number">1.</span> <span class="nav-text">安装Gitment</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E6%A8%A1%E5%9D%97"><span class="nav-number">1.1.</span> <span class="nav-text">安装模块</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%B3%E8%AF%B7%E5%BA%94%E7%94%A8"><span class="nav-number">1.2.</span> <span class="nav-text">申请应用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE"><span class="nav-number">1.3.</span> <span class="nav-text">配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BC%80%E9%80%9A%E8%AF%84%E8%AE%BA"><span class="nav-number">1.4.</span> <span class="nav-text">开通评论</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%97%AE%E9%A2%98"><span class="nav-number">1.5.</span> <span class="nav-text">问题</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">LittleQ</p>
+  <div class="site-description" itemprop="description">数据开发工程师的成长历程</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">145</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">51</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://sjq597.github.io/2018/05/18/Hexo-%E4%BD%BF%E7%94%A8Gitment%E8%AF%84%E8%AE%BA%E5%8A%9F%E8%83%BD/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="LittleQ">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LittleQ">
+      <meta itemprop="description" content="数据开发工程师的成长历程">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Hexo 使用Gitment评论功能 | LittleQ">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Hexo 使用Gitment评论功能
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2018-05-18 22:11:36" itemprop="dateCreated datePublished" datetime="2018-05-18T22:11:36+08:00">2018-05-18</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-10-07 14:54:54" itemprop="dateModified" datetime="2023-10-07T14:54:54+08:00">2023-10-07</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/" itemprop="url" rel="index"><span itemprop="name">博客搭建</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>一直想整一下博客的评论系统,以前听说多说比较有名气．但是当我想搞的时候发现多说居然关闭了，找了一圈发现除了<code>Gitment</code>这个<code>Github</code>自家的东西比较靠谱,所以就折腾了一下,期间碰到不少问题.</p>
+<h2 id="安装Gitment"><a href="#安装Gitment" class="headerlink" title="安装Gitment"></a>安装Gitment</h2><h3 id="安装模块"><a href="#安装模块" class="headerlink" title="安装模块"></a>安装模块</h3><p>在你的blog根目录安装</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm i --save gitment</span><br></pre></td></tr></table></figure>
+
+<h3 id="申请应用"><a href="#申请应用" class="headerlink" title="申请应用"></a>申请应用</h3><p>首先去<a target="_blank" rel="noopener" href="https://github.com/settings/applications/new">New OAuth App</a>为你的博客应用一个密钥:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Application name:随便写</span><br><span class="line">Homepage URL:这个也可以随意写,就写你的博客地址就行</span><br><span class="line">Application description:描述,也可以随意写</span><br><span class="line">Authorization callback URL:这个必须写你的博客地址</span><br></pre></td></tr></table></figure>
+<p>申请好之后点注册,然后就可以看到两个东西<code>ClientID</code>和<code>Client Secret</code>,后面会用到.</p>
+<h3 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h3><p>下面就是配置<code>Gitment</code>,主要编辑在<code>themes/next/_config.yml</code>:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"># Gitment</span><br><span class="line"># Introduction: https://imsun.net/posts/gitment-introduction/</span><br><span class="line">gitment:</span><br><span class="line">  enable: true</span><br><span class="line">  mint: true # RECOMMEND, A mint on Gitment, to support count, language and proxy_gateway</span><br><span class="line">  count: true # Show comments count in post meta area</span><br><span class="line">  lazy: false # Comments lazy loading with a button</span><br><span class="line">  cleanly: false # Hide &#x27;Powered by ...&#x27; on footer, and more</span><br><span class="line">  language: # Force language, or auto switch by theme</span><br><span class="line">  github_user: &#123;you github user id&#125;</span><br><span class="line">  github_repo: 随便写一个你的公开的git仓库就行,到时候评论会作为那个项目的issue</span><br><span class="line">  client_id: &#123;刚才申请的ClientID&#125;</span><br><span class="line">  client_secret: &#123;刚才申请的Client Secret&#125;</span><br><span class="line">  proxy_gateway: # Address of api proxy, See: https://github.com/aimingoo/intersect</span><br><span class="line">  redirect_protocol: # Protocol of redirect_uri with force_redirect_protocol when mint enabled</span><br></pre></td></tr></table></figure>
+
+<h3 id="开通评论"><a href="#开通评论" class="headerlink" title="开通评论"></a>开通评论</h3><p>注意到这里基本上已经OK了,再看你的博客应该可以显示评论了.不过每篇博客都需要你手动初始化评论功能(如果你的历史博客很多那就一篇一篇去点吧，不过貌似有人写了批量处理脚本,没试过哈).</p>
+<h3 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h3><ul>
+<li>Error: Validation Failed</li>
+</ul>
+<p>issue的Label有长度限制,对于中文博客来说,中文标题很容易就超过长度限制,所以需要做一下特殊处理,修改<code>themes/next/layout/_third-party/comments/gitment.swig</code>:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">var gitment = new &#123;&#123;CommentsClass&#125;&#125;(&#123;</span><br><span class="line">     id: &#x27;&#123;&#123; page.date &#125;&#125;&#x27;,</span><br><span class="line">     owner: &#x27;&#123;&#123; theme.gitment.github_user &#125;&#125;&#x27;,</span><br><span class="line">     repo: &#x27;&#123;&#123; theme.gitment.github_repo &#125;&#125;&#x27;,</span><br></pre></td></tr></table></figure>
+<p>主要是那个id改一下,一般而言你写博客不可能同一时间创建两份博客,所以这个一般而言是不会重的．<br>**NOTE:**这一需要特别强调一下缓存问题,必须清除浏览器缓存,否则会一直报<code>Not Found</code>,具体表现就获取issue的地址里面有<code>undefined</code>,这个折腾了差不多一天才搞定.</p>
+<ul>
+<li>object ProgressEvent</li>
+</ul>
+<p>出现这个问题是由于作者在<code>gitment.browser.js</code>中硬编码了自己的服务器人证域名:<code>https://gh-oauth.imsun.net</code>，现在域名过期了,要么自己搭一个认证服务器，要么可以用其他人的，在gitment的issues里面找到了答案:<a target="_blank" rel="noopener" href="https://github.com/imsun/gitment/issues/175">#175</a>,需要把Hexo你所用的主题中的引用文件给改一下，我用的是next主题,改动方法如下:<br>修改<code>themes/next/layout/_third-party/comments/gitment.swig</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&lt;!-- LOCAL: You can save these files to your site and update links --&gt;</span><br><span class="line">    &#123;% if theme.gitment.mint %&#125;</span><br><span class="line">        &#123;% set CommentsClass = &quot;Gitmint&quot; %&#125;</span><br><span class="line">        &lt;link rel=&quot;stylesheet&quot; href=&quot;https://aimingoo.github.io/gitmint/style/default.css&quot;&gt;</span><br><span class="line">        &lt;script src=&quot;https://aimingoo.github.io/gitmint/dist/gitmint.browser.js&quot;&gt;&lt;/script&gt;</span><br><span class="line">    &#123;% else %&#125;</span><br><span class="line">        &#123;% set CommentsClass = &quot;Gitment&quot; %&#125;</span><br><span class="line">        &lt;!-- &lt;link rel=&quot;stylesheet&quot; href=&quot;https://imsun.github.io/gitment/style/default.css&quot;&gt; --&gt;</span><br><span class="line">        &lt;!-- &lt;script src=&quot;https://imsun.github.io/gitment/dist/gitment.browser.js&quot;&gt;&lt;/script&gt; --&gt;</span><br><span class="line">        &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdn.jsdelivr.net/gh/theme-next/theme-next-gitment@1/default.css&quot;&gt;</span><br><span class="line">        &lt;script src=&quot;https://cdn.jsdelivr.net/gh/theme-next/theme-next-gitment@1/gitment.browser.js&quot;&gt;&lt;/script&gt;</span><br><span class="line">    &#123;% endif %&#125;</span><br><span class="line">&lt;!-- END LOCAL --&gt;</span><br></pre></td></tr></table></figure>
+<p>注释的部分是原来的地址，后面的是引用的网友的解决方案地址,需要注意的是确保<code>themes/next/_config.yml</code>中<code>theme.gitment.mint</code>设置为false,才会走到我们改动的分支.</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Hexo/" rel="tag"># Hexo</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2018/05/15/Hexo%E4%BD%BF%E7%94%A8next-Pisces%E4%B8%BB%E9%A2%98/" rel="prev" title="Hexo使用next.Pisces主题">
+                  <i class="fa fa-angle-left"></i> Hexo使用next.Pisces主题
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2018/05/22/ShadowSocks-Haproxy%E4%B8%AD%E7%BB%A7/" rel="next" title="ShadowSocks+Haproxy中继">
+                  ShadowSocks+Haproxy中继 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">LittleQ</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

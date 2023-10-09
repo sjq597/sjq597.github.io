@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"sjq597.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.18.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Hive自身提供了逻辑运算以及数学上的一些函数,基本和mysql里差不多.简单的不再多说了，只记录一些常用的 函数Hive自带的函数非常多,大致分为一下几块介绍,详细信息在Hive Wiki官网 数学函数   返回类型 函数 说明    bigint round(double a) 四舍五入   double round(double a, int d) 小数部分d位之后数字四舍五入   bigi">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hive 逻辑运算,函数">
+<meta property="og:url" content="http://sjq597.github.io/2015/11/05/Hive-%E9%80%BB%E8%BE%91%E8%BF%90%E7%AE%97-%E5%87%BD%E6%95%B0/index.html">
+<meta property="og:site_name" content="LittleQ">
+<meta property="og:description" content="Hive自身提供了逻辑运算以及数学上的一些函数,基本和mysql里差不多.简单的不再多说了，只记录一些常用的 函数Hive自带的函数非常多,大致分为一下几块介绍,详细信息在Hive Wiki官网 数学函数   返回类型 函数 说明    bigint round(double a) 四舍五入   double round(double a, int d) 小数部分d位之后数字四舍五入   bigi">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2015-11-05T06:05:57.000Z">
+<meta property="article:modified_time" content="2023-10-07T06:54:54.000Z">
+<meta property="article:author" content="LittleQ">
+<meta property="article:tag" content="SQL">
+<meta property="article:tag" content="Hive">
+<meta property="article:tag" content="大数据">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://sjq597.github.io/2015/11/05/Hive-%E9%80%BB%E8%BE%91%E8%BF%90%E7%AE%97-%E5%87%BD%E6%95%B0/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://sjq597.github.io/2015/11/05/Hive-%E9%80%BB%E8%BE%91%E8%BF%90%E7%AE%97-%E5%87%BD%E6%95%B0/","path":"2015/11/05/Hive-逻辑运算-函数/","title":"Hive 逻辑运算,函数"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Hive 逻辑运算,函数 | LittleQ</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">LittleQ</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">爱好：写代码</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%87%BD%E6%95%B0"><span class="nav-number">1.</span> <span class="nav-text">函数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E5%AD%A6%E5%87%BD%E6%95%B0"><span class="nav-number">1.1.</span> <span class="nav-text">数学函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%97%A5%E6%9C%9F%E5%87%BD%E6%95%B0"><span class="nav-number">1.2.</span> <span class="nav-text">日期函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%97%E7%AC%A6%E5%87%BD%E6%95%B0"><span class="nav-number">1.3.</span> <span class="nav-text">字符函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%85%E7%BD%AE%E8%81%9A%E5%90%88%E5%87%BD%E6%95%B0"><span class="nav-number">1.4.</span> <span class="nav-text">内置聚合函数</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">LittleQ</p>
+  <div class="site-description" itemprop="description">数据开发工程师的成长历程</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">145</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">51</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://sjq597.github.io/2015/11/05/Hive-%E9%80%BB%E8%BE%91%E8%BF%90%E7%AE%97-%E5%87%BD%E6%95%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="LittleQ">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LittleQ">
+      <meta itemprop="description" content="数据开发工程师的成长历程">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Hive 逻辑运算,函数 | LittleQ">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Hive 逻辑运算,函数
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2015-11-05 14:05:57" itemprop="dateCreated datePublished" datetime="2015-11-05T14:05:57+08:00">2015-11-05</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-10-07 14:54:54" itemprop="dateModified" datetime="2023-10-07T14:54:54+08:00">2023-10-07</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Hive%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">Hive笔记</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>Hive自身提供了逻辑运算以及数学上的一些函数,基本和mysql<br>里差不多.简单的不再多说了，只记录一些常用的</p>
+<h2 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h2><p>Hive自带的函数非常多,大致分为一下几块介绍,详细信息在<a target="_blank" rel="noopener" href="https://cwiki.apache.org/confluence/display/Hive/LanguageManual+UDF">Hive Wiki官网</a></p>
+<h3 id="数学函数"><a href="#数学函数" class="headerlink" title="数学函数"></a>数学函数</h3><table>
+<thead>
+<tr>
+<th>返回类型</th>
+<th>函数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>bigint</td>
+<td>round(double a)</td>
+<td>四舍五入</td>
+</tr>
+<tr>
+<td>double</td>
+<td>round(double a, int d)</td>
+<td>小数部分d位之后数字四舍五入</td>
+</tr>
+<tr>
+<td>bigint</td>
+<td>floor(double a)</td>
+<td>对给定数据进行向下舍入最接近的整数</td>
+</tr>
+<tr>
+<td>bigint</td>
+<td>ceil(double a)<br>ceiling(double a)</td>
+<td>将参数向上舍入为最接近的整数</td>
+</tr>
+<tr>
+<td>double</td>
+<td>rand()<br>rand(int seed)</td>
+<td>返回大于或等于0且小于1的平均分布随机数（依重新计算而变）</td>
+</tr>
+<tr>
+<td>double</td>
+<td>pow(double a, double p)<br>power(double a, double p)</td>
+<td>返回某数的乘幂</td>
+</tr>
+<tr>
+<td>double</td>
+<td>sqrt(double a)</td>
+<td>返回数值的平方根</td>
+</tr>
+<tr>
+<td>int<br>double</td>
+<td>positive(int a)<br>positive(double a)</td>
+<td>返回A的值</td>
+</tr>
+<tr>
+<td>int<br>double</td>
+<td>negative(int a)<br>negative(double a)</td>
+<td>返回A的相反数</td>
+</tr>
+</tbody></table>
+<h3 id="日期函数"><a href="#日期函数" class="headerlink" title="日期函数"></a>日期函数</h3><table>
+<thead>
+<tr>
+<th>返回类型</th>
+<th>函数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>string</td>
+<td>from_unixtime(bigint unixtime[, string format])</td>
+<td>UNIX_TIMESTAMP参数表示返回一个值’YYYY- MM – DD HH：MM：SS’或YYYYMMDDHHMMSS.uuuuuu格式，这取决于是否是在一个字符串或数字语境中使用的功能。该值表示在当前的时区。</td>
+</tr>
+<tr>
+<td>bigint</td>
+<td>unix_timestamp()</td>
+<td>如果不带参数的调用，返回一个Unix时间戳（从’1970-01–0100:00:00′到现在的UTC秒数）为无符号整数。</td>
+</tr>
+<tr>
+<td>bigint</td>
+<td>unix_timestamp(string date)</td>
+<td>指定日期参数调用UNIX_TIMESTAMP（），它返回参数值’1970- 01 – 0100:00:00′到指定日期的秒数。</td>
+</tr>
+<tr>
+<td>bigint</td>
+<td>unix_timestamp(string date, string pattern)</td>
+<td>指定时间输入格式，返回到1970年秒数：unix_timestamp(’2009-03-20′, ‘yyyy-MM-dd’) &#x3D; 1237532400</td>
+</tr>
+<tr>
+<td>string</td>
+<td>to_date(string timestamp)</td>
+<td>返回时间中的年月日： to_date(“1970-01-01 00:00:00″) &#x3D; “1970-01-01″</td>
+</tr>
+<tr>
+<td>string</td>
+<td>to_dates(string date)</td>
+<td>给定一个日期date，返回一个天数（0年以来的天数）</td>
+</tr>
+<tr>
+<td>int</td>
+<td>year(string date)</td>
+<td>返回指定时间的年份</td>
+</tr>
+<tr>
+<td>int</td>
+<td>month(string date)</td>
+<td>返回指定时间的月份</td>
+</tr>
+<tr>
+<td>int</td>
+<td>day(string date)</td>
+<td>dayofmonth(date) 返回指定时间的日期</td>
+</tr>
+<tr>
+<td>int</td>
+<td>hour(string date)</td>
+<td>返回指定时间的小时，范围为0到23。</td>
+</tr>
+<tr>
+<td>int</td>
+<td>minute(string date)</td>
+<td>返回指定时间的分钟，范围为0到59。</td>
+</tr>
+<tr>
+<td>int</td>
+<td>second(string date)</td>
+<td>返回指定时间的秒，范围为0到59。</td>
+</tr>
+<tr>
+<td>int</td>
+<td>weekofyear(string date)</td>
+<td>返回指定日期所在一年中的星期号，范围为0到53。</td>
+</tr>
+<tr>
+<td>int</td>
+<td>datediff(string enddate, string startdate)</td>
+<td>两个时间参数的日期之差。</td>
+</tr>
+<tr>
+<td>int</td>
+<td>date_add(string startdate, int days)</td>
+<td>给定时间，在此基础上加上指定的时间段。</td>
+</tr>
+<tr>
+<td>int</td>
+<td>date_sub(string startdate, int days)</td>
+<td>给定时间，在此基础上减去指定的时间段。</td>
+</tr>
+</tbody></table>
+<p><strong>NOTE:<strong>所以想把一个</strong>20160302</strong>转换成<strong>2016-03-02</strong>这种时间格式，要么用**strsub()<strong>配合</strong>concat()**来实现，或者就使用<code>from_unixtime(unix_timestamp(create_time, &#39;yyyyMMdd&#39;), &#39;yyyy-MM-dd)</code></p>
+<h3 id="字符函数"><a href="#字符函数" class="headerlink" title="字符函数"></a>字符函数</h3><table>
+<thead>
+<tr>
+<th>返回类型</th>
+<th>函数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>int</td>
+<td>length(string A)</td>
+<td>返回字符串的长度</td>
+</tr>
+<tr>
+<td>string</td>
+<td>reverse(string A)</td>
+<td>返回倒序字符串</td>
+</tr>
+<tr>
+<td>string</td>
+<td>concat(string A, string B…)</td>
+<td>连接多个字符串，合并为一个字符串，可以接受任意数量的输入字符串</td>
+</tr>
+<tr>
+<td>string</td>
+<td>concat_ws(string SEP, string A, string B…)</td>
+<td>链接多个字符串，字符串之间以指定的分隔符分开。</td>
+</tr>
+<tr>
+<td>string</td>
+<td>substr(string A, int start, int len)<br>substring(string A, int start, int len)</td>
+<td>从文本字符串中指定的位置指定长度的字符。</td>
+</tr>
+<tr>
+<td>string</td>
+<td>upper(string A)<br>ucase(string A)</td>
+<td>将文本字符串转换成字母全部大写形式</td>
+</tr>
+<tr>
+<td>string</td>
+<td>lower(string A)<br>lcase(string A)</td>
+<td>将文本字符串转换成字母全部小写形式</td>
+</tr>
+<tr>
+<td>string</td>
+<td>trim(string A)</td>
+<td>删除字符串两端的空格，字符之间的空格保留</td>
+</tr>
+<tr>
+<td>string</td>
+<td>ltrim(string A)</td>
+<td>删除字符串左边的空格，其他的空格保留</td>
+</tr>
+<tr>
+<td>string</td>
+<td>rtrim(string A)</td>
+<td>删除字符串右边的空格，其他的空格保留</td>
+</tr>
+<tr>
+<td>string</td>
+<td>regexp_replace(string A, string B, string C)</td>
+<td>字符串A中的B字符被C字符替代</td>
+</tr>
+<tr>
+<td>string</td>
+<td>regexp_extract(string subject, string pattern, int index)</td>
+<td>通过下标返回正则表达式指定的部分。需要注意的是：原来的<code>\</code> 转义，这里变成了双斜杠了<code>\\</code>,所以对于<code>[,&#123;</code>这些特殊字符，需要注意使用两个斜杠，包括原来的正则表达式，如果是<code>\d</code>匹配数字，就需要使用<code>\\d</code></td>
+</tr>
+<tr>
+<td>string</td>
+<td>parse_url(string urlString, string partToExtract [, string keyToExtract])</td>
+<td>返回URL指定的部分。parse_url(‘<a target="_blank" rel="noopener" href="http://facebook.com/path1/p.php?k1=v1&k2=v2#Ref1%E2%80%B2">http://facebook.com/path1/p.php?k1=v1&amp;k2=v2#Ref1′</a>, ‘HOST’) 返回：’facebook.com’,key处理指定为host,还可以指定为path,[query,key]</td>
+</tr>
+<tr>
+<td>string</td>
+<td>get_json_object(string json_string, string path)</td>
+<td>select a.timestamp, get_json_object(a.appevents, ‘$.eventid’), get_json_object(a.appenvets, ‘$.eventname’) from log a;</td>
+</tr>
+<tr>
+<td>string</td>
+<td>space(int n)</td>
+<td>返回指定数量的空格</td>
+</tr>
+<tr>
+<td>string</td>
+<td>repeat(string str, int n)</td>
+<td>重复N次字符串</td>
+</tr>
+<tr>
+<td>int</td>
+<td>ascii(string str)</td>
+<td>返回字符串中首字符的数字值</td>
+</tr>
+<tr>
+<td>string</td>
+<td>lpad(string str, int len, string pad)</td>
+<td>返回指定长度的字符串，给定字符串长度小于指定长度时，由指定字符从左侧填补。</td>
+</tr>
+<tr>
+<td>string</td>
+<td>rpad(string str, int len, string pad)</td>
+<td>返回指定长度的字符串，给定字符串长度小于指定长度时，由指定字符从右侧填补。</td>
+</tr>
+<tr>
+<td>array</td>
+<td>split(string str, string pat)</td>
+<td>将字符串转换为数组。</td>
+</tr>
+<tr>
+<td>int</td>
+<td>find_in_set(string str, string strList)</td>
+<td>返回字符串str第一次在strlist出现的位置。如果任一参数为NULL,返回NULL；如果第一个参数包含逗号，返回0。</td>
+</tr>
+<tr>
+<td>array&lt;array<string>&gt;</td>
+<td>sentences(string str, string lang, string locale)</td>
+<td>将字符串中内容按语句分组，每个单词间以逗号分隔，最后返回数组。 例如sentences(‘Hello there! How are you?’) 返回：( (“Hello”, “there”), (“How”, “are”, “you”) )</td>
+</tr>
+</tbody></table>
+<h3 id="内置聚合函数"><a href="#内置聚合函数" class="headerlink" title="内置聚合函数"></a>内置聚合函数</h3><p>还有一些是内置的统计函数,可以免去不少计算的步骤</p>
+<table>
+<thead>
+<tr>
+<th>返回类型</th>
+<th>函数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>bigint</td>
+<td>count(*)<br>count(expr)<br>count(DISTINCT expr[, expr_., expr_.])</td>
+<td>返回记录条数。</td>
+</tr>
+<tr>
+<td>double</td>
+<td>sum(col)<br>sum(DISTINCT col)</td>
+<td>求和</td>
+</tr>
+<tr>
+<td>double</td>
+<td>avg(col)<br>avg(DISTINCT col)</td>
+<td>求平均值</td>
+</tr>
+<tr>
+<td>double</td>
+<td>var_pop(col)</td>
+<td>返回指定列的方差</td>
+</tr>
+<tr>
+<td>double</td>
+<td>var_samp(col)</td>
+<td>返回指定列的样本方差</td>
+</tr>
+<tr>
+<td>double</td>
+<td>stddev_pop(col)</td>
+<td>返回指定列的偏差</td>
+</tr>
+<tr>
+<td>double</td>
+<td>stddev_samp(col)</td>
+<td>返回指定列的样本偏差</td>
+</tr>
+<tr>
+<td>double</td>
+<td>covar_pop(col1, col2)</td>
+<td>两列数值协方差</td>
+</tr>
+<tr>
+<td>double</td>
+<td>covar_samp(col1, col2)</td>
+<td>两列数值样本协方差</td>
+</tr>
+<tr>
+<td>double</td>
+<td>corr(col1, col2)</td>
+<td>返回两列数值的相关系数</td>
+</tr>
+<tr>
+<td>double</td>
+<td>percentile(col, p)</td>
+<td>返回数值区域的百分比数值点。0&lt;&#x3D;P&lt;&#x3D;1,否则返回NULL,不支持浮点型数值。</td>
+</tr>
+</tbody></table>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/SQL/" rel="tag"># SQL</a>
+              <a href="/tags/Hive/" rel="tag"># Hive</a>
+              <a href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/" rel="tag"># 大数据</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2015/11/03/Shell-%E6%8C%89%E6%97%A5%E6%9C%9F%E5%BE%AA%E7%8E%AF%E6%89%A7%E8%A1%8C/" rel="prev" title="Shell 按日期循环执行">
+                  <i class="fa fa-angle-left"></i> Shell 按日期循环执行
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2015/11/05/Hive-get-json-object%E7%94%A8%E6%B3%95/" rel="next" title="Hive get_json_object用法">
+                  Hive get_json_object用法 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">LittleQ</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

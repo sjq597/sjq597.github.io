@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"sjq597.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.18.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="服务器上有些脚本,执行的参数用到了日期,也就是每天执行一次,日期取当天时间作为参数,当有些时候需要把这些脚本过去一段时间的运行结果重新运行一次时,手动指定脚本日期没有办法大批量执行,需要在shell中写循环,让脚本批量执行. 方法一以一个小的例子来说:把指定日期时间段内的日期都输出来,看看下面的代码: 12345678910#! &#x2F;bin&#x2F;bashstart_date&#x3D;20151101end_da">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Shell 按日期循环执行">
+<meta property="og:url" content="http://sjq597.github.io/2015/11/03/Shell-%E6%8C%89%E6%97%A5%E6%9C%9F%E5%BE%AA%E7%8E%AF%E6%89%A7%E8%A1%8C/index.html">
+<meta property="og:site_name" content="LittleQ">
+<meta property="og:description" content="服务器上有些脚本,执行的参数用到了日期,也就是每天执行一次,日期取当天时间作为参数,当有些时候需要把这些脚本过去一段时间的运行结果重新运行一次时,手动指定脚本日期没有办法大批量执行,需要在shell中写循环,让脚本批量执行. 方法一以一个小的例子来说:把指定日期时间段内的日期都输出来,看看下面的代码: 12345678910#! &#x2F;bin&#x2F;bashstart_date&#x3D;20151101end_da">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2015-11-03T12:41:17.000Z">
+<meta property="article:modified_time" content="2023-10-07T06:54:54.000Z">
+<meta property="article:author" content="LittleQ">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="Shell">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://sjq597.github.io/2015/11/03/Shell-%E6%8C%89%E6%97%A5%E6%9C%9F%E5%BE%AA%E7%8E%AF%E6%89%A7%E8%A1%8C/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://sjq597.github.io/2015/11/03/Shell-%E6%8C%89%E6%97%A5%E6%9C%9F%E5%BE%AA%E7%8E%AF%E6%89%A7%E8%A1%8C/","path":"2015/11/03/Shell-按日期循环执行/","title":"Shell 按日期循环执行"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Shell 按日期循环执行 | LittleQ</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">LittleQ</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">爱好：写代码</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B9%E6%B3%95%E4%B8%80"><span class="nav-number">1.</span> <span class="nav-text">方法一</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B9%E6%B3%95%E4%BA%8C"><span class="nav-number">2.</span> <span class="nav-text">方法二</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B9%E6%B3%95%E4%B8%89"><span class="nav-number">3.</span> <span class="nav-text">方法三</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">LittleQ</p>
+  <div class="site-description" itemprop="description">数据开发工程师的成长历程</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">145</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">51</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://sjq597.github.io/2015/11/03/Shell-%E6%8C%89%E6%97%A5%E6%9C%9F%E5%BE%AA%E7%8E%AF%E6%89%A7%E8%A1%8C/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="LittleQ">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LittleQ">
+      <meta itemprop="description" content="数据开发工程师的成长历程">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Shell 按日期循环执行 | LittleQ">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Shell 按日期循环执行
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2015-11-03 20:41:17" itemprop="dateCreated datePublished" datetime="2015-11-03T20:41:17+08:00">2015-11-03</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-10-07 14:54:54" itemprop="dateModified" datetime="2023-10-07T14:54:54+08:00">2023-10-07</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Shell/" itemprop="url" rel="index"><span itemprop="name">Shell</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>服务器上有些脚本,执行的参数用到了日期,也就是每天执行一次,日期取当天时间作为参数,当有些时候需要把这些脚本过去一段时间的运行结果重新运行一次时,手动指定脚本日期没有办法大批量执行,需要在shell中写循环,让脚本批量执行.</p>
+<h3 id="方法一"><a href="#方法一" class="headerlink" title="方法一"></a>方法一</h3><p>以一个小的例子来说:把指定日期时间段内的日期都输出来,看看下面的代码:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#! /bin/bash</span></span><br><span class="line"></span><br><span class="line">start_date=20151101</span><br><span class="line">end_date=20151103</span><br><span class="line">start_sec=`<span class="built_in">date</span> -d <span class="string">&quot;<span class="variable">$start_date</span>&quot;</span> <span class="string">&quot;+%s&quot;</span>`</span><br><span class="line">end_sec=`<span class="built_in">date</span> -d <span class="string">&quot;<span class="variable">$end_date</span>&quot;</span> <span class="string">&quot;+%s&quot;</span>`</span><br><span class="line"><span class="keyword">for</span>((i=start_sec;i&lt;=end_sec;i+=<span class="number">86400</span>)); <span class="keyword">do</span></span><br><span class="line">    day=$(<span class="built_in">date</span> -d <span class="string">&quot;@<span class="variable">$i</span>&quot;</span> <span class="string">&quot;+%Y-%m-%d&quot;</span>)</span><br><span class="line">    <span class="built_in">echo</span> <span class="variable">$day</span></span><br><span class="line"><span class="keyword">done</span></span><br></pre></td></tr></table></figure>
+<p>看看输出结果:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">2015-11-01</span><br><span class="line">2015-11-02</span><br><span class="line">2015-11-03</span><br></pre></td></tr></table></figure>
+<p>执行结果是循环输出日期,把需要循环的脚本放在循环里调用,把<code>$day</code>当参数使用即可.如果脚本里面的变量是日期,那就把脚本代码拷贝到循环中间.日期的格式可以按需求自己调整.例如:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span>((i=start_sec;i&lt;=end_sec;i+=<span class="number">86400</span>)); <span class="keyword">do</span></span><br><span class="line">    day=$(<span class="built_in">date</span> -d <span class="string">&quot;@<span class="variable">$i</span>&quot;</span> <span class="string">&quot;+%Y-%m-%d&quot;</span>)</span><br><span class="line">    <span class="built_in">echo</span> <span class="variable">$day</span></span><br><span class="line">    sudo /usr/python/ /usr/dev/job.py <span class="variable">$day</span></span><br><span class="line"><span class="keyword">done</span></span><br></pre></td></tr></table></figure>
+<p>这样就可以把时间参数批量传入脚本.</p>
+<h3 id="方法二"><a href="#方法二" class="headerlink" title="方法二"></a>方法二</h3><p>但是上面的还是很麻烦，你要记住一天有多少秒，这样也不太容易记住，下面还有另一种方法,注意到时间格式为<code>20151101</code>,这种其实也是一个数字，我们可以让日期按天增加，然后比较日期大小关系:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">#! /bin/bash</span><br><span class="line"></span><br><span class="line">start=20160101</span><br><span class="line">end=20160103</span><br><span class="line"></span><br><span class="line">while [ $&#123;start&#125; -le $&#123;end&#125; ]</span><br><span class="line">do</span><br><span class="line">  echo $&#123;start&#125;</span><br><span class="line">  start=`date -d &quot;1 day $&#123;start&#125;&quot; +%Y%m%d`	# 日期自增</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
+<p>**备注:**Shell里面的数字大小比较:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">-ne	# 不相等</span><br><span class="line">-gt	# 大于</span><br><span class="line">-lt	# 小于</span><br><span class="line">-ge	# 大于或等于</span><br><span class="line">-le	# 小于或等于</span><br></pre></td></tr></table></figure>
+
+<h3 id="方法三"><a href="#方法三" class="headerlink" title="方法三"></a>方法三</h3><p>虽然上面的方法二比方法一要好很多，但是好像有个问题，一般日期都是以字符串的形式传入，多半是<code>2016-01-01</code>这种带间隔的方式，这种情况我们是没办法比较的，当然把上面的改一改也能用,例如:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">#! /bin/bash</span><br><span class="line"></span><br><span class="line"># 先把日期处理成纯数字的格式</span><br><span class="line">start=`date -d &quot;2016-01-01&quot; +%Y%m%d`</span><br><span class="line">end=`date -d &quot;2016-03-01&quot; +%Y%m%d`</span><br><span class="line"></span><br><span class="line">while [ $&#123;start&#125; -le $&#123;end&#125; ]</span><br><span class="line">do</span><br><span class="line">  echo $&#123;start&#125;</span><br><span class="line">  # 假设下面有一个脚本需要2016-01-01格式的日期</span><br><span class="line">  bash xxx.sh `date -d &quot;$&#123;start&#125;&quot; +%Y-%m-%d`</span><br><span class="line">  start=`date -d &quot;1 day $&#123;start&#125;&quot; +%Y%m%d`	# 日期自增</span><br><span class="line">done</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>但是这样感觉好麻烦，为啥循环就只能是数字呢?有没有一种比较通用的循环方式,这个当然有，你可以像下面这样:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">#! /bin/bash</span><br><span class="line"></span><br><span class="line">start=&#x27;2016-01-01&#x27;</span><br><span class="line">end=&#x27;2016-01-03&#x27;</span><br><span class="line"></span><br><span class="line">while [ &quot;$&#123;start&#125;&quot; != &quot;$&#123;end&#125;&quot; ]</span><br><span class="line">do</span><br><span class="line">  echo $&#123;start&#125;</span><br><span class="line">  start=`date -d &quot;1 day $&#123;start&#125;&quot; +%Y-%m-%d`	# 日期自增</span><br><span class="line">done</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>这样就可以循环了，但是记住，<code>start</code>取不到<code>end</code>值，即最后输出的是<code>[start,end)</code>，好像Shell里面并没有<code>do...while</code>这种循环，所以最好在循环之前，先做一步处理:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">end=`date -d &quot;1 day $&#123;end&#125;&quot; +%Y-%m-%d`	# 日期自增</span><br></pre></td></tr></table></figure>
+<p>然后再就可以取到两边的边界值了。<br>**注意:**这样比较的时候，一定要注意<code>while</code>里面的左右条件一定要用<code>&quot;&quot;</code>引起来，<code>&#39;</code>不行。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Linux/" rel="tag"># Linux</a>
+              <a href="/tags/Shell/" rel="tag"># Shell</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2015/11/03/Vim-%E5%AF%B9%E6%AF%94%E4%B8%A4%E4%B8%AA%E6%96%87%E4%BB%B6%E5%B7%AE%E5%BC%82/" rel="prev" title="用Vim对比两个文件的不同">
+                  <i class="fa fa-angle-left"></i> 用Vim对比两个文件的不同
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2015/11/05/Hive-%E9%80%BB%E8%BE%91%E8%BF%90%E7%AE%97-%E5%87%BD%E6%95%B0/" rel="next" title="Hive 逻辑运算,函数">
+                  Hive 逻辑运算,函数 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">LittleQ</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

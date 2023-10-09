@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"sjq597.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.18.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="背景最近有个Flink实时作业写HBase的任务发现丢数据了，Flink平台和HBase运维也无法定位到具体的问题，也没有任何异常日志。没办法只能通过把HBase数据导出到离线Hadoop集群来分析。一开始怀疑MQ没有采集到日志，后来通过把Kafka日志拉取到HDFS查询发现数据是有的，那问题就只可能是在计算过程中丢失了。万幸实时采集的数据都有落HDFS，所以想离线分析一波，首先让运维给HBase">
+<meta property="og:type" content="article">
+<meta property="og:title" content="IllegalAccessError HBaseZeroCopyByteString">
+<meta property="og:url" content="http://sjq597.github.io/2019/02/22/IllegalAccessError-HBaseZeroCopyByteString/index.html">
+<meta property="og:site_name" content="LittleQ">
+<meta property="og:description" content="背景最近有个Flink实时作业写HBase的任务发现丢数据了，Flink平台和HBase运维也无法定位到具体的问题，也没有任何异常日志。没办法只能通过把HBase数据导出到离线Hadoop集群来分析。一开始怀疑MQ没有采集到日志，后来通过把Kafka日志拉取到HDFS查询发现数据是有的，那问题就只可能是在计算过程中丢失了。万幸实时采集的数据都有落HDFS，所以想离线分析一波，首先让运维给HBase">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-02-22T11:32:09.000Z">
+<meta property="article:modified_time" content="2023-10-07T06:54:54.000Z">
+<meta property="article:author" content="LittleQ">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="Hadoop">
+<meta property="article:tag" content="HBase">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://sjq597.github.io/2019/02/22/IllegalAccessError-HBaseZeroCopyByteString/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://sjq597.github.io/2019/02/22/IllegalAccessError-HBaseZeroCopyByteString/","path":"2019/02/22/IllegalAccessError-HBaseZeroCopyByteString/","title":"IllegalAccessError HBaseZeroCopyByteString"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>IllegalAccessError HBaseZeroCopyByteString | LittleQ</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">LittleQ</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">爱好：写代码</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%83%8C%E6%99%AF"><span class="nav-number">1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%97%AE%E9%A2%98"><span class="nav-number">2.</span> <span class="nav-text">问题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81"><span class="nav-number">3.</span> <span class="nav-text">代码</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E5%8E%9F%E5%9B%A0"><span class="nav-number">4.</span> <span class="nav-text">问题原因</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">LittleQ</p>
+  <div class="site-description" itemprop="description">数据开发工程师的成长历程</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">145</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">51</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://sjq597.github.io/2019/02/22/IllegalAccessError-HBaseZeroCopyByteString/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="LittleQ">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LittleQ">
+      <meta itemprop="description" content="数据开发工程师的成长历程">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="IllegalAccessError HBaseZeroCopyByteString | LittleQ">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          IllegalAccessError HBaseZeroCopyByteString
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2019-02-22 19:32:09" itemprop="dateCreated datePublished" datetime="2019-02-22T19:32:09+08:00">2019-02-22</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-10-07 14:54:54" itemprop="dateModified" datetime="2023-10-07T14:54:54+08:00">2023-10-07</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%95%B0%E6%8D%AE%E6%9E%B6%E6%9E%84/" itemprop="url" rel="index"><span itemprop="name">数据架构</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>最近有个Flink实时作业写HBase的任务发现丢数据了，Flink平台和HBase运维也无法定位到具体的问题，也没有任何异常日志。没办法只能通过把HBase数据导出到离线Hadoop集群来分析。<br>一开始怀疑MQ没有采集到日志，后来通过把Kafka日志拉取到HDFS查询发现数据是有的，那问题就只可能是在计算过程中丢失了。万幸实时采集的数据都有落HDFS，所以想离线分析一波，首先让运维<br>给HBase打了一个快照，然后给了个MR代码让我自己解析数据结构。</p>
+<h1 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h1><p>其实代码很简单，就是解析Cell把值解析出来然后写到HDFS路径上,需要用到的包也不多,pom.xml文件如下:<br>&#96;&#96;结构。</p>
+<h1 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h1><p>其实代码很简单，就是解析Cell把值解析出来然后写到HDFS路径上,需要用到的包也不多,pom.xml文件如下:</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.slf4j<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>slf4j-api<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.7.5<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.slf4j<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>slf4j-log4j12<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.7.5<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.hbase<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>hbase-client<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>$&#123;hbase.version&#125;<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.hbase<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>hbase-protocol<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>$&#123;hbase.version&#125;<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.hbase<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>hbase-common<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>$&#123;hbase.version&#125;<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.hbase<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>hbase-server<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>$&#123;hbase.version&#125;<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.hadoop<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>hadoop-mapreduce-client-core<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>$&#123;hadoop.version&#125;<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.hadoop<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>hadoop-common<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>$&#123;hadoop.version&#125;<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.alibaba<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>fastjson<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.2.54<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>具体的版本根据你的集群而定，然后就是解析程序了:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">HBase2HDFSApp</span> &#123;</span><br><span class="line">    <span class="keyword">static</span> <span class="type">Logger</span> <span class="variable">LOG</span> <span class="operator">=</span> LoggerFactory.getLogger(HBase2HDFSApp.class);</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     *      * 需要传入的参数：快照名字，解析之后输出路径，快照输入路径，临时路径</span></span><br><span class="line"><span class="comment">     *      * <span class="doctag">@param</span> args</span></span><br><span class="line"><span class="comment">     *      * <span class="doctag">@throws</span> Exception</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">        <span class="keyword">if</span> (args == <span class="literal">null</span>) &#123;</span><br><span class="line">            System.err.println(<span class="string">&quot;Parameter Errors ! Usage : &lt;snapshot_name&gt; &lt;output_path&gt; &lt;input_path&gt; &lt;tmp_output_path&gt;&quot;</span>);</span><br><span class="line">            System.exit(-<span class="number">1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="type">String</span> <span class="variable">snapShotName</span> <span class="operator">=</span> args[<span class="number">0</span>];</span><br><span class="line">        <span class="type">Path</span> <span class="variable">outputPath</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Path</span>(args[<span class="number">1</span>]);</span><br><span class="line">        <span class="type">Configuration</span> <span class="variable">configuration</span> <span class="operator">=</span> HBaseConfiguration.create();</span><br><span class="line">        configuration.set(<span class="string">&quot;hbase.rootdir&quot;</span>, <span class="string">&quot;hdfs://&quot;</span> + args[<span class="number">2</span>]);</span><br><span class="line">        configuration.set(<span class="string">&quot;mapreduce.job.queuename&quot;</span>, <span class="string">&quot;xxx&quot;</span>);</span><br><span class="line">        configuration.set(<span class="string">&quot;hadoop.tmp.dir&quot;</span>, <span class="string">&quot;xxxx&quot;</span>);</span><br><span class="line">        <span class="type">String</span> <span class="variable">jobName</span> <span class="operator">=</span> HBase2HDFSApp.class.getSimpleName();</span><br><span class="line">        <span class="type">Job</span> <span class="variable">job</span> <span class="operator">=</span> Job.getInstance(configuration, jobName);</span><br><span class="line">        job.setJarByClass(HBase2HDFSApp.class);</span><br><span class="line">        LOG.info(<span class="string">&quot;start to init&quot;</span>);</span><br><span class="line">        TableMapReduceUtil.initTableSnapshotMapperJob(snapShotName,</span><br><span class="line">                <span class="keyword">new</span> <span class="title class_">Scan</span>(),</span><br><span class="line">                HBase2HDFSMapper.class,</span><br><span class="line">                Text.class,</span><br><span class="line">                NullWritable.class,</span><br><span class="line">                job, <span class="literal">true</span>, <span class="keyword">new</span> <span class="title class_">Path</span>(args[<span class="number">3</span>]));</span><br><span class="line">        LOG.info(<span class="string">&quot;init success&quot;</span>);</span><br><span class="line">        outputPath.getFileSystem(configuration).delete(outputPath, <span class="literal">true</span>);</span><br><span class="line">        FileOutputFormat.setOutputPath(job, outputPath);</span><br><span class="line">        job.setOutputFormatClass(TextOutputFormat.class);</span><br><span class="line">        job.setNumReduceTasks(<span class="number">0</span>);<span class="comment">//没有reduce</span></span><br><span class="line">        job.waitForCompletion(<span class="literal">true</span>);</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">HBase2HDFSMapper</span> <span class="keyword">extends</span> <span class="title class_">TableMapper</span>&lt;Text, NullWritable&gt; &#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="keyword">protected</span> <span class="keyword">void</span> <span class="title function_">map</span><span class="params">(ImmutableBytesWritable key, Result rs, Context context)</span> <span class="keyword">throws</span> IOException, InterruptedException &#123;</span><br><span class="line">            <span class="type">byte</span>[] keyBytes = key.get();</span><br><span class="line">            <span class="type">JSONObject</span> <span class="variable">value</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">JSONObject</span>();</span><br><span class="line">            <span class="type">String</span> <span class="variable">rk</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">String</span>(keyBytes);</span><br><span class="line">            List&lt;Cell&gt; list = rs.listCells();</span><br><span class="line">            <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; list.size(); i++) &#123;</span><br><span class="line">                <span class="type">Cell</span> <span class="variable">cell</span> <span class="operator">=</span> list.get(i);</span><br><span class="line">                value.put(<span class="keyword">new</span> <span class="title class_">String</span>(CellUtil.cloneQualifier(cell)), <span class="keyword">new</span> <span class="title class_">String</span>(CellUtil.cloneValue(cell)));</span><br><span class="line">            &#125;</span><br><span class="line">            context.write(<span class="keyword">new</span> <span class="title class_">Text</span>(rk + <span class="string">&quot;\t&quot;</span> + value.toJSONString()), NullWritable.get());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>**NOTE:**需要注意的是<code>&lt;output_path&gt;和&lt;tmp_output_path&gt;</code>根目录要一致,然后就是不能使<code>&lt;input_path&gt;</code>的子目录.<br>编译打包之后提交运行，注意打包需要用到<code>assembly</code>插件,对应的<code>pom.xml</code>配置为:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">&lt;plugin&gt;</span><br><span class="line">    &lt;artifactId&gt;maven-assembly-plugin&lt;/artifactId&gt;</span><br><span class="line">    &lt;version&gt;2.6&lt;/version&gt;</span><br><span class="line">    &lt;configuration&gt;</span><br><span class="line">        &lt;descriptorRefs&gt;</span><br><span class="line">            &lt;descriptorRef&gt;jar-with-dependencies&lt;/descriptorRef&gt;</span><br><span class="line">        &lt;/descriptorRefs&gt;</span><br><span class="line">    &lt;/configuration&gt;</span><br><span class="line">    &lt;executions&gt;</span><br><span class="line">        &lt;execution&gt;</span><br><span class="line">            &lt;id&gt;make-assembly&lt;/id&gt; &lt;!-- this is used for inheritance merges --&gt;</span><br><span class="line">            &lt;phase&gt;package&lt;/phase&gt; &lt;!-- bind to the packaging phase --&gt;</span><br><span class="line">            &lt;goals&gt;</span><br><span class="line">                &lt;goal&gt;single&lt;/goal&gt;</span><br><span class="line">            &lt;/goals&gt;</span><br><span class="line">        &lt;/execution&gt;</span><br><span class="line">    &lt;/executions&gt;</span><br><span class="line">&lt;/plugin&gt;`配置为:</span><br></pre></td></tr></table></figure>
+<p>然后打包之后运行:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">hadoop jar ./target/xxx-1.0.0-SNAPSHOT-jar-with-dependencies.jar com.xxx.HBase2HDFSApp \</span><br><span class="line">&lt;snapshot_name&gt; \</span><br><span class="line">&lt;output_path&gt; \</span><br><span class="line">&lt;input_path&gt; \</span><br><span class="line">&lt;tmp-output_path&gt;</span><br></pre></td></tr></table></figure>
+<p>然后就出现了一个经典的错误:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Caused by: java.lang.IllegalAccessError: class com.google.protobuf.HBaseZeroCopyByteString cannot access its superclass com.google.protobuf.LiteralByteString</span><br><span class="line">        at java.lang.ClassLoader.defineClass1(Native Method)</span><br><span class="line">        at java.lang.ClassLoader.defineClass(ClassLoader.java:763)</span><br><span class="line">        at java.security.SecureClassLoader.defineClass(SecureClassLoader.java:142)</span><br><span class="line">        xxxx</span><br></pre></td></tr></table></figure>
+
+<h1 id="问题原因"><a href="#问题原因" class="headerlink" title="问题原因"></a>问题原因</h1><p>google了一下,找到这个问题的解决方法,详细见链接: <a target="_blank" rel="noopener" href="http://www.voidcn.com/article/p-hhmhpejc-bh.html">http://www.voidcn.com/article/p-hhmhpejc-bh.html</a>. 大概就是引入了一个优化措施导致的,<br>这个问题的发生是由于优化了<a target="_blank" rel="noopener" href="https://issues.apache.org/jira/browse/HBASE-9867">HBASE-9867</a>引起的，无意间引进了一个依赖类加载器。它影响使用-libjars参数和使用 fat jar两种模式的job.<br>fat jar模式Hadoop的一个特殊功能：可以读取操作目录中&#x2F;lib目录下包含的所有库的JAR文件，把运行job依赖的jar放在jar中的lib目录下。</p>
+<p>解决方式也比较简单:</p>
+<ol>
+<li>把缺的这个包拷贝到hadoop lib目录</li>
+<li>环境变量中导入这个缺失的包</li>
+</ol>
+<p>由于我是临时跑一次，而且hadoop环境是公用的，直接破坏了不好，就采用的临时方案.首先定位到<code>com.google.protobuf.HBaseZeroCopyByteString</code>位于<code>hive-server</code>包中，具体对应的jar包是</p>
+<blockquote>
+<p>hbase-protocol-0.98.21-hadoop2-xxxx.jar</p>
+</blockquote>
+<p>具体的版本看你们公司集群编译之后对应的包版本即可,然后调整运行命令为:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">export HADOOP_CLASSPATH=xxxx/hbase-protocol-0.98.21-hadoop2-xxx.jar</span><br><span class="line">hadoop jar ./target/xxx-1.0.0-SNAPSHOT-jar-with-dependencies.jar com.xxx.HBase2HDFSApp \</span><br><span class="line">&lt;snapshot_name&gt; \</span><br><span class="line">&lt;output_path&gt; \</span><br><span class="line">&lt;input_path&gt; \</span><br><span class="line">&lt;tmp-output_path&gt;</span><br></pre></td></tr></table></figure>
+<p>然后运行就行了，大工告成。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Java/" rel="tag"># Java</a>
+              <a href="/tags/Hadoop/" rel="tag"># Hadoop</a>
+              <a href="/tags/HBase/" rel="tag"># HBase</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2018/10/13/%E4%B8%83%E7%89%9B%E6%B5%8B%E8%AF%95%E5%9F%9F%E5%90%8D%E5%9B%9E%E6%94%B6%E8%BF%81%E7%A7%BB%E5%8D%9A%E5%AE%A2%E5%9B%BE%E5%BA%8A%E5%88%B0%E8%85%BE%E8%AE%AF%E4%BA%91/" rel="prev" title="七牛测试域名回收迁移博客图床到腾讯云">
+                  <i class="fa fa-angle-left"></i> 七牛测试域名回收迁移博客图床到腾讯云
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2019/06/23/%E6%9E%9A%E4%B8%BE%E7%B1%BB%E5%9E%8B%E5%85%A8%E5%AD%97%E6%AE%B5%E5%BA%8F%E5%88%97%E5%8C%96%E8%BD%ACJSON/" rel="next" title="枚举类型全字段序列化转JSON">
+                  枚举类型全字段序列化转JSON <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">LittleQ</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

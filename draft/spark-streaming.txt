@@ -1,0 +1,14 @@
+Limit Kafka batches size when using Spark Streaming
+https://stackoverflow.com/questions/39981650/limit-kafka-batches-size-when-using-spark-streaming
+
+Spark Streaming 数据接收优化
+https://www.jianshu.com/p/a1526fbb2be4
+
+[系统管理] 如何使awk取得的结果保存在数组内
+http://bbs.chinaunix.net/thread-4162645-1-1.html
+
+LeaseExpiredException: No lease error on HDFS
+
+https://stackoverflow.com/questions/7559880/leaseexpiredexception-no-lease-error-on-hdfs
+
+https://blog.csdn.net/bhh/article/details/42007101

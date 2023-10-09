@@ -1,0 +1,13 @@
+javax.net.ssl.SSLException: hostname in certificate didn't match:  != <*.ctrip.com> OR <*.ctrip.com> OR 
+CONSOLE# 	at shaded.org.apache.http.conn.ssl.AbstractVerifier.verify(AbstractVerifier.java:227)
+CONSOLE# 	at shaded.org.apache.http.conn.ssl.BrowserCompatHostnameVerifier.verify(BrowserCompatHostnameVerifier.java:54)
+CONSOLE# 	at shaded.org.apache.http.conn.ssl.AbstractVerifier.verify(AbstractVerifier.java:147)
+CONSOLE# 	at shaded.org.apache.http.conn.ssl.AbstractVerifier.verify(AbstractVerifier.java:128)
+CONSOLE# 	at shaded.org.apache.http.conn.ssl.SSLSocketFactory.connectSocket(SSLSocketFactory.java:437)
+CONSOLE# 	at shaded.org.apache.http.impl.conn.DefaultClientConnectionOperator.openConnection(DefaultClientConnectionOperator.java:180)
+CONSOLE# 	at shaded.org.apache.http.impl.conn.ManagedClientConnectionImpl.open(ManagedClientConnectionImpl.java:294)
+CONSOLE# 	at shaded.org.apache.http.impl.client.DefaultRequestDirector.tryConnect(DefaultRequestDirector.java:643)
+CONSOLE# 	at shaded.org.apache.http.impl.client.DefaultRequestDirector.execute(DefaultRequestDirector.java:479)
+CONSOLE# 	at shaded.org.apache.http.impl.client.AbstractHttpClient.execute(AbstractHttpClient.java:906)
+CONSOLE# 	at shaded.org.apache.http.impl.client.AbstractHttpClient.execute(AbstractHttpClient.java:805)
+CONSOLE# 	at shaded.org.apache.http.impl.client.AbstractHttpClient.execute(AbstractHttpClient.java:784)

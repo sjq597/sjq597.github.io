@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"sjq597.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.18.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="python常用结构python常用结构有集合以及循环，另外集合包括列表和集合两大类。 集合类 有序列表list123&gt;&gt;&gt; listTest &#x3D; [&amp;#x27;ha&amp;#x27;,&amp;#x27;test&amp;#x27;,&amp;#x27;yes&amp;#x27;]&gt;&gt;&gt; listTest[&amp;#x27;ha&amp;#x27;, &amp;#x27;test&amp;#x27;, &amp;#x27;yes&amp;#x">
+<meta property="og:type" content="article">
+<meta property="og:title" content="集合,循环控制">
+<meta property="og:url" content="http://sjq597.github.io/2015/10/09/Python-%E9%9B%86%E5%90%88,%E5%BE%AA%E7%8E%AF%E6%8E%A7%E5%88%B6/index.html">
+<meta property="og:site_name" content="LittleQ">
+<meta property="og:description" content="python常用结构python常用结构有集合以及循环，另外集合包括列表和集合两大类。 集合类 有序列表list123&gt;&gt;&gt; listTest &#x3D; [&amp;#x27;ha&amp;#x27;,&amp;#x27;test&amp;#x27;,&amp;#x27;yes&amp;#x27;]&gt;&gt;&gt; listTest[&amp;#x27;ha&amp;#x27;, &amp;#x27;test&amp;#x27;, &amp;#x27;yes&amp;#x">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2015-10-09T12:17:47.000Z">
+<meta property="article:modified_time" content="2023-10-07T06:54:54.000Z">
+<meta property="article:author" content="LittleQ">
+<meta property="article:tag" content="Python">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://sjq597.github.io/2015/10/09/Python-%E9%9B%86%E5%90%88,%E5%BE%AA%E7%8E%AF%E6%8E%A7%E5%88%B6/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://sjq597.github.io/2015/10/09/Python-%E9%9B%86%E5%90%88,%E5%BE%AA%E7%8E%AF%E6%8E%A7%E5%88%B6/","path":"2015/10/09/Python-集合,循环控制/","title":"集合,循环控制"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>集合,循环控制 | LittleQ</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">LittleQ</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">爱好：写代码</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#python%E5%B8%B8%E7%94%A8%E7%BB%93%E6%9E%84"><span class="nav-number">1.</span> <span class="nav-text">python常用结构</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%9B%86%E5%90%88%E7%B1%BB"><span class="nav-number">1.1.</span> <span class="nav-text">集合类</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BE%AA%E7%8E%AF%E6%8E%A7%E5%88%B6"><span class="nav-number">1.2.</span> <span class="nav-text">循环控制</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">LittleQ</p>
+  <div class="site-description" itemprop="description">数据开发工程师的成长历程</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">145</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">51</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://sjq597.github.io/2015/10/09/Python-%E9%9B%86%E5%90%88,%E5%BE%AA%E7%8E%AF%E6%8E%A7%E5%88%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="LittleQ">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LittleQ">
+      <meta itemprop="description" content="数据开发工程师的成长历程">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="集合,循环控制 | LittleQ">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          集合,循环控制
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2015-10-09 20:17:47" itemprop="dateCreated datePublished" datetime="2015-10-09T20:17:47+08:00">2015-10-09</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-10-07 14:54:54" itemprop="dateModified" datetime="2023-10-07T14:54:54+08:00">2023-10-07</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Python%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">Python笔记</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h3 id="python常用结构"><a href="#python常用结构" class="headerlink" title="python常用结构"></a>python常用结构</h3><p><code>python</code>常用结构有集合以及循环，另外集合包括列表和集合两大类。</p>
+<h4 id="集合类"><a href="#集合类" class="headerlink" title="集合类"></a>集合类</h4><ul>
+<li>有序列表list<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; listTest = [<span class="string">&#x27;ha&#x27;</span>,<span class="string">&#x27;test&#x27;</span>,<span class="string">&#x27;yes&#x27;</span>]</span><br><span class="line">&gt;&gt;&gt; listTest</span><br><span class="line">[<span class="string">&#x27;ha&#x27;</span>, <span class="string">&#x27;test&#x27;</span>, <span class="string">&#x27;yes&#x27;</span>]</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p> <code>len()</code>获取<code>list</code>元素个数。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; len(listTest)</span><br><span class="line">3</span><br></pre></td></tr></table></figure>
+<p> 可以用索引来访问每一个元素，<code>0</code>表示第一个，<code>-1</code>还可以表示最后一个，即倒数第一个，依此类推<code>-2</code>表示倒数第二个，超过了也会报越界错误。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; listTest[0]</span><br><span class="line"><span class="string">&#x27;ha&#x27;</span></span><br><span class="line">&gt;&gt;&gt; listTest[1]</span><br><span class="line"><span class="string">&#x27;test&#x27;</span></span><br><span class="line">&gt;&gt;&gt; listTest[3]</span><br><span class="line">Traceback (most recent call last):</span><br><span class="line">  File <span class="string">&quot;&lt;stdin&gt;&quot;</span>, line 1, <span class="keyword">in</span> &lt;module&gt;</span><br><span class="line">IndexError: list index out of range</span><br><span class="line">&gt;&gt;&gt; listTest[-1]</span><br><span class="line"><span class="string">&#x27;yes&#x27;</span></span><br><span class="line">&gt;&gt;&gt; listTest[-2]</span><br><span class="line"><span class="string">&#x27;test&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p> 也可以把元素插入到指定的位置，比如索引号为<code>1</code>的位置：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; listTest.insert(1,<span class="string">&#x27;jack&#x27;</span>)</span><br><span class="line">&gt;&gt;&gt; listTest</span><br><span class="line">[<span class="string">&#x27;ha&#x27;</span>, <span class="string">&#x27;jack&#x27;</span>, <span class="string">&#x27;test&#x27;</span>, <span class="string">&#x27;yes&#x27;</span>]</span><br></pre></td></tr></table></figure>
+
+<p> 删除末尾元素，用<code>pop()</code>方法，添加到末尾用<code>append()</code>：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; list</span><br><span class="line">[<span class="string">&#x27;ha&#x27;</span>, <span class="string">&#x27;jack&#x27;</span>, <span class="string">&#x27;test&#x27;</span>, <span class="string">&#x27;yes&#x27;</span>]</span><br><span class="line">&gt;&gt;&gt; listTest.pop()</span><br><span class="line"><span class="string">&#x27;yes&#x27;</span></span><br><span class="line">&gt;&gt;&gt; listTest</span><br><span class="line">[<span class="string">&#x27;ha&#x27;</span>, <span class="string">&#x27;jack&#x27;</span>, <span class="string">&#x27;test&#x27;</span>]</span><br></pre></td></tr></table></figure>
+
+<p> 删除指定位置的元素，用<code>pop(i)</code>方法,其中<code>i</code>是索引位置:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; listTest</span><br><span class="line">[<span class="string">&#x27;ha&#x27;</span>, <span class="string">&#x27;jack&#x27;</span>, <span class="string">&#x27;test&#x27;</span>]</span><br><span class="line">&gt;&gt;&gt; listTest.pop(1)</span><br><span class="line"><span class="string">&#x27;jack&#x27;</span></span><br><span class="line">&gt;&gt;&gt; listTest</span><br><span class="line">[<span class="string">&#x27;ha&#x27;</span>, <span class="string">&#x27;test&#x27;</span>]</span><br></pre></td></tr></table></figure>
+
+<p> 把某个元素替换，直接赋值即可,并且类型也可以不同：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; listTest</span><br><span class="line">[<span class="string">&#x27;ha&#x27;</span>, <span class="string">&#x27;test&#x27;</span>]</span><br><span class="line">&gt;&gt;&gt; listTest[1] = <span class="string">&#x27;debug&#x27;</span></span><br><span class="line">&gt;&gt;&gt; listTest</span><br><span class="line">[<span class="string">&#x27;ha&#x27;</span>, <span class="string">&#x27;debug&#x27;</span>]</span><br><span class="line">&gt;&gt;&gt; listTest[1] = 123</span><br><span class="line">&gt;&gt;&gt; listTest</span><br><span class="line">[<span class="string">&#x27;ha&#x27;</span>, 123]</span><br></pre></td></tr></table></figure>
+
+<p> <code>list</code>也可以嵌套:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; s = [<span class="string">&#x27;python&#x27;</span>, <span class="string">&#x27;java&#x27;</span>, [<span class="string">&#x27;asp&#x27;</span>, <span class="string">&#x27;php&#x27;</span>], <span class="string">&#x27;scheme&#x27;</span>]</span><br><span class="line">&gt;&gt;&gt; len(s)</span><br><span class="line">4</span><br><span class="line">&gt;&gt;&gt; s[1]</span><br><span class="line"><span class="string">&#x27;java&#x27;</span></span><br><span class="line">&gt;&gt;&gt; s[2]</span><br><span class="line">[<span class="string">&#x27;asp&#x27;</span>, <span class="string">&#x27;php&#x27;</span>]</span><br><span class="line">&gt;&gt;&gt; s[2][1]</span><br><span class="line"><span class="string">&#x27;php&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p> 空的<code>list</code>:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; L = []</span><br><span class="line">&gt;&gt;&gt; len(L)</span><br><span class="line">0</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>不可变列表tuple<br>另一种有序列表叫元组：tuple。tuple和list非常类似，但是tuple一旦初始化就不能修改。<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; classmates = (<span class="string">&#x27;Michael&#x27;</span>, <span class="string">&#x27;Bob&#x27;</span>, <span class="string">&#x27;Tracy&#x27;</span>)</span><br><span class="line">&gt;&gt;&gt; classmates</span><br><span class="line">(<span class="string">&#x27;Michael&#x27;</span>, <span class="string">&#x27;Bob&#x27;</span>, <span class="string">&#x27;Tracy&#x27;</span>)</span><br><span class="line">&gt;&gt;&gt; classmates[1]</span><br><span class="line"><span class="string">&#x27;Bob&#x27;</span></span><br></pre></td></tr></table></figure>
+ <strong>注意：</strong>由于<code>tuple</code>不可变，所以代码更安全，如果可能，能用<code>tuple</code>代替<code>list</code>就尽量用<code>tuple</code>。<br> <code>tuple的陷阱：</code>当你定义一个<code>tuple</code>时，在定义的时候，<code>tuple</code>的元素就必须被确定下来，比如：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; t = (1, 2)</span><br><span class="line">&gt;&gt;&gt; t</span><br><span class="line">(1, 2)</span><br></pre></td></tr></table></figure>
+ 如果要定义一个空的<code>tuple</code>，可以写成()：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; t = ()</span><br><span class="line">&gt;&gt;&gt; t</span><br><span class="line">()</span><br></pre></td></tr></table></figure>
+ 但是，要定义一个只有1个元素的<code>tuple</code>，如果你这么定义：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; t = (1)</span><br><span class="line">&gt;&gt;&gt; t</span><br><span class="line">1</span><br></pre></td></tr></table></figure>
+ 定义的不是<code>tuple</code>，是<code>1</code>这个数！这是因为括号<code>()</code>既可以表示<code>tuple</code>，又可以表示数学公式中的小括号，这就产生了歧义，因此，<code>Python</code>规定，这种情况下，按小括号进行计算，计算结果自然是<code>1</code>。</li>
+</ul>
+<p> 所以，只有1个元素的<code>tuple</code>定义时必须加一个逗号,，来消除歧义：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; t = (1,)</span><br><span class="line">&gt;&gt;&gt; t</span><br><span class="line">(1,)</span><br></pre></td></tr></table></figure>
+<p> <code>Python</code>在显示只有1个元素的<code>tuple</code>时，也会加一个逗号<code>,</code>，以免你误解成数学计算意义上的括号。<br> 最后来看一个<code>可变的</code>tuple：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; t = (<span class="string">&#x27;a&#x27;</span>, <span class="string">&#x27;b&#x27;</span>, [<span class="string">&#x27;A&#x27;</span>, <span class="string">&#x27;B&#x27;</span>])</span><br><span class="line">&gt;&gt;&gt; t[2][0] = <span class="string">&#x27;X&#x27;</span></span><br><span class="line">&gt;&gt;&gt; t[2][1] = <span class="string">&#x27;Y&#x27;</span></span><br><span class="line">&gt;&gt;&gt; t</span><br><span class="line">(<span class="string">&#x27;a&#x27;</span>, <span class="string">&#x27;b&#x27;</span>, [<span class="string">&#x27;X&#x27;</span>, <span class="string">&#x27;Y&#x27;</span>])</span><br></pre></td></tr></table></figure>
+<p> <strong>注意：</strong><code>tuple</code>所谓的<code>不变</code>是说，<code>tuple</code>的每个元素，指向永远不变。</p>
+<ul>
+<li>Map<br><code>Python</code>内置了字典：<code>dict</code>的支持，<code>dict</code>全称<code>dictionary</code>，在<code>Java/C++</code>中也称为<code>Map</code>，使用键-值（<code>key-value</code>）存储，具有极快的查找速度。<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; d = &#123;<span class="string">&#x27;Michael&#x27;</span>: 95, <span class="string">&#x27;Bob&#x27;</span>: 75, <span class="string">&#x27;Tracy&#x27;</span>: 85&#125;</span><br><span class="line">&gt;&gt;&gt; d[<span class="string">&#x27;Michael&#x27;</span>]</span><br><span class="line">95</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p> 把数据放入<code>dict</code>的方法，除了初始化时指定外，还可以通过<code>key</code>放入：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; d[<span class="string">&#x27;Adam&#x27;</span>] = 67</span><br><span class="line">&gt;&gt;&gt; d[<span class="string">&#x27;Adam&#x27;</span>]</span><br><span class="line">67</span><br></pre></td></tr></table></figure>
+<p> <strong>注意：</strong>如果key不存在，dict就会报错：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; d[<span class="string">&#x27;Thomas&#x27;</span>]</span><br><span class="line">Traceback (most recent call last):</span><br><span class="line">  File <span class="string">&quot;&lt;stdin&gt;&quot;</span>, line 1, <span class="keyword">in</span> &lt;module&gt;</span><br><span class="line">KeyError: <span class="string">&#x27;Thomas&#x27;</span></span><br></pre></td></tr></table></figure>
+<p> 要避免key不存在的错误，有两种办法，一是通过in判断key是否存在：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; <span class="string">&#x27;Thomas&#x27;</span> <span class="keyword">in</span> d</span><br><span class="line">False</span><br></pre></td></tr></table></figure>
+<p> 或者通过<code>dict</code>提供的<code>get</code>方法，如果<code>key</code>不存在，可以返回<code>None</code>，或者自己指定的value：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; d.get(<span class="string">&#x27;Thomas&#x27;</span>)</span><br><span class="line">&gt;&gt;&gt; d.get(<span class="string">&#x27;Thomas&#x27;</span>, -1)</span><br><span class="line">-1</span><br></pre></td></tr></table></figure>
+
+<p> 删除<code>dict</code>里的元素，用<code>pop(key)</code>方法，对应的<code>value</code>也会从<code>dict</code>中删除：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; d.pop(<span class="string">&#x27;Bob&#x27;</span>)</span><br><span class="line">75</span><br><span class="line">&gt;&gt;&gt; d</span><br><span class="line">&#123;<span class="string">&#x27;Michael&#x27;</span>: 95, <span class="string">&#x27;Tracy&#x27;</span>: 85&#125;</span><br></pre></td></tr></table></figure>
+<p> 正确使用<code>dict</code>非常重要，需要牢记的第一条就是<code>dict</code>的<code>key</code>必须是不可变对象。</p>
+<ul>
+<li>set集合<br><code>set</code>和<code>dict</code>类似，也是一组<code>key</code>的集合，但不存储<code>value</code>。由于<code>key</code>不能重复，所以，在<code>set</code>中，没有重复的<code>key</code>。<br>要创建一个<code>set</code>，需要提供一个<code>list</code>作为输入集合：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; s = <span class="built_in">set</span>([1, 2, 3])</span><br><span class="line">&gt;&gt;&gt; s</span><br><span class="line"><span class="built_in">set</span>([1, 2, 3])</span><br></pre></td></tr></table></figure>
+ <code>set</code>会自动过滤重复元素，<code>add(key)</code>添加元素，可以重复添加，但是没有效果。<code>remove(key)</code>删除元素。对于两个集合，还可以通过<code>&amp;</code>取集合的交集，<code>|</code>取集合的并集。</li>
+</ul>
+<h4 id="循环控制"><a href="#循环控制" class="headerlink" title="循环控制"></a>循环控制</h4><ul>
+<li><p>条件判断<br>之前学过<code>Java/C++</code>可能会不太习惯这种方式，先看看<code>python</code>的条件判断代码：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">age = <span class="number">20</span></span><br><span class="line"><span class="keyword">if</span> age &gt;= <span class="number">18</span>:</span><br><span class="line">    <span class="built_in">print</span> <span class="string">&#x27;your age is&#x27;</span>, age</span><br><span class="line">    <span class="built_in">print</span> <span class="string">&#x27;adult&#x27;</span></span><br></pre></td></tr></table></figure>
+<p> 根据<code>Python</code>的缩进规则，缩进的代码块就相当于<code>Java/C++</code>里大括号的内容。即<code>if</code>为<code>True</code>,执行代码块内容，加<code>else</code>，<code>elif</code>同理，注意不要漏掉<code>:</code>。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> &lt;条件判断<span class="number">1</span>&gt;:</span><br><span class="line">    &lt;执行<span class="number">1</span>&gt;</span><br><span class="line"><span class="keyword">elif</span> &lt;条件判断<span class="number">2</span>&gt;:</span><br><span class="line">    &lt;执行<span class="number">2</span>&gt;</span><br><span class="line"><span class="keyword">elif</span> &lt;条件判断<span class="number">3</span>&gt;:</span><br><span class="line">    &lt;执行<span class="number">3</span>&gt;</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    &lt;执行<span class="number">4</span>&gt;</span><br></pre></td></tr></table></figure>
+<p> <strong>注意：</strong> <code>if</code>还可以简写，下面这个和<code>Java/C++</code>有很大的不同，<code>python</code>对类型的判断很宽松，只要<code>x</code>是非零数值、非空字符串、非空<code>list</code>等，就判断为<code>True</code>，否则为<code>False</code>。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> x:</span><br><span class="line">    <span class="built_in">print</span> <span class="string">&#x27;True&#x27;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>循环控制<br>循环和<code>Java/C++</code>就很像了，也是有两种:<code>for</code>循环和<code>while</code>循环。<br><code>for x in ...</code>循环就是把每个元素代入变量<code>x</code>，然后执行缩进代码块:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">names = [<span class="string">&#x27;Michael&#x27;</span>, <span class="string">&#x27;Bob&#x27;</span>, <span class="string">&#x27;Tracy&#x27;</span>]</span><br><span class="line"><span class="keyword">for</span> name <span class="keyword">in</span> names:</span><br><span class="line">    <span class="built_in">print</span> name</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p> <code>while</code>循环,只要条件满足，就不断循环</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sum</span> = <span class="number">0</span></span><br><span class="line">n = <span class="number">99</span></span><br><span class="line"><span class="keyword">while</span> n &gt; <span class="number">0</span>:</span><br><span class="line">    <span class="built_in">sum</span> = <span class="built_in">sum</span> + n</span><br><span class="line">    n = n - <span class="number">2</span></span><br><span class="line"><span class="built_in">print</span> <span class="built_in">sum</span></span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Python/" rel="tag"># Python</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2015/10/09/Python%E5%85%A5%E9%97%A8:%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA%E5%8F%8A%E5%AD%97%E7%AC%A6%E4%B8%B2/" rel="prev" title="输入输出及字符串">
+                  <i class="fa fa-angle-left"></i> 输入输出及字符串
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2015/10/10/Python-%E5%87%BD%E6%95%B0%E4%BB%A5%E5%8F%8A%E5%87%BD%E6%95%B0%E5%8F%82%E6%95%B0/" rel="next" title="函数及函数参数">
+                  函数及函数参数 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">LittleQ</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

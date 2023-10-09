@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"sjq597.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.18.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="方法或者说函数的使用，这个和其他编程语言Java&#x2F;C++没什么区别，使用正确的方法名加参数就可以，python还有一个比较人性化的地方：在交互命令行下通过help(functionName)可以查看指定函数的使用帮助。例如： 1&gt;&gt;&gt; help(range) 会出现如下内容，按q退出： 123456789101112Help on built-in function range">
+<meta property="og:type" content="article">
+<meta property="og:title" content="函数及函数参数">
+<meta property="og:url" content="http://sjq597.github.io/2015/10/10/Python-%E5%87%BD%E6%95%B0%E4%BB%A5%E5%8F%8A%E5%87%BD%E6%95%B0%E5%8F%82%E6%95%B0/index.html">
+<meta property="og:site_name" content="LittleQ">
+<meta property="og:description" content="方法或者说函数的使用，这个和其他编程语言Java&#x2F;C++没什么区别，使用正确的方法名加参数就可以，python还有一个比较人性化的地方：在交互命令行下通过help(functionName)可以查看指定函数的使用帮助。例如： 1&gt;&gt;&gt; help(range) 会出现如下内容，按q退出： 123456789101112Help on built-in function range">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2015-10-10T06:39:07.000Z">
+<meta property="article:modified_time" content="2023-10-07T06:54:54.000Z">
+<meta property="article:author" content="LittleQ">
+<meta property="article:tag" content="Python">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://sjq597.github.io/2015/10/10/Python-%E5%87%BD%E6%95%B0%E4%BB%A5%E5%8F%8A%E5%87%BD%E6%95%B0%E5%8F%82%E6%95%B0/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://sjq597.github.io/2015/10/10/Python-%E5%87%BD%E6%95%B0%E4%BB%A5%E5%8F%8A%E5%87%BD%E6%95%B0%E5%8F%82%E6%95%B0/","path":"2015/10/10/Python-函数以及函数参数/","title":"函数及函数参数"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>函数及函数参数 | LittleQ</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">LittleQ</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">爱好：写代码</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%87%BD%E6%95%B0"><span class="nav-number">1.</span> <span class="nav-text">函数</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">LittleQ</p>
+  <div class="site-description" itemprop="description">数据开发工程师的成长历程</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">145</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">51</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://sjq597.github.io/2015/10/10/Python-%E5%87%BD%E6%95%B0%E4%BB%A5%E5%8F%8A%E5%87%BD%E6%95%B0%E5%8F%82%E6%95%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="LittleQ">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LittleQ">
+      <meta itemprop="description" content="数据开发工程师的成长历程">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="函数及函数参数 | LittleQ">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          函数及函数参数
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2015-10-10 14:39:07" itemprop="dateCreated datePublished" datetime="2015-10-10T14:39:07+08:00">2015-10-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-10-07 14:54:54" itemprop="dateModified" datetime="2023-10-07T14:54:54+08:00">2023-10-07</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Python%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">Python笔记</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>方法或者说函数的使用，这个和其他编程语言<code>Java/C++</code>没什么区别，使用正确的方法名加参数就可以，<code>python</code>还有一个比较人性化的地方：在交互命令行下通过<code>help(functionName)</code>可以查看指定函数的使用帮助。例如：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; <span class="built_in">help</span>(range)</span><br></pre></td></tr></table></figure>
+<p>会出现如下内容，按<code>q</code>退出：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">Help on built-in function range in module __builtin__:</span><br><span class="line"></span><br><span class="line">range(...)</span><br><span class="line">    range(stop) -&gt; list of integers</span><br><span class="line">    range(start, stop[, step]) -&gt; list of integers</span><br><span class="line">    </span><br><span class="line">    Return a list containing an arithmetic progression of integers.</span><br><span class="line">    range(i, j) returns [i, i+1, i+2, ..., j-1]; start (!) defaults to 0.</span><br><span class="line">    When step is given, it specifies the increment (or decrement).</span><br><span class="line">    For example, range(4) returns [0, 1, 2, 3].  The end point is omitted!</span><br><span class="line">    These are exactly the valid indices for a list of 4 elements.</span><br><span class="line">(END)</span><br></pre></td></tr></table></figure>
+
+<h3 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h3><ul>
+<li><p>定义函数<br>在Python中，定义一个函数要使用<code>def</code>语句，依次写出函数名、括号、括号中的参数和冒号<code>:</code>，然后，在缩进块中编写函数体，函数的返回值用<code>return</code>语句返回。<br>我们以自定义一个求绝对值的<code>my_abs</code>函数为例：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">my_abs</span>(<span class="params">x</span>):</span><br><span class="line">    <span class="keyword">if</span> x &gt;= <span class="number">0</span>:</span><br><span class="line">        <span class="keyword">return</span> x</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">return</span> -x</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>空函数</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">nop</span>():</span><br><span class="line">    <span class="keyword">pass</span></span><br></pre></td></tr></table></figure>
+<p> <code>pass</code>语句什么都不做，那有什么用？实际上<code>pass</code>可以用来作为占位符，比如现在还没想好怎么写函数的代码，就可以先放一个<code>pass</code>，让代码能运行起来。<br> <code>pass</code>还可以用在其他语句里，比如：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> age &gt;= <span class="number">18</span>:</span><br><span class="line">    <span class="keyword">pass</span></span><br></pre></td></tr></table></figure>
+<p> 缺少了<code>pass</code>，代码运行就会有语法错误。</p>
+</li>
+<li><p>参数检查<br>调用函数时，如果参数个数不对，Python解释器会自动检查出来，并抛出<code>TypeError</code>：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; my_abs(1, 2)</span><br><span class="line">Traceback (most recent call last):</span><br><span class="line">  File <span class="string">&quot;&lt;stdin&gt;&quot;</span>, line 1, <span class="keyword">in</span> &lt;module&gt;</span><br><span class="line">TypeError: my_abs() takes exactly 1 argument (2 given)</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p> 但是如果参数类型不对，Python解释器就无法帮我们检查。试试<code>my_abs</code>和内置函数<code>abs</code>的差别：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; my_abs(<span class="string">&#x27;A&#x27;</span>)</span><br><span class="line"><span class="string">&#x27;A&#x27;</span></span><br><span class="line">&gt;&gt;&gt; abs(<span class="string">&#x27;A&#x27;</span>)</span><br><span class="line">Traceback (most recent call last):</span><br><span class="line">  File <span class="string">&quot;&lt;stdin&gt;&quot;</span>, line 1, <span class="keyword">in</span> &lt;module&gt;</span><br><span class="line">TypeError: bad operand <span class="built_in">type</span> <span class="keyword">for</span> abs(): <span class="string">&#x27;str&#x27;</span></span><br></pre></td></tr></table></figure>
+<p> 当传入了不恰当的参数时，内置函数<code>abs</code>会检查出参数错误，而我们定义的<code>my_abs</code>没有参数检查，所以，这个函数定义不够完善。</p>
+<p> 让我们修改一下<code>my_abs</code>的定义，对参数类型做检查，只允许整数和浮点数类型的参数。数据类型检查可以用内置函数<code>isinstance</code>实现：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">my_abs</span>(<span class="params">x</span>):</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> <span class="built_in">isinstance</span>(x, (<span class="built_in">int</span>, <span class="built_in">float</span>)):</span><br><span class="line">        <span class="keyword">raise</span> TypeError(<span class="string">&#x27;bad operand type&#x27;</span>)</span><br><span class="line">    <span class="keyword">if</span> x &gt;= <span class="number">0</span>:</span><br><span class="line">        <span class="keyword">return</span> x</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">return</span> -x</span><br></pre></td></tr></table></figure>
+<p> 添加了参数检查后，如果传入错误的参数类型，函数就可以抛出一个错误：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; my_abs(<span class="string">&#x27;A&#x27;</span>)</span><br><span class="line">Traceback (most recent call last):</span><br><span class="line">  File <span class="string">&quot;&lt;stdin&gt;&quot;</span>, line 1, <span class="keyword">in</span> &lt;module&gt;</span><br><span class="line">  File <span class="string">&quot;&lt;stdin&gt;&quot;</span>, line 3, <span class="keyword">in</span> my_abs</span><br><span class="line">TypeError: bad operand <span class="built_in">type</span></span><br></pre></td></tr></table></figure>
+<p> 错误和异常处理将在后续讲到，此处只需要大概知道这个可以抛出一个异常就行了。</p>
+<ul>
+<li><p>返回多个值<br>一般像<code>Java/C++</code>这样的语言，要想函数返回多个值，通常有两种方式：第一种，如果返回值的类型一样，那么一般就是返回一个列表或者数组对象，然后要用就去列表里取；第二种，返回值类型不一样，这种情况通常是定义一个结构体或者类来接收。但是对于Python，就不用这么麻烦了，看下面的代码：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> math</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">move</span>(<span class="params">x, y, step, angle=<span class="number">0</span></span>):</span><br><span class="line">    nx = x + step * math.cos(angle)</span><br><span class="line">    ny = y - step * math.sin(angle)</span><br><span class="line">    <span class="keyword">return</span> nx, ny</span><br></pre></td></tr></table></figure>
+<p> 在命令式交互行里看看返回值，<code>x</code>和<code>y</code>也可以直接单独使用：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; x, y = move(100, 100, 60, math.pi / 6)</span><br><span class="line">&gt;&gt;&gt; <span class="built_in">print</span> x, y</span><br><span class="line">151.961524227 70.0</span><br></pre></td></tr></table></figure>
+<p> <strong>注意：</strong>虽然可以这么用，但是具体中间的过程还必须了解，其实返回值还是单一值，看下面：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; r = move(100, 100, 60, math.pi / 6)</span><br><span class="line">&gt;&gt;&gt; <span class="built_in">print</span> r</span><br><span class="line">(151.96152422706632, 70.0)</span><br></pre></td></tr></table></figure>
+<p> 可以看到，返回值是一个<code>tuple</code>！，但是<code>python</code>的语法上返回一个<code>tuple</code>可以省略括号，同时多个变量又可以同事接收一个<code>tuple</code>，即相当于</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">x,y = r</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>函数参数<br><code>C++</code>里函数可以设置缺省参数，<code>Java</code>不可以，只能通过重载的方式来实现，<code>python</code>里也可以设置默认参数,最大的好处就是降低函数难度，函数的定义只有一个，<code>并且python是动态语言，在同一名称空间里不能有想多名称的函数，如果出现了，那么后出现的会覆盖前面的函数</code>。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">power</span>(<span class="params">x, n=<span class="number">2</span></span>):</span><br><span class="line">    s = <span class="number">1</span></span><br><span class="line">    <span class="keyword">while</span> n &gt; <span class="number">0</span>:</span><br><span class="line">        n = n - <span class="number">1</span></span><br><span class="line">        s = s * x</span><br><span class="line">    <span class="keyword">return</span> s</span><br></pre></td></tr></table></figure>
+<p> 看看结果：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; power(5)</span><br><span class="line">25</span><br><span class="line">&gt;&gt;&gt; power(5,3)</span><br><span class="line">125</span><br></pre></td></tr></table></figure>
+<p> <strong>注意：</strong> 必选参数在前，默认参数在后，否则Python的解释器会报错。<br> <strong>建议：</strong>*当函数有多个参数时，把变化大的参数放前面，变化小的参数放后面。变化小的参数就可以作为默认参数。</p>
+</li>
+</ul>
+<p> 默认参数也有坑，看看下面的代码，先定义一个<code>list</code>，添加一个<code>end</code>再返回：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">add_end</span>(<span class="params">L=[]</span>):</span><br><span class="line">    L.append(<span class="string">&#x27;END&#x27;</span>)</span><br><span class="line">    <span class="keyword">return</span> L</span><br></pre></td></tr></table></figure>
+<p> 看看调用结果：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; add_end([1, 2, 3])</span><br><span class="line">[1, 2, 3, <span class="string">&#x27;END&#x27;</span>]</span><br><span class="line">&gt;&gt;&gt; add_end([<span class="string">&#x27;x&#x27;</span>, <span class="string">&#x27;y&#x27;</span>, <span class="string">&#x27;z&#x27;</span>])</span><br><span class="line">[<span class="string">&#x27;x&#x27;</span>, <span class="string">&#x27;y&#x27;</span>, <span class="string">&#x27;z&#x27;</span>, <span class="string">&#x27;END&#x27;</span>]</span><br><span class="line">&gt;&gt;&gt; add_end()</span><br><span class="line">[<span class="string">&#x27;END&#x27;</span>]</span><br><span class="line">&gt;&gt;&gt; add_end()</span><br><span class="line">[<span class="string">&#x27;END&#x27;</span>, <span class="string">&#x27;END&#x27;</span>]</span><br><span class="line">&gt;&gt;&gt; add_end()</span><br><span class="line">[<span class="string">&#x27;END&#x27;</span>, <span class="string">&#x27;END&#x27;</span>, <span class="string">&#x27;END&#x27;</span>]</span><br></pre></td></tr></table></figure>
+<p> 这里需要解释一下，<code>Python</code>函数在定义的时候，默认参数<code>L</code>的值就被计算出来了，即<code>[]</code>。此时<code>L</code>指向<code>[]</code>。所以如果<code>L</code>中的内容改变了，下次调用引用的内容也就不再是<code>[]</code>了。所以要牢记一点<code>定义默认参数必须指向不可变对象！</code>。具体想深入了解可以看看<a href="../Python-%E9%BB%98%E8%AE%A4%E5%8F%82%E6%95%B0%E9%99%B7%E9%98%B1/index.html">Python 默认参数陷阱</a></p>
+<ul>
+<li><p>可变参数<br>第一种方法，传入的参数为一个<code>list</code>或者<code>tuple</code>。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">calc</span>(<span class="params">numbers</span>):</span><br><span class="line">    <span class="built_in">sum</span> = <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> n <span class="keyword">in</span> numbers:</span><br><span class="line">        <span class="built_in">sum</span> = <span class="built_in">sum</span> + n * n</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">sum</span></span><br></pre></td></tr></table></figure>
+<p> 调用方式：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; calc([1, 2, 3])</span><br><span class="line">14</span><br><span class="line">&gt;&gt;&gt; calc((<span class="number">1</span>, <span class="number">3</span>, <span class="number">5</span>, <span class="number">7</span>))</span><br><span class="line">84</span><br></pre></td></tr></table></figure>
+<p> 第二种方式，直接传入多个参数，函数内部会自动用一个<code>tuple</code>接收。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">calc</span>(<span class="params">*numbers</span>):</span><br><span class="line">    <span class="built_in">sum</span> = <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> n <span class="keyword">in</span> numbers:</span><br><span class="line">        <span class="built_in">sum</span> = <span class="built_in">sum</span> + n * n</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">sum</span></span><br></pre></td></tr></table></figure>
+<p> 调用方式：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; calc(1, 2)</span><br><span class="line">5</span><br><span class="line">&gt;&gt;&gt; calc()</span><br><span class="line">0</span><br></pre></td></tr></table></figure>
+<p> 这个时候如果还想把一个<code>list</code>或者<code>tuple</code>里的数据传进去，可以这样：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; nums = [1, 2, 3]</span><br><span class="line">&gt;&gt;&gt; calc(*nums)</span><br><span class="line">14</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>关键字参数<br>关键字参数允许你传入0个或任意个含参数名的参数，这些关键字参数在函数内部自动组装为一个<code>dict</code>。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">person</span>(<span class="params">name, age, **kw</span>):</span><br><span class="line">    <span class="built_in">print</span> <span class="string">&#x27;name:&#x27;</span>, name, <span class="string">&#x27;age:&#x27;</span>, age, <span class="string">&#x27;other:&#x27;</span>, kw</span><br></pre></td></tr></table></figure>
+<p> 调用示例：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; person(<span class="string">&#x27;Michael&#x27;</span>, 30)</span><br><span class="line">name: Michael age: 30 other: &#123;&#125;</span><br><span class="line">&gt;&gt;&gt; person(<span class="string">&#x27;Bob&#x27;</span>, 35, city=<span class="string">&#x27;Beijing&#x27;</span>)</span><br><span class="line">name: Bob age: 35 other: &#123;<span class="string">&#x27;city&#x27;</span>: <span class="string">&#x27;Beijing&#x27;</span>&#125;</span><br><span class="line">&gt;&gt;&gt; person(<span class="string">&#x27;Adam&#x27;</span>, 45, gender=<span class="string">&#x27;M&#x27;</span>, job=<span class="string">&#x27;Engineer&#x27;</span>)</span><br><span class="line">name: Adam age: 45 other: &#123;<span class="string">&#x27;gender&#x27;</span>: <span class="string">&#x27;M&#x27;</span>, <span class="string">&#x27;job&#x27;</span>: <span class="string">&#x27;Engineer&#x27;</span>&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>参数组合<br>在Python中定义函数，可以用必选参数、默认参数、可变参数和关键字参数，这4种参数都可以一起使用，或者只用其中某些，但是请注意，参数定义的顺序必须是：必选参数、默认参数、可变参数和关键字参数。</p>
+</li>
+<li><p>递归函数<br>基本的也没什么可讲的，和<code>Java/C++</code>里一样，就是调用本身的一种。这里重点介绍一下<code>尾递归</code>优化。事实上尾递归和循环效果是一样的，很显然的一个优点那就是可以防止递归调用栈溢出。<br><strong>定义：</strong>在函数返回的时候调用自身，并且，<code>return语句不能包含表达式</code>。编译器或者解释器可以对其做优化，无论调用多少次，只占用一个栈帧，不会出现溢出的情况。<br>举个简单的例子，以阶乘函数为例：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">fact</span>(<span class="params">n</span>):</span><br><span class="line">    <span class="keyword">if</span> n==<span class="number">1</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span></span><br><span class="line">    <span class="keyword">return</span> n * fact(n - <span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+<p> 如果传入的n很大，就可能会溢出，这是由于<code>return n * fact(n - 1)</code>引入了乘法表达式，就不是尾递归了。把代码改一下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">fact</span>(<span class="params">n</span>):</span><br><span class="line">    <span class="keyword">return</span> fact_iter(n, <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">fact_iter</span>(<span class="params">num, product</span>):</span><br><span class="line">    <span class="keyword">if</span> num == <span class="number">1</span>:</span><br><span class="line">        <span class="keyword">return</span> product</span><br><span class="line">    <span class="keyword">return</span> fact_iter(num - <span class="number">1</span>, num * product)</span><br></pre></td></tr></table></figure>
+<p> 但是一般不要用，有两点原因：1.python不支持尾递归优化；2.这样优化的代码可读性和逻辑性没有之前单纯的递归清晰。</p>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Python/" rel="tag"># Python</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2015/10/09/Python-%E9%9B%86%E5%90%88,%E5%BE%AA%E7%8E%AF%E6%8E%A7%E5%88%B6/" rel="prev" title="集合,循环控制">
+                  <i class="fa fa-angle-left"></i> 集合,循环控制
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2015/10/10/Python-%E9%BB%98%E8%AE%A4%E5%8F%82%E6%95%B0%E9%99%B7%E9%98%B1/" rel="next" title="Python 默认参数陷阱">
+                  Python 默认参数陷阱 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">LittleQ</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"sjq597.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.18.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="最近写Python脚本,需要在服务器上运行,也没办法用PyCharm这种带界面的IDE来写Python,不过看了一篇博客,讲的十分不错,所以自己照着弄了一遍,中间有些不够详细的我也一并记录下来. 准备环境OS:Linux&#x2F;Unix(服务器是CentOS6.4 64bit)Vim: &gt;&#x3D;vim 7.3(终端直接输入vim –version 可以查看版本)Python: 具体">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CentOS6.4 配置Python开发环境">
+<meta property="og:url" content="http://sjq597.github.io/2016/01/20/CentOS6-4-%E9%85%8D%E7%BD%AEPython%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83/index.html">
+<meta property="og:site_name" content="LittleQ">
+<meta property="og:description" content="最近写Python脚本,需要在服务器上运行,也没办法用PyCharm这种带界面的IDE来写Python,不过看了一篇博客,讲的十分不错,所以自己照着弄了一遍,中间有些不够详细的我也一并记录下来. 准备环境OS:Linux&#x2F;Unix(服务器是CentOS6.4 64bit)Vim: &gt;&#x3D;vim 7.3(终端直接输入vim –version 可以查看版本)Python: 具体">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2016-01-20T06:08:46.000Z">
+<meta property="article:modified_time" content="2023-10-07T06:54:54.000Z">
+<meta property="article:author" content="LittleQ">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="Vim">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://sjq597.github.io/2016/01/20/CentOS6-4-%E9%85%8D%E7%BD%AEPython%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://sjq597.github.io/2016/01/20/CentOS6-4-%E9%85%8D%E7%BD%AEPython%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83/","path":"2016/01/20/CentOS6-4-配置Python开发环境/","title":"CentOS6.4 配置Python开发环境"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>CentOS6.4 配置Python开发环境 | LittleQ</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">LittleQ</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">爱好：写代码</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%87%86%E5%A4%87%E7%8E%AF%E5%A2%83"><span class="nav-number">1.</span> <span class="nav-text">准备环境</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Vim%E6%89%A9%E5%B1%95"><span class="nav-number">2.</span> <span class="nav-text">Vim扩展</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Vundle"><span class="nav-number">3.</span> <span class="nav-text">Vundle</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BC%80%E5%A7%8B%E6%89%93%E9%80%A0IDE"><span class="nav-number">4.</span> <span class="nav-text">开始打造IDE</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E6%8A%98%E5%8F%A0"><span class="nav-number">4.1.</span> <span class="nav-text">代码折叠</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">LittleQ</p>
+  <div class="site-description" itemprop="description">数据开发工程师的成长历程</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">145</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">51</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://sjq597.github.io/2016/01/20/CentOS6-4-%E9%85%8D%E7%BD%AEPython%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="LittleQ">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LittleQ">
+      <meta itemprop="description" content="数据开发工程师的成长历程">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="CentOS6.4 配置Python开发环境 | LittleQ">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          CentOS6.4 配置Python开发环境
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2016-01-20 14:08:46" itemprop="dateCreated datePublished" datetime="2016-01-20T14:08:46+08:00">2016-01-20</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-10-07 14:54:54" itemprop="dateModified" datetime="2023-10-07T14:54:54+08:00">2023-10-07</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83/" itemprop="url" rel="index"><span itemprop="name">开发环境</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>最近写Python脚本,需要在服务器上运行,也没办法用PyCharm这种带界面的IDE来写Python,不过看了一篇博客,讲的十分不错,所以自己照着弄了一遍,中间有些不够详细的我也一并记录下来.</p>
+<h3 id="准备环境"><a href="#准备环境" class="headerlink" title="准备环境"></a>准备环境</h3><p>OS:Linux&#x2F;Unix(服务器是CentOS6.4 64bit)<br>Vim: &gt;&#x3D;vim 7.3(终端直接输入vim –version 可以查看版本)<br>Python: 具体的没试过,我的是Python2.7.4</p>
+<h3 id="Vim扩展"><a href="#Vim扩展" class="headerlink" title="Vim扩展"></a>Vim扩展</h3><p>Vim之所以好用,一方面是自身的快捷键很强大,记熟了确实很好用,但是纵观任何一个流行的编辑器,更为重要的一点是可扩展性极强,每个人都可以定制和扩展,最终打造一个最适合自己的编辑器,这个可以说是每个流行的编辑器,浏览器也是如此得以流行的不可或缺的原因.插件太多,一个一个来装太麻烦,并且多了管理起来也不方便,换个系统又得一个一个安装,太麻烦,所以我们需要的第一个东西是:好用的扩展管理器.<br>Vim的扩展通常我们叫bundle或者插件</p>
+<h3 id="Vundle"><a href="#Vundle" class="headerlink" title="Vundle"></a>Vundle</h3><p>Vim的编辑器很多,我就随便选一个了,普通的用也没区别,强烈推荐<code>Vundle</code>.<br>先来安装Vundle:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/gmarik/Vundle.vim.git ~/.vim/bundle/vundle</span><br></pre></td></tr></table></figure>
+<p>上面的这个只是把Vundle插件管理器下载下来了,并且把插件放在了<code>~/.vim/bundle/</code>目录中,现在通过编辑<code>~/.vimrc</code>来配置Vim编辑器来安装Vundle,如果没有则自己创建一个:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">touch</span> ~/.vimrc</span><br></pre></td></tr></table></figure>
+<p>接下在把下面的代码放到<code>~/.vimrc</code>文件顶部:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">set</span> nocompatible              <span class="string">&quot; required</span></span><br><span class="line"><span class="string">filetype off                  &quot;</span> required</span><br><span class="line"></span><br><span class="line"><span class="string">&quot; set the runtime path to include Vundle and initialize</span></span><br><span class="line"><span class="string">set rtp+=~/.vim/bundle/vundle</span></span><br><span class="line"><span class="string">call vundle#begin()</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">&quot;</span> alternatively, pass a path <span class="built_in">where</span> Vundle should install plugins</span><br><span class="line"><span class="string">&quot;call vundle#begin(&#x27;~/some/path/here&#x27;)</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">&quot;</span> <span class="built_in">let</span> Vundle manage Vundle, required</span><br><span class="line">Plugin <span class="string">&#x27;gmarik/vundle&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="string">&quot; Add all your plugins here (note older versions of Vundle used Bundle instead of Plugin)</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">&quot;</span> All of your Plugins must be added before the following line</span><br><span class="line">call vundle<span class="comment">#end()            &quot; required</span></span><br><span class="line">filetype plugin indent on    <span class="string">&quot; required</span></span><br></pre></td></tr></table></figure>
+<p>这样就完成了Vundle的设置,然后就可以安装了,打开Vim编辑器,输入下面的命令:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">:PluginInstall</span><br></pre></td></tr></table></figure>
+<p>这个命令非常好用,它告诉Vundle施展它的魔法——自动下载所有的插件，并为你进行安装和更新。</p>
+<h3 id="开始打造IDE"><a href="#开始打造IDE" class="headerlink" title="开始打造IDE"></a>开始打造IDE</h3><p>如果你对Vim不熟,可以看看我的这篇文章:<a href="">Vim-常用命令总结</a>,常用的一些命令基本就在这了.好了,开始正式配置Vim了.</p>
+<h4 id="代码折叠"><a href="#代码折叠" class="headerlink" title="代码折叠"></a>代码折叠</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&quot; Enable folding</span></span><br><span class="line"><span class="string">set foldmethod=indent</span></span><br><span class="line"><span class="string">set foldlevel=99</span></span><br></pre></td></tr></table></figure>
+
+
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Linux/" rel="tag"># Linux</a>
+              <a href="/tags/Python/" rel="tag"># Python</a>
+              <a href="/tags/Vim/" rel="tag"># Vim</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2016/01/20/Python2.x-os-join-%E6%8A%A5%E9%94%99/" rel="prev" title="Python2.x os.path.join /报错">
+                  <i class="fa fa-angle-left"></i> Python2.x os.path.join /报错
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2016/02/04/Centos-6-4-%E5%AE%89%E8%A3%85matplotlib%E5%8C%85/" rel="next" title="Centos 6.4 安装matplotlib包">
+                  Centos 6.4 安装matplotlib包 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">LittleQ</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

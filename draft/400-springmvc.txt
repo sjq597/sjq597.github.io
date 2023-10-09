@@ -1,0 +1,5 @@
+http://stackoverflow.com/questions/22102697/spring-mvc-bad-request-with-requestbody
+spring mvc异常全局处理
+@ExceptionHandler
+
+但是需要注意,处理异常的controller必须和controller在一个类里面,所以通常会继承这个异常基类

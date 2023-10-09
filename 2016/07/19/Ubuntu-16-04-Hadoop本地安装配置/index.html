@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"sjq597.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.18.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="线上集群测试太慢，有时候需要在本地跑一些计算或者测试某个逻辑，主要做调试用，所以在本地也装一个Hive测试用,但是装Hive需要先安装Hadoop. 准备工作开发环境为: 123456OS: Ubuntu 16.04 LTS 64bitJDK: 1.7.0_40ssh server:1:7.2p2-4ubuntu1Hadoop:hadoop-2.6.4.tar.gz➜  Blog git:(mas">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Ubuntu 16.04 Hadoop本地安装配置">
+<meta property="og:url" content="http://sjq597.github.io/2016/07/19/Ubuntu-16-04-Hadoop%E6%9C%AC%E5%9C%B0%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE/index.html">
+<meta property="og:site_name" content="LittleQ">
+<meta property="og:description" content="线上集群测试太慢，有时候需要在本地跑一些计算或者测试某个逻辑，主要做调试用，所以在本地也装一个Hive测试用,但是装Hive需要先安装Hadoop. 准备工作开发环境为: 123456OS: Ubuntu 16.04 LTS 64bitJDK: 1.7.0_40ssh server:1:7.2p2-4ubuntu1Hadoop:hadoop-2.6.4.tar.gz➜  Blog git:(mas">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2016-07-19T05:18:47.000Z">
+<meta property="article:modified_time" content="2023-10-07T06:54:54.000Z">
+<meta property="article:author" content="LittleQ">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="Hadoop">
+<meta property="article:tag" content="大数据">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://sjq597.github.io/2016/07/19/Ubuntu-16-04-Hadoop%E6%9C%AC%E5%9C%B0%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://sjq597.github.io/2016/07/19/Ubuntu-16-04-Hadoop%E6%9C%AC%E5%9C%B0%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE/","path":"2016/07/19/Ubuntu-16-04-Hadoop本地安装配置/","title":"Ubuntu 16.04 Hadoop本地安装配置"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Ubuntu 16.04 Hadoop本地安装配置 | LittleQ</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">LittleQ</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">爱好：写代码</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%87%86%E5%A4%87%E5%B7%A5%E4%BD%9C"><span class="nav-number">1.</span> <span class="nav-text">准备工作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E6%AD%A5%E9%AA%A4"><span class="nav-number">2.</span> <span class="nav-text">安装步骤</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#ssh%E7%99%BB%E9%99%86%E9%85%8D%E7%BD%AE"><span class="nav-number">2.1.</span> <span class="nav-text">ssh登陆配置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%94%9F%E6%88%90%E5%AF%86%E9%92%A5"><span class="nav-number">2.2.</span> <span class="nav-text">生成密钥</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%89%E8%A3%85JDK"><span class="nav-number">2.3.</span> <span class="nav-text">安装JDK</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%89%E8%A3%85Hadoop"><span class="nav-number">2.4.</span> <span class="nav-text">安装Hadoop</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%95%E6%9C%BA%E9%85%8D%E7%BD%AE"><span class="nav-number">3.</span> <span class="nav-text">单机配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BC%AA%E5%88%86%E5%B8%83%E5%BC%8F"><span class="nav-number">4.</span> <span class="nav-text">伪分布式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BC%AA%E5%88%86%E5%B8%83%E5%BC%8F%E5%AE%9E%E4%BE%8B"><span class="nav-number">5.</span> <span class="nav-text">伪分布式实例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AEYarn"><span class="nav-number">6.</span> <span class="nav-text">配置Yarn</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">LittleQ</p>
+  <div class="site-description" itemprop="description">数据开发工程师的成长历程</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">145</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">51</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://sjq597.github.io/2016/07/19/Ubuntu-16-04-Hadoop%E6%9C%AC%E5%9C%B0%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="LittleQ">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LittleQ">
+      <meta itemprop="description" content="数据开发工程师的成长历程">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Ubuntu 16.04 Hadoop本地安装配置 | LittleQ">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Ubuntu 16.04 Hadoop本地安装配置
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2016-07-19 13:18:47" itemprop="dateCreated datePublished" datetime="2016-07-19T13:18:47+08:00">2016-07-19</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-10-07 14:54:54" itemprop="dateModified" datetime="2023-10-07T14:54:54+08:00">2023-10-07</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83/" itemprop="url" rel="index"><span itemprop="name">开发环境</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>线上集群测试太慢，有时候需要在本地跑一些计算或者测试某个逻辑，主要做调试用，所以在本地也装一个Hive测试用,但是装Hive需要先安装Hadoop.</p>
+<h3 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h3><p>开发环境为:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">OS: Ubuntu 16.04 LTS 64bit</span><br><span class="line">JDK: 1.7.0_40</span><br><span class="line">ssh server:1:7.2p2-4ubuntu1</span><br><span class="line">Hadoop:hadoop-2.6.4.tar.gz</span><br><span class="line">➜  Blog git:(master) ✗ whoami </span><br><span class="line">anonymous</span><br></pre></td></tr></table></figure>
+<p>**注意:**当前用户为<code>anonymous</code>,下面所有涉及到用户的地方，需要对应修改为你自己的用户名。</p>
+<h3 id="安装步骤"><a href="#安装步骤" class="headerlink" title="安装步骤"></a>安装步骤</h3><p>具体的安装步骤可能有些多，具体过程如下:</p>
+<h4 id="ssh登陆配置"><a href="#ssh登陆配置" class="headerlink" title="ssh登陆配置"></a>ssh登陆配置</h4><p>先安装ssh server程序:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">➜  sudo apt update</span><br><span class="line">➜  sudo apt install openssh-server -y</span><br><span class="line">➜  ssh localhost</span><br></pre></td></tr></table></figure>
+<p>输入密码之后可以登陆则没有问题，然后使用<code>exit</code>命令注销当前用户,直接忽略下面的异常问题，<br>如果第一步出现下面的错误，按照下面的方法解决即可:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">忽略:1 http://dl.google.com/linux/chrome/deb stable InRelease</span><br><span class="line">获取:2 http://archive.ubuntukylin.com:10006/ubuntukylin xenial InRelease [3,192 B]</span><br><span class="line">命中:3 http://cn.archive.ubuntu.com/ubuntu xenial InRelease</span><br><span class="line">错误:2 http://archive.ubuntukylin.com:10006/ubuntukylin xenial InRelease</span><br><span class="line">  由于没有公钥，无法验证下列签名： NO_PUBKEY 8D5A09DC9B929006</span><br><span class="line">命中:4 http://cn.archive.ubuntu.com/ubuntu xenial-updates InRelease</span><br><span class="line">获取:5 http://cn.archive.ubuntu.com/ubuntu xenial-backports InRelease [92.2 kB]</span><br><span class="line">命中:6 http://security.ubuntu.com/ubuntu xenial-security InRelease</span><br><span class="line">命中:7 http://dl.google.com/linux/chrome/deb stable Release</span><br><span class="line">正在读取软件包列表... 完成</span><br><span class="line">W: GPG 错误：http://archive.ubuntukylin.com:10006/ubuntukylin xenial InRelease: 由于没有公钥&gt;，无法验证下列签名： NO_PUBKEY 8D5A09DC9B929006</span><br><span class="line">E: 仓库 “http://archive.ubuntukylin.com:10006/ubuntukylin xenial InRelease” 没有数字签名。</span><br><span class="line">N: 无法安全地用该源进行更新，所以默认禁用该源。</span><br><span class="line">N: 参见 apt-secure(8) 手册以了解仓库创建和用户配置方面的细节。</span><br></pre></td></tr></table></figure>
+<p>需要按如下方案解决,手动添加上面报错的签名<code>8D5A09DC9B929006</code>:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">➜  sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 8D5A09DC9B929006</span><br></pre></td></tr></table></figure>
+
+<h4 id="生成密钥"><a href="#生成密钥" class="headerlink" title="生成密钥"></a>生成密钥</h4><p>每次登陆都需要输密码很不方便，设置免密码登陆,记得注销当前用户<code>exit</code>:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">➜  cd ~/.ssh</span><br><span class="line">➜  sh-keygen -t rsa</span><br><span class="line">➜  cat id_rsa.pub &gt;&gt; authorized_keys</span><br></pre></td></tr></table></figure>
+<p>**注意:**生成密钥的时候一路回车，不要输入任何东西,如果进行到这一步，我们就可以切回原来的系统了，然后使用:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh localhost</span><br></pre></td></tr></table></figure>
+
+<h4 id="安装JDK"><a href="#安装JDK" class="headerlink" title="安装JDK"></a>安装JDK</h4><p>这个安装也很简单，解压然后配置环境变量即可:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo tar -xvf jdk-7u40-linux-x64.tar.gz -C /usr/dev</span><br></pre></td></tr></table></figure>
+<p>然后编辑<code>~/.bashrc</code>文件:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">export JAVA_HOME=/usr/dev/jdk1.7.0_40</span><br><span class="line">export JRE_HOME=$&#123;JAVA_HOME&#125;/jre</span><br><span class="line">export CLASSPATH=.:$&#123;JAVA_HOME&#125;/lib:$&#123;JRE_HOME&#125;/lib</span><br><span class="line">export PATH=$&#123;JAVA_HOME&#125;/bin:$PATH</span><br></pre></td></tr></table></figure>
+<p>然后更新一下文件:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">➜  source ~/.bashrc</span><br></pre></td></tr></table></figure>
+<p>测试JDK是否配置正确:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">➜  java -version</span><br><span class="line">java version &quot;1.7.0_40&quot;</span><br><span class="line">Java(TM) SE Runtime Environment (build 1.7.0_40-b43)</span><br><span class="line">Java HotSpot(TM) 64-Bit Server VM (build 24.0-b56, mixed mode)</span><br></pre></td></tr></table></figure>
+
+<h4 id="安装Hadoop"><a href="#安装Hadoop" class="headerlink" title="安装Hadoop"></a>安装Hadoop</h4><p>确认JDK安装正确之后，下面就可以来安装Hadoop了,进入到压缩包所在目录:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">➜  sudo tar -xvf hadoop-2.6.4.tar.gz -C /usr/dev/</span><br><span class="line">➜  sudo chown -R anonymous /usr/dev/hadoop-2.6.4/</span><br></pre></td></tr></table></figure>
+<p>看看是否正确安装了:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">➜  cd /usr/dev/hadoop-2.6.4</span><br><span class="line">➜  ./bin/hadoop version</span><br><span class="line">Hadoop 2.6.4</span><br><span class="line">Subversion https://git-wip-us.apache.org/repos/asf/hadoop.git -r 5082c73637530b0b7e115f9625ed7fac69f937e6</span><br><span class="line">Compiled by jenkins on 2016-02-12T09:45Z</span><br><span class="line">Compiled with protoc 2.5.0</span><br><span class="line">From source with checksum 8dee2286ecdbbbc930a6c87b65cbc010</span><br><span class="line">This command was run using /usr/dev/hadoop-2.6.4/share/hadoop/common/hadoop-common-2.6.4.jar</span><br></pre></td></tr></table></figure>
+<p>可以识别到版本就说明没啥问题了。<br>为了方便以后使用，可以再配置一下环境变量:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">export HADOOP_HOME=/usr/dev/hadoop-2.6.4</span><br><span class="line">export PATH=$&#123;HADOOP_HOME&#125;/bin:$PATH</span><br></pre></td></tr></table></figure>
+<p>**注意:**后面的操作如果没有特殊指明，都是在hadoop的安装目录<code>/usr/dev/hadoop-2.6.4</code>下进行的操作</p>
+<h3 id="单机配置"><a href="#单机配置" class="headerlink" title="单机配置"></a>单机配置</h3><p>单机配置比较简单，我们以一个简单的单词统计来看看怎么配置:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">➜  cd /usr/dev/hadoop-2.6.4</span><br><span class="line">➜  mkdir input</span><br><span class="line">➜  cp etc/hadoop/*.xml input/</span><br><span class="line">➜  ./bin/hadoop jar share/hadoop/mapreduce/hadoop-mapreduce-examples-2.6.4.jar grep input/ output &#x27;dfs[a-z.]+&#x27;</span><br><span class="line">➜  cat output/*</span><br><span class="line">1       dfsadmin</span><br></pre></td></tr></table></figure>
+
+<h3 id="伪分布式"><a href="#伪分布式" class="headerlink" title="伪分布式"></a>伪分布式</h3><p>伪分布式需要修改两个文件<code>etc/hadoop/core-site.xml</code>以及<code>etc/hadoop/hdfs-site.xml</code>,修改对应位置，改为如下内容:</p>
+<ul>
+<li>etc&#x2F;hadoop&#x2F;core-site.xml</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&lt;configuration&gt;</span><br><span class="line">  &lt;property&gt;</span><br><span class="line">    &lt;name&gt;hadoop.tmp.dir&lt;/name&gt;</span><br><span class="line">    &lt;value&gt;file:/usr/dev/hadoop-2.6.4/tmp&lt;/value&gt;</span><br><span class="line">    &lt;description&gt;Abase for other temporary directories.&lt;/description&gt;</span><br><span class="line">  &lt;/property&gt;</span><br><span class="line">  &lt;property&gt;</span><br><span class="line">    &lt;name&gt;fs.defaultFS&lt;/name&gt;</span><br><span class="line">    &lt;value&gt;hdfs://localhost:9000&lt;/value&gt;</span><br><span class="line">  &lt;/property&gt;</span><br><span class="line">&lt;/configuration&gt;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>etc&#x2F;hadoop&#x2F;hdfs-site.xml</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&lt;configuration&gt;</span><br><span class="line">  &lt;property&gt;</span><br><span class="line">    &lt;name&gt;dfs.replication&lt;/name&gt;</span><br><span class="line">    &lt;value&gt;1&lt;/value&gt;</span><br><span class="line">  &lt;/property&gt;</span><br><span class="line">  &lt;property&gt;</span><br><span class="line">    &lt;name&gt;dfs.namenode.name.dir&lt;/name&gt;</span><br><span class="line">    &lt;value&gt;file:/usr/dev/hadoop-2.6.4/tmp/dfs/name&lt;/value&gt;</span><br><span class="line">  &lt;/property&gt;</span><br><span class="line">  &lt;property&gt;</span><br><span class="line">    &lt;name&gt;dfs.datanode.data.dir&lt;/name&gt;</span><br><span class="line">    &lt;value&gt;file:/usr/dev/hadoop-2.6.4/tmp/dfs/data&lt;/value&gt;</span><br><span class="line">  &lt;/property&gt;</span><br><span class="line">&lt;/configuration&gt;</span><br></pre></td></tr></table></figure>
+
+<p>格式化节点:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">➜  ./bin/hdfs namenode -format</span><br><span class="line">............省略一堆调试信息............</span><br><span class="line">16/07/19 16:23:54 INFO common.Storage: Storage directory /usr/dev/hadoop-2.6.4/tmp/dfs/name has been successfully formatted.</span><br><span class="line">16/07/19 16:23:54 INFO namenode.NNStorageRetentionManager: Going to retain 1 images with txid &gt;= 0</span><br><span class="line">16/07/19 16:23:54 INFO util.ExitUtil: Exiting with status 0</span><br><span class="line">16/07/19 16:23:54 INFO namenode.NameNode: SHUTDOWN_MSG:</span><br><span class="line">/************************************************************</span><br><span class="line">SHUTDOWN_MSG: Shutting down NameNode at anonymous/127.0.1.1</span><br><span class="line">************************************************************/</span><br></pre></td></tr></table></figure>
+<p>**注意:**如果消息最后不是<code>been successfully formatted.</code>以及返回值不是<code>Exiting with status 0</code>则说明执行失败。</p>
+<p>开启<code>NameNode</code>和<code>DataNode</code>守护进程:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">➜  ./sbin/start-dfs.sh</span><br><span class="line">Starting namenodes on [localhost]</span><br><span class="line">localhost: Error: JAVA_HOME is not set and could not be found.</span><br><span class="line">localhost: Error: JAVA_HOME is not set and could not be found.</span><br><span class="line">Starting secondary namenodes [0.0.0.0]</span><br><span class="line">0.0.0.0: Error: JAVA_HOME is not set and could not be found.</span><br></pre></td></tr></table></figure>
+<p>出现这个错误，并不是由于jdk没设置好，不然前面的也不能运行，只好手动修改文件<code>etc/hadoop/hadoop-env.sh</code>，原来的地方是<code>export JAVA_HOME=$&#123;JAVA_HOME&#125;</code>改成<code>~/.bashrc</code>里面的内容:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">export JAVA_HOME=/usr/dev/jdk1.7.0_40</span><br></pre></td></tr></table></figure>
+<p>记得要<code>source ~/.bashrc</code>,然后再试一下:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">➜  ./sbin/start-dfs.sh</span><br><span class="line">Starting namenodes on [localhost]</span><br><span class="line">localhost: starting namenode, logging to /usr/dev/hadoop-2.6.4/logs/hadoop-hadoop-namenode-anonymous.out</span><br><span class="line">localhost: starting datanode, logging to /usr/dev/hadoop-2.6.4/logs/hadoop-hadoop-datanode-anonymous.out</span><br><span class="line">Starting secondary namenodes [0.0.0.0]</span><br><span class="line">0.0.0.0: starting secondarynamenode, logging to /usr/dev/hadoop-2.6.4/logs/hadoop-hadoop-secondarynamenode-anonymous.out</span><br></pre></td></tr></table></figure>
+<p>看看进程:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">➜  jps</span><br><span class="line">19407 SecondaryNameNode</span><br><span class="line">19239 DataNode</span><br><span class="line">19104 NameNode</span><br><span class="line">19574 Jps</span><br></pre></td></tr></table></figure>
+<p>**注意:**没有NameNode或者<code>DataNode</code>则<code>NameNode</code>则不对，正常启动之后可以在Web页面<a target="_blank" rel="noopener" href="http://localhost:50070/">http://localhost:50070</a>查看:</p>
+<h3 id="伪分布式实例"><a href="#伪分布式实例" class="headerlink" title="伪分布式实例"></a>伪分布式实例</h3><p>最开始演示了一个单机模式的单词统计，这里来一个统计hdfs文件统计的例子:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">➜  ./bin/hdfs dfs -mkdir -p /user/hadoop</span><br><span class="line">➜  ./bin/hdfs dfs -mkdir input</span><br><span class="line">➜  ./bin/hdfs dfs -put etc/hadoop/*.xml input/</span><br><span class="line">➜  ./bin/hdfs dfs -ls input/</span><br><span class="line">Found 8 items</span><br><span class="line">-rw-r--r--   1 anonymous supergroup       4436 2016-07-19 19:37 input/capacity-scheduler.xml</span><br><span class="line">-rw-r--r--   1 anonymous supergroup       1051 2016-07-19 19:37 input/core-site.xml</span><br><span class="line">-rw-r--r--   1 anonymous supergroup       9683 2016-07-19 19:37 input/hadoop-policy.xml</span><br><span class="line">-rw-r--r--   1 anonymous supergroup       1105 2016-07-19 19:37 input/hdfs-site.xml</span><br><span class="line">-rw-r--r--   1 anonymous supergroup        620 2016-07-19 19:37 input/httpfs-site.xml</span><br><span class="line">-rw-r--r--   1 anonymous supergroup       3523 2016-07-19 19:37 input/kms-acls.xml</span><br><span class="line">-rw-r--r--   1 anonymous supergroup       5511 2016-07-19 19:37 input/kms-site.xml</span><br><span class="line">-rw-r--r--   1 anonymous supergroup        690 2016-07-19 19:37 input/yarn-site.xml</span><br><span class="line"></span><br><span class="line">➜  ./bin/hadoop jar share/hadoop/mapreduce/hadoop-mapreduce-examples-2.6.4.jar grep input/ output &#x27;dfs[a-z.]+&#x27;</span><br></pre></td></tr></table></figure>
+
+<p>查看hdfs文件的统计结果可以使用:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">➜  ./bin/hdfs dfs -cat output/*</span><br><span class="line">1	dfsadmin</span><br><span class="line">1	dfs.replication</span><br><span class="line">1	dfs.namenode.name.dir</span><br><span class="line">1	dfs.datanode.data.dir</span><br></pre></td></tr></table></figure>
+<p>结果也可以取回本地，当然记得先把本地的文件夹删了:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">➜  rm -r output</span><br><span class="line">➜  ./bin/hdfs dfs -get output output</span><br><span class="line">➜  cat output/*</span><br></pre></td></tr></table></figure>
+
+<h3 id="配置Yarn"><a href="#配置Yarn" class="headerlink" title="配置Yarn"></a>配置Yarn</h3><p>有时候我们还需要一个任务或资源的调度器，当然如果是本地的任务，这个功能其实没啥用，反而会是任务运行变慢，这里仅当学习使用:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">➜  cp etc/hadoop/mapred-site.xml.template etc/hadoop/mapred-site.xml</span><br></pre></td></tr></table></figure>
+<p>编辑下面两个文件<code>etc/hadoop/mapred-site.xml</code>，<code>etc/hadoop/yarn-site.xml</code>:</p>
+<ul>
+<li>etc&#x2F;hadoop&#x2F;mapred-site.xml</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;configuration&gt;</span><br><span class="line">  &lt;property&gt;</span><br><span class="line">    &lt;name&gt;mapreduce.framework.name&lt;/name&gt;</span><br><span class="line">    &lt;value&gt;yarn&lt;/value&gt;</span><br><span class="line">  &lt;/property&gt;</span><br><span class="line">&lt;/configuration&gt;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>etc&#x2F;hadoop&#x2F;yarn-site.xml</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;configuration&gt;</span><br><span class="line">&lt;!-- Site specific YARN configuration properties --&gt;</span><br><span class="line">  &lt;property&gt;</span><br><span class="line">    &lt;name&gt;yarn.nodemanager.aux-services&lt;/name&gt;</span><br><span class="line">    &lt;value&gt;mapreduce_shuffle&lt;/value&gt;</span><br><span class="line">  &lt;/property&gt;</span><br><span class="line">&lt;/configuration&gt;</span><br></pre></td></tr></table></figure>
+
+<p>启动资源管理器</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">➜  ./sbin/start-yarn.sh</span><br><span class="line">➜  ./sbin/mr-jobhistory-daemon.sh start historyserver</span><br></pre></td></tr></table></figure>
+<p>集群资源管理器的访问地址为:<a target="_blank" rel="noopener" href="http://localhost:8088/cluster">http://localhost:8088/cluster</a>,另外第二条命令是为了看历史任务的。</p>
+<p>关闭资源你管理器</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">➜  ./sbin/stop-yarn.sh</span><br><span class="line">➜  ./sbin/mr-jobhistory-daemon.sh stop historyserver</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Linux/" rel="tag"># Linux</a>
+              <a href="/tags/Hadoop/" rel="tag"># Hadoop</a>
+              <a href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/" rel="tag"># 大数据</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2016/07/18/Hadoop-Streaming%E6%94%B6%E9%9B%86%E6%97%A5%E5%BF%97/" rel="prev" title="Hadoop Streaming收集日志">
+                  <i class="fa fa-angle-left"></i> Hadoop Streaming收集日志
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2016/07/20/Ubuntu-16-04-Hive-%E6%9C%AC%E5%9C%B0%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE/" rel="next" title="Ubuntu 16.04 Hive 本地安装配置">
+                  Ubuntu 16.04 Hive 本地安装配置 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">LittleQ</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

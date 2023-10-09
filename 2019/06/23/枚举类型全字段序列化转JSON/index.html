@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"sjq597.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.18.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="背景最近在构思做一个通用化的字典工具,其中有一个功能就是自动扫描枚举类，将枚举类序列化成一张表，对比更新到数据库中。但是在实际中使用发现，如果不做任何限制，直接用fastjson的JSON.toJSONString(obj) 方法，得到的只是枚举的名字，并没有得到一个全字段的json串。即SUCCESS(0, &quot;成功&quot;)得到的将是SUCCESS这个字符串 fastjson版本:">
+<meta property="og:type" content="article">
+<meta property="og:title" content="枚举类型全字段序列化转JSON">
+<meta property="og:url" content="http://sjq597.github.io/2019/06/23/%E6%9E%9A%E4%B8%BE%E7%B1%BB%E5%9E%8B%E5%85%A8%E5%AD%97%E6%AE%B5%E5%BA%8F%E5%88%97%E5%8C%96%E8%BD%ACJSON/index.html">
+<meta property="og:site_name" content="LittleQ">
+<meta property="og:description" content="背景最近在构思做一个通用化的字典工具,其中有一个功能就是自动扫描枚举类，将枚举类序列化成一张表，对比更新到数据库中。但是在实际中使用发现，如果不做任何限制，直接用fastjson的JSON.toJSONString(obj) 方法，得到的只是枚举的名字，并没有得到一个全字段的json串。即SUCCESS(0, &quot;成功&quot;)得到的将是SUCCESS这个字符串 fastjson版本:">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-06-23T08:55:36.000Z">
+<meta property="article:modified_time" content="2023-10-07T06:54:54.000Z">
+<meta property="article:author" content="LittleQ">
+<meta property="article:tag" content="Java">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://sjq597.github.io/2019/06/23/%E6%9E%9A%E4%B8%BE%E7%B1%BB%E5%9E%8B%E5%85%A8%E5%AD%97%E6%AE%B5%E5%BA%8F%E5%88%97%E5%8C%96%E8%BD%ACJSON/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://sjq597.github.io/2019/06/23/%E6%9E%9A%E4%B8%BE%E7%B1%BB%E5%9E%8B%E5%85%A8%E5%AD%97%E6%AE%B5%E5%BA%8F%E5%88%97%E5%8C%96%E8%BD%ACJSON/","path":"2019/06/23/枚举类型全字段序列化转JSON/","title":"枚举类型全字段序列化转JSON"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>枚举类型全字段序列化转JSON | LittleQ</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">LittleQ</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">爱好：写代码</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%83%8C%E6%99%AF"><span class="nav-number">1.</span> <span class="nav-text">背景</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88"><span class="nav-number">1.1.</span> <span class="nav-text">解决方案</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9E%9A%E4%B8%BE%E5%B5%8C%E5%A5%97"><span class="nav-number">1.2.</span> <span class="nav-text">枚举嵌套</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9E%9A%E4%B8%BE%E8%BD%AC%E5%AD%97%E5%85%B8"><span class="nav-number">1.3.</span> <span class="nav-text">枚举转字典</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%90%8C%E6%AD%A5%E6%B3%A8%E8%A7%A3"><span class="nav-number">1.3.1.</span> <span class="nav-text">同步注解</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">LittleQ</p>
+  <div class="site-description" itemprop="description">数据开发工程师的成长历程</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">145</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">51</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://sjq597.github.io/2019/06/23/%E6%9E%9A%E4%B8%BE%E7%B1%BB%E5%9E%8B%E5%85%A8%E5%AD%97%E6%AE%B5%E5%BA%8F%E5%88%97%E5%8C%96%E8%BD%ACJSON/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="LittleQ">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LittleQ">
+      <meta itemprop="description" content="数据开发工程师的成长历程">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="枚举类型全字段序列化转JSON | LittleQ">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          枚举类型全字段序列化转JSON
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2019-06-23 16:55:36" itemprop="dateCreated datePublished" datetime="2019-06-23T16:55:36+08:00">2019-06-23</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-10-07 14:54:54" itemprop="dateModified" datetime="2023-10-07T14:54:54+08:00">2023-10-07</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Java%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">Java笔记</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><p>最近在构思做一个通用化的字典工具,其中有一个功能就是自动扫描枚举类，将枚举类序列化成一张表，对比更新到数据库中。但是在实际中使用发现，如果不做任何限制，直接用<code>fastjson</code>的<code>JSON.toJSONString(obj)</code> 方法，得到的只是枚举的名字，并没有得到一个全字段的json串。即<code>SUCCESS(0, &quot;成功&quot;)</code>得到的将是<code>SUCCESS</code>这个字符串</p>
+<p>fastjson版本:1.2.56</p>
+<h4 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h4><ol>
+<li>重写覆盖枚举类的toString() 方法</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">@Getter</span><br><span class="line">@AllArgsConstructor</span><br><span class="line">public enum EnumTest &#123;</span><br><span class="line">    SUCCESS(0, &quot;成功&quot;),</span><br><span class="line">    FAIL(-1, &quot;失败&quot;);</span><br><span class="line"></span><br><span class="line">    private int code;</span><br><span class="line">    private String msg;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public String toString() &#123;</span><br><span class="line">        return &quot;&#123;\n&quot; +</span><br><span class="line">                &quot;  \&quot;code\&quot;: &quot; + getCode() + &quot;,\n&quot; +</span><br><span class="line">                &quot;  \&quot;msg\&quot;: &quot; + getMsg() + &quot;\n&quot; +</span><br><span class="line">                &quot;&#125;&quot;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这样的话，如果直接用<code>EnumTest.SUCCESS.toString()</code>就可以得到想要的结果，但是如果用<code>JSON.toJSONString(EnumTest.SUCCESS)</code>得到的仍然是<code>SUCCESS</code>。这个比较直白简单，但是不支持<code>fastjson</code>的方法,就是手动控制了枚举的<code>toString</code>输出内容，但是也有一个不好的问题就是，新增字段或者修改字段，还得改<code>toString</code>方法，万一忘了改，那可能会发生一些莫名其妙的Bug,而且还不易察觉,所以不推荐。<br>**NOTE:**注解是用了<code>lombok</code>包里面的一些方法</p>
+<ol start="2">
+<li>自定义SerializeConfig</li>
+</ol>
+<p>其实仔细看<code>JSON.toJSONString()</code>方法，有一些其他的重载方法提供了一些其他的参数，其中</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">public static String toJSONString(Object object, SerializeConfig config, SerializerFeature... features) &#123;</span><br><span class="line">        return toJSONString(object, config, (SerializeFilter) null, features);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>这个里面有一个自定义序列化的配置参<br>使用如下:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">SerializeConfig config = new SerializeConfig();</span><br><span class="line">config.configEnumAsJavaBean(EnumTest.class);</span><br><span class="line">System.out.println(JSON.toJSONString(EnumTest.SUCCESS, config));</span><br></pre></td></tr></table></figure>
+<p>我们对比下几个的输出结果:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">System.out.println(&quot;1:&quot; + EnumTest.SUCCESS.toString());</span><br><span class="line">System.out.println(&quot;2:&quot; + JSON.toJSONString(EnumTest.SUCCESS));</span><br><span class="line"></span><br><span class="line">SerializeConfig config = new SerializeConfig();</span><br><span class="line">config.configEnumAsJavaBean(EnumTest.class);</span><br><span class="line">System.out.println(&quot;3:&quot; + JSON.toJSONString(EnumTest.SUCCESS, config));</span><br></pre></td></tr></table></figure>
+<p>结果如下:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">1:&#123;</span><br><span class="line">  &quot;code&quot;: 0,</span><br><span class="line">  &quot;msg&quot;: 成功</span><br><span class="line">&#125;</span><br><span class="line">2:&quot;SUCCESS&quot;</span><br><span class="line">3:&#123;&quot;code&quot;:0,&quot;msg&quot;:&quot;成功&quot;&#125;</span><br></pre></td></tr></table></figure>
+<p>通过这种方式，可以比较灵活自由的达到我们想要的序列化效果，而没有破坏掉其他的一些引用到枚举类的地方，因为如果直接重载了枚举本身的<code>toString()</code>方法，会产生一些不可预知的错误。</p>
+<h4 id="枚举嵌套"><a href="#枚举嵌套" class="headerlink" title="枚举嵌套"></a>枚举嵌套</h4><p>对于简单的枚举，这种应该没有啥问题，如果枚举出现了嵌套呢?我们写个例子测试一下,再申明一个<code>EnumTest2</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">// 枚举定义</span><br><span class="line">@Getter</span><br><span class="line">@AllArgsConstructor</span><br><span class="line">public enum EnumTest2 &#123;</span><br><span class="line">    SUCCESS(0, &quot;成功&quot;, EnumTest.SUCCESS),</span><br><span class="line">    FAIL(-1, &quot;失败&quot;, EnumTest.FAIL);</span><br><span class="line"></span><br><span class="line">    private int code;</span><br><span class="line">    private String msg;</span><br><span class="line">    private EnumTest enumTest;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 自定义序列化配置</span><br><span class="line">SerializeConfig config = new SerializeConfig();</span><br><span class="line">config.configEnumAsJavaBean(EnumTest2.class);</span><br><span class="line">System.out.println(JSON.toJSONString(EnumTest2.SUCCESS, config));</span><br><span class="line"></span><br><span class="line">// 输出</span><br><span class="line">&#123;&quot;code&quot;:0,&quot;enumTest&quot;:&quot;SUCCESS&quot;,&quot;msg&quot;:&quot;成功&quot;&#125;</span><br></pre></td></tr></table></figure>
+<p>可以看到<code>EnumTest2</code>本身序列化没问题，但是他的<code>enumTest</code>属性没有按照我们想要的方式来，需要改一些:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">// 这个地方改一下</span><br><span class="line">config.configEnumAsJavaBean(EnumTest.class, EnumTest2.class);</span><br><span class="line">// 输出结果</span><br><span class="line">&#123;&quot;code&quot;:0,&quot;enumTest&quot;:&#123;&quot;code&quot;:0,&quot;msg&quot;:&quot;成功&quot;&#125;,&quot;msg&quot;:&quot;成功&quot;&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="枚举转字典"><a href="#枚举转字典" class="headerlink" title="枚举转字典"></a>枚举转字典</h4><p>其实上面的基本是为了搞清楚枚举的序列化问题，主要目的其实还是为了我们的字典如何同步。因为并不是所有的枚举都需要入库，所以我们需要实现一个注解，当有这个注解的枚举，那么我们会把他同步到字典中。当然还有一个问题就是上面探讨的，如果一个枚举他嵌套了其他的枚举，我们还需要把他所引用的枚举都配置到自定义序列化的配置里，所以实现如下:</p>
+<h5 id="同步注解"><a href="#同步注解" class="headerlink" title="同步注解"></a>同步注解</h5>
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Java/" rel="tag"># Java</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2019/02/22/IllegalAccessError-HBaseZeroCopyByteString/" rel="prev" title="IllegalAccessError HBaseZeroCopyByteString">
+                  <i class="fa fa-angle-left"></i> IllegalAccessError HBaseZeroCopyByteString
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2019/12/30/CentOS7-%E5%AE%89%E8%A3%85transmission-%E8%BF%9C%E7%A8%8B%E4%B8%8B%E8%BD%BD/" rel="next" title="CentOS7 安装transmission 远程下载">
+                  CentOS7 安装transmission 远程下载 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">LittleQ</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

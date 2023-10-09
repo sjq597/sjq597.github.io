@@ -1,0 +1,2 @@
+select2
+loading data remote不起作用,需要把代码放到document.onload/document.ready 事件里面

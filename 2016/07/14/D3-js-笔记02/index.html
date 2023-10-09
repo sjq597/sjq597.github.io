@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"sjq597.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.18.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="常用的操作:选择，插入，删除，前面已经讲了选择元素的相关操作，这里还是简单记一下。 元素操作选择元素假设有三个元素 123&lt;p&gt;test1&lt;&#x2F;p&gt;&lt;p&gt;test2&lt;&#x2F;p&gt;&lt;p&gt;test3&lt;&#x2F;p&gt; 下面的操作都是基于这三个的元素的操作 选择第一个p元素12var p1 &#x3D; body.sellect(&quot;p&quot;);">
+<meta property="og:type" content="article">
+<meta property="og:title" content="D3 js 笔记02">
+<meta property="og:url" content="http://sjq597.github.io/2016/07/14/D3-js-%E7%AC%94%E8%AE%B002/index.html">
+<meta property="og:site_name" content="LittleQ">
+<meta property="og:description" content="常用的操作:选择，插入，删除，前面已经讲了选择元素的相关操作，这里还是简单记一下。 元素操作选择元素假设有三个元素 123&lt;p&gt;test1&lt;&#x2F;p&gt;&lt;p&gt;test2&lt;&#x2F;p&gt;&lt;p&gt;test3&lt;&#x2F;p&gt; 下面的操作都是基于这三个的元素的操作 选择第一个p元素12var p1 &#x3D; body.sellect(&quot;p&quot;);">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog-1254094716.cos.ap-chengdu.myqcloud.com/D3%20js%20%E7%AC%94%E8%AE%B002%20001.jpg">
+<meta property="article:published_time" content="2016-07-14T06:34:39.000Z">
+<meta property="article:modified_time" content="2023-10-07T06:54:54.000Z">
+<meta property="article:author" content="LittleQ">
+<meta property="article:tag" content="可视化">
+<meta property="article:tag" content="Web">
+<meta property="article:tag" content="JS">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog-1254094716.cos.ap-chengdu.myqcloud.com/D3%20js%20%E7%AC%94%E8%AE%B002%20001.jpg">
+
+
+<link rel="canonical" href="http://sjq597.github.io/2016/07/14/D3-js-%E7%AC%94%E8%AE%B002/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://sjq597.github.io/2016/07/14/D3-js-%E7%AC%94%E8%AE%B002/","path":"2016/07/14/D3-js-笔记02/","title":"D3 js 笔记02"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>D3 js 笔记02 | LittleQ</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">LittleQ</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">爱好：写代码</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%83%E7%B4%A0%E6%93%8D%E4%BD%9C"><span class="nav-number">1.</span> <span class="nav-text">元素操作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%89%E6%8B%A9%E5%85%83%E7%B4%A0"><span class="nav-number">1.1.</span> <span class="nav-text">选择元素</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%80%89%E6%8B%A9%E7%AC%AC%E4%B8%80%E4%B8%AAp%E5%85%83%E7%B4%A0"><span class="nav-number">1.1.1.</span> <span class="nav-text">选择第一个p元素</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%A8%E9%80%89"><span class="nav-number">1.1.2.</span> <span class="nav-text">全选</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%80%89%E6%8B%A9%E6%8C%87%E5%AE%9A%E5%85%83%E7%B4%A0"><span class="nav-number">1.1.3.</span> <span class="nav-text">选择指定元素</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8F%92%E5%85%A5"><span class="nav-number">1.2.</span> <span class="nav-text">插入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%A0%E9%99%A4"><span class="nav-number">1.3.</span> <span class="nav-text">删除</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%80%E5%8D%95%E5%9B%BE%E8%A1%A8"><span class="nav-number">2.</span> <span class="nav-text">简单图表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AF%94%E4%BE%8B%E5%B0%BA"><span class="nav-number">3.</span> <span class="nav-text">比例尺</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BA%BF%E6%80%A7%E6%AF%94%E4%BE%8B%E5%B0%BA"><span class="nav-number">3.1.</span> <span class="nav-text">线性比例尺</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A6%BB%E6%95%A3%E6%AF%94%E4%BE%8B%E5%B0%BA"><span class="nav-number">3.2.</span> <span class="nav-text">离散比例尺</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">LittleQ</p>
+  <div class="site-description" itemprop="description">数据开发工程师的成长历程</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">145</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">51</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://sjq597.github.io/2016/07/14/D3-js-%E7%AC%94%E8%AE%B002/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="LittleQ">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LittleQ">
+      <meta itemprop="description" content="数据开发工程师的成长历程">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="D3 js 笔记02 | LittleQ">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          D3 js 笔记02
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2016-07-14 14:34:39" itemprop="dateCreated datePublished" datetime="2016-07-14T14:34:39+08:00">2016-07-14</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-10-07 14:54:54" itemprop="dateModified" datetime="2023-10-07T14:54:54+08:00">2023-10-07</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/JScript/" itemprop="url" rel="index"><span itemprop="name">JScript</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>常用的操作:选择，插入，删除，前面已经讲了选择元素的相关操作，这里还是简单记一下。</p>
+<h2 id="元素操作"><a href="#元素操作" class="headerlink" title="元素操作"></a>元素操作</h2><h3 id="选择元素"><a href="#选择元素" class="headerlink" title="选择元素"></a>选择元素</h3><p>假设有三个元素</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;p&gt;test1&lt;/p&gt;</span><br><span class="line">&lt;p&gt;test2&lt;/p&gt;</span><br><span class="line">&lt;p&gt;test3&lt;/p&gt;</span><br></pre></td></tr></table></figure>
+<p>下面的操作都是基于这三个的元素的操作</p>
+<h4 id="选择第一个p元素"><a href="#选择第一个p元素" class="headerlink" title="选择第一个p元素"></a>选择第一个p元素</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">var p1 = body.sellect(&quot;p&quot;);</span><br><span class="line">p1.style(&quot;color&quot;, &quot;red&quot;);</span><br></pre></td></tr></table></figure>
+
+<h4 id="全选"><a href="#全选" class="headerlink" title="全选"></a>全选</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">var p = body.sellectAll(&quot;p&quot;);</span><br><span class="line">p.style(&quot;color&quot;, &quot;red&quot;);</span><br></pre></td></tr></table></figure>
+
+<h4 id="选择指定元素"><a href="#选择指定元素" class="headerlink" title="选择指定元素"></a>选择指定元素</h4><ul>
+<li>通过元素id属性</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;p&gt; id=&quot;id_2&quot;&gt;Test 2&lt;/p&gt;</span><br></pre></td></tr></table></figure>
+<p>然后使用下面的代码来改变第二个元素的颜色</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">var p2 = body.select(&quot;#id_2&quot;);</span><br><span class="line">p2.style(&quot;color&quot;,&quot;red&quot;);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>通过元素class属性</li>
+</ul>
+<p>假设有如下内容，把这个内容改一下:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;p class=&quot;c1&quot; id=&quot;id_1&quot;&gt;Apple&lt;/p&gt;</span><br><span class="line">&lt;p class=&quot;c1&quot; id=&quot;id_2&quot;&gt;Pear&lt;/p&gt;</span><br><span class="line">&lt;p class=&quot;c2&quot; id=&quot;id_3&quot;&gt;Banana&lt;/p&gt;</span><br></pre></td></tr></table></figure>
+<p>可以使用下面的方法:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">var p = body.selectAll(&quot;.c1&quot;);</span><br><span class="line">p.style(&quot;color&quot;, &quot;blue&quot;);</span><br></pre></td></tr></table></figure>
+<p><strong>备注:<strong>关于<code>select()</code>和<code>selectAll()</code>的参数，其实是符合<code>CSS</code>选择器的条件的，即用<code>#</code>表示</strong>id</strong>，用<code>.</code>表示<strong>class</strong>.这样可以把前两个内容设置成蓝色。</p>
+<h3 id="插入"><a href="#插入" class="headerlink" title="插入"></a>插入</h3><p>和Python很像，有<code>insert()</code>以及<code>append()</code>方法:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">append():	# 在选择集末尾插入元素</span><br><span class="line">insert():	# 在选择集前面插入元素</span><br></pre></td></tr></table></figure>
+<p>例子:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">body.append(&quot;p&quot;).text(&quot;append p element&quot;);	# 在最后插入一个&lt;p&gt;元素，并且设置文本内容</span><br><span class="line">body.insert(&quot;p&quot;, &quot;#id_2&quot;).text(&quot;insert p element&quot;);	# 在id为id_2的元素前面插入一个元素</span><br></pre></td></tr></table></figure>
+<p>结果如下:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Apple</span><br><span class="line">insert p element</span><br><span class="line">Pear</span><br><span class="line">Banana</span><br><span class="line">append p element</span><br></pre></td></tr></table></figure>
+
+<h3 id="删除"><a href="#删除" class="headerlink" title="删除"></a>删除</h3><p>这个简单，直接使用<code>remove()</code>即可，对于上面的代码:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">var p = body.select(&quot;#id_1&quot;);</span><br><span class="line">p.remove();	# 删除id=id_1的元素</span><br></pre></td></tr></table></figure>
+
+<h2 id="简单图表"><a href="#简单图表" class="headerlink" title="简单图表"></a>简单图表</h2><p>简单介绍一下图表，但是的先明白几个常见的术语:<br>要画图，必须要在一个用来画图的东西，通常我们用画布来画图，常见的画布又两种:<code>SVG</code>和<code>Canvas</code>。</p>
+<ul>
+<li>SVG</li>
+</ul>
+<p>SVG是指可缩放的矢量图形，主要用来描述二维矢量图形，定义图形也很简单，使用<code>xml</code>来定义图形。由于是用<code>xml</code>来定义图形，所以每个元素都可以添加JavaScript事件处理器。</p>
+<ul>
+<li>Canvas</li>
+</ul>
+<p>Canvas是通过JavaScript来绘制2D图形</p>
+<p>**注意:**这里需要说明一下，D3提供的很多画图的函数都是SVG图形生成器，所以建议在学习D3.js的时候使用SVG画布,添加一个<code>SVG</code>也很简单:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">var width = 300;  //画布的宽度</span><br><span class="line">var height = 300;   //画布的高度</span><br><span class="line"> </span><br><span class="line">var svg = d3.select(&quot;body&quot;)     //选择文档中的body元素</span><br><span class="line">    .append(&quot;svg&quot;)          //添加一个svg元素</span><br><span class="line">    .attr(&quot;width&quot;, width)       //设定宽度</span><br><span class="line">    .attr(&quot;height&quot;, height);    //设定高度</span><br></pre></td></tr></table></figure>
+<p>下面就可以在这个svg上画各种图了,先上源码:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">&lt;html&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">    &lt;meta charset=&quot;utf-8&quot;&gt;</span><br><span class="line">    &lt;title&gt;HelloWorld&lt;/title&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">&lt;script src=&quot;js/d3.min.js&quot; charset=&quot;utf-8&quot;&gt;&lt;/script&gt;</span><br><span class="line">&lt;script&gt;</span><br><span class="line">    var width = 300;</span><br><span class="line">    var height = 300;</span><br><span class="line"></span><br><span class="line">    var svg = d3.select(&quot;body&quot;)</span><br><span class="line">            .append(&quot;svg&quot;)</span><br><span class="line">            .attr(&quot;width&quot;, width)</span><br><span class="line">            .attr(&quot;height&quot;, height);</span><br><span class="line"></span><br><span class="line">    var dataSet = [250, 210, 170, 130, 90];</span><br><span class="line">    var rectHeight = 25;</span><br><span class="line"></span><br><span class="line">    svg.selectAll(&quot;rect&quot;)</span><br><span class="line">            .data(dataSet)</span><br><span class="line">            .enter()</span><br><span class="line">            .append(&quot;rect&quot;)</span><br><span class="line">            .attr(&quot;x&quot;, 20)  // 设置举行左上角开始x位置</span><br><span class="line">            .attr(&quot;y&quot;, function(d, i) &#123;     // 设置举行左上角开始y位置</span><br><span class="line">                return i * rectHeight;</span><br><span class="line">            &#125;)</span><br><span class="line">            .attr(&quot;width&quot;, function(d) &#123;    // 设置每个举行的宽度(长度)</span><br><span class="line">                return d;</span><br><span class="line">            &#125;)</span><br><span class="line">            .attr(&quot;height&quot;, rectHeight - 2) // 行之间空出一条间隙</span><br><span class="line">            .attr(&quot;fill&quot;, &quot;steelblue&quot;);</span><br><span class="line">&lt;/script&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+<p>解释一下,<code>&lt;rect&gt;</code>为矩形，它有四个属性:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">x：矩形左上角的 x 坐标</span><br><span class="line">y：矩形左上角的 y 坐标</span><br><span class="line">width：矩形的宽度</span><br><span class="line">height：矩形的高度</span><br></pre></td></tr></table></figure>
+<p>其中x轴正方向为水平向右，y轴正方向为垂直向下:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">var dataSet = [250, 210, 170, 130, 90];</span><br></pre></td></tr></table></figure>
+<p>用来存储几个长方形的长度，即<code>width</code>属性值，添加和<code>dataSet</code>数量相等的矩形，所使用的代码是:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">svg.selectAll(&quot;rect&quot;)</span><br><span class="line">        .data(dataSet)</span><br><span class="line">        .enter()</span><br><span class="line">        .append(&quot;rect&quot;)</span><br></pre></td></tr></table></figure>
+<p>这段代码先记住，可以添加足够多的元素，后面细讲机制，然后就是前面讲过的给元素附属性值了，依次给每个举行设置那四个属性的值，<code>dataSet</code>里面的元素设置成举行的<code>width</code>属性值，最后设置一下颜色，效果如下:<br><img src="https://blog-1254094716.cos.ap-chengdu.myqcloud.com/D3%20js%20%E7%AC%94%E8%AE%B002%20001.jpg" alt="svg图表"></p>
+<h2 id="比例尺"><a href="#比例尺" class="headerlink" title="比例尺"></a>比例尺</h2><p>上面的设置矩形的长度用的是一个数组，里面的值直接设置成了矩形的像素长度，但是这样比较死，有可能太大也有可能太小，所以使用比例尺是个不错的注意，只要设置一种放缩关系，只用设定上下限，中间的值会自动放缩会很方便。<br>简单来说就是一个函数<code>x-&gt;y</code>这样的一种映射关系,x为定义域，y为值域。</p>
+<h3 id="线性比例尺"><a href="#线性比例尺" class="headerlink" title="线性比例尺"></a>线性比例尺</h3><p>这种比例尺比较常用，也比较简单，使用上只用设定上下限即可:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">var dataSet = [1.2, 2.3, 0.9, 1.5, 3.3];</span><br><span class="line">var min = d3.min(dataSet);</span><br><span class="line">var max = d3.max(dataSet);</span><br><span class="line"></span><br><span class="line">var linear = d3.scale.linear()</span><br><span class="line">	.domain([min, max])</span><br><span class="line">	.range([0, 300])</span><br><span class="line"></span><br><span class="line">linear(0.9)</span><br><span class="line">linear(2.3)</span><br><span class="line">linear(3.3)</span><br></pre></td></tr></table></figure>
+<p><code>d3.scale.linear()</code>返回线性比例尺，也可以当函数使用。</p>
+<h3 id="离散比例尺"><a href="#离散比例尺" class="headerlink" title="离散比例尺"></a>离散比例尺</h3><p>有时候需要的并不一定是线性连续的映射关系，可能是把某一批转化成另一类元素，例如:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">var index = [0, 1, 2, 3, 4];</span><br><span class="line">var color = [&quot;red&quot;, &quot;blue&quot;, &quot;green&quot;, &quot;yellow&quot;, &quot;black&quot;];</span><br></pre></td></tr></table></figure>
+<p>需要把对应的序号映射到颜色上去，用序数比例尺就更合适:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">var ordinal = d3.scale.ordinal()</span><br><span class="line">        .domain(index)</span><br><span class="line">        .range(color);</span><br><span class="line"></span><br><span class="line">ordinal(0); //返回 red</span><br><span class="line">ordinal(2); //返回 green</span><br><span class="line">ordinal(4); //返回 black</span><br></pre></td></tr></table></figure>
+<p>所以上面讲的柱形图，我们可以利用比例尺改写一下:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">var rectHeight = 25;   //每个矩形所占的像素高度(包括空白)</span><br><span class="line"></span><br><span class="line">svg.selectAll(&quot;rect&quot;)</span><br><span class="line">    .data(dataset)</span><br><span class="line">    .enter()</span><br><span class="line">    .append(&quot;rect&quot;)</span><br><span class="line">    .attr(&quot;x&quot;,20)</span><br><span class="line">    .attr(&quot;y&quot;,function(d,i)&#123;</span><br><span class="line">         return i * rectHeight;</span><br><span class="line">    &#125;)</span><br><span class="line">    .attr(&quot;width&quot;,function(d)&#123;</span><br><span class="line">         return linear(d);   //在这里用比例尺</span><br><span class="line">    &#125;)</span><br><span class="line">    .attr(&quot;height&quot;,rectHeight-2)</span><br><span class="line">    .attr(&quot;fill&quot;,&quot;steelblue&quot;);</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%8F%AF%E8%A7%86%E5%8C%96/" rel="tag"># 可视化</a>
+              <a href="/tags/Web/" rel="tag"># Web</a>
+              <a href="/tags/JS/" rel="tag"># JS</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2016/07/10/D3-js-%E7%AC%94%E8%AE%B001/" rel="prev" title="D3.js 笔记01">
+                  <i class="fa fa-angle-left"></i> D3.js 笔记01
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2016/07/18/Hadoop-Streaming%E6%94%B6%E9%9B%86%E6%97%A5%E5%BF%97/" rel="next" title="Hadoop Streaming收集日志">
+                  Hadoop Streaming收集日志 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">LittleQ</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"sjq597.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.18.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="引言最近打算写一下关于Kafka系列的文章，在整个数据体系中,Kafka扮演着一个非常重要的角色-数据总线.作为一个数据开发工程师,在数据的采集&#x2F;存储&#x2F;流计算&#x2F;ETL&#x2F;数据仓库&#x2F;数据应用这几个方面,Kafka起到的作用是非常大的,甚至会影响到其他组建或者环节的技术选型.在很久以前,在Kafka还没那么成熟的时候,很多的数据基础组件在设计之初并没有考">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Kafka摸鱼系列01-百万QPS吞吐量">
+<meta property="og:url" content="http://sjq597.github.io/2018/08/22/Kafka%E6%91%B8%E9%B1%BC%E7%B3%BB%E5%88%9701-%E7%99%BE%E4%B8%87QPS%E5%90%9E%E5%90%90%E9%87%8F/index.html">
+<meta property="og:site_name" content="LittleQ">
+<meta property="og:description" content="引言最近打算写一下关于Kafka系列的文章，在整个数据体系中,Kafka扮演着一个非常重要的角色-数据总线.作为一个数据开发工程师,在数据的采集&#x2F;存储&#x2F;流计算&#x2F;ETL&#x2F;数据仓库&#x2F;数据应用这几个方面,Kafka起到的作用是非常大的,甚至会影响到其他组建或者环节的技术选型.在很久以前,在Kafka还没那么成熟的时候,很多的数据基础组件在设计之初并没有考">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog-1254094716.cos.ap-chengdu.myqcloud.com/Kafka%E6%91%B8%E9%B1%BC%E7%B3%BB%E5%88%9701-%E7%99%BE%E4%B8%87QPS%E5%90%9E%E5%90%90%E9%87%8F01.png">
+<meta property="article:published_time" content="2018-08-21T16:27:21.000Z">
+<meta property="article:modified_time" content="2023-10-07T06:54:54.000Z">
+<meta property="article:author" content="LittleQ">
+<meta property="article:tag" content="Kafka">
+<meta property="article:tag" content="中间件">
+<meta property="article:tag" content="BigData">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog-1254094716.cos.ap-chengdu.myqcloud.com/Kafka%E6%91%B8%E9%B1%BC%E7%B3%BB%E5%88%9701-%E7%99%BE%E4%B8%87QPS%E5%90%9E%E5%90%90%E9%87%8F01.png">
+
+
+<link rel="canonical" href="http://sjq597.github.io/2018/08/22/Kafka%E6%91%B8%E9%B1%BC%E7%B3%BB%E5%88%9701-%E7%99%BE%E4%B8%87QPS%E5%90%9E%E5%90%90%E9%87%8F/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://sjq597.github.io/2018/08/22/Kafka%E6%91%B8%E9%B1%BC%E7%B3%BB%E5%88%9701-%E7%99%BE%E4%B8%87QPS%E5%90%9E%E5%90%90%E9%87%8F/","path":"2018/08/22/Kafka摸鱼系列01-百万QPS吞吐量/","title":"Kafka摸鱼系列01-百万QPS吞吐量"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Kafka摸鱼系列01-百万QPS吞吐量 | LittleQ</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">LittleQ</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">爱好：写代码</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%95%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">引言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8MQ%E4%BB%8B%E7%BB%8D"><span class="nav-number">2.</span> <span class="nav-text">常用MQ介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Kafka%E5%90%9E%E5%90%90%E9%87%8F%E4%B9%8B%E8%B0%9C"><span class="nav-number">3.</span> <span class="nav-text">Kafka吞吐量之谜</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BA%BF%E4%B8%8A%E8%A7%84%E6%A8%A1"><span class="nav-number">3.1.</span> <span class="nav-text">线上规模</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%98%E5%82%A8%E8%AE%BE%E8%AE%A1"><span class="nav-number">3.2.</span> <span class="nav-text">存储设计</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Producer"><span class="nav-number">3.3.</span> <span class="nav-text">Producer</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">LittleQ</p>
+  <div class="site-description" itemprop="description">数据开发工程师的成长历程</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">145</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">51</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://sjq597.github.io/2018/08/22/Kafka%E6%91%B8%E9%B1%BC%E7%B3%BB%E5%88%9701-%E7%99%BE%E4%B8%87QPS%E5%90%9E%E5%90%90%E9%87%8F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="LittleQ">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LittleQ">
+      <meta itemprop="description" content="数据开发工程师的成长历程">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Kafka摸鱼系列01-百万QPS吞吐量 | LittleQ">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Kafka摸鱼系列01-百万QPS吞吐量
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2018-08-22 00:27:21" itemprop="dateCreated datePublished" datetime="2018-08-22T00:27:21+08:00">2018-08-22</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-10-07 14:54:54" itemprop="dateModified" datetime="2023-10-07T14:54:54+08:00">2023-10-07</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Kafka/" itemprop="url" rel="index"><span itemprop="name">Kafka</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h2 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h2><p>最近打算写一下关于<code>Kafka</code>系列的文章，在整个数据体系中,<code>Kafka</code>扮演着一个非常重要的角色-<strong>数据总线</strong>.作为一个数据开发工程师,在数据的采集&#x2F;存储&#x2F;流计算&#x2F;ETL&#x2F;数据仓库&#x2F;数据应用这几个方面,<code>Kafka</code>起到的作用是非常大的,甚至会影响到其他组建或者环节的技术选型.<br>在很久以前,在<code>Kafka</code>还没那么成熟的时候,很多的数据基础组件在设计之初并没有考虑到数据接收&#x2F;数据输出解藕,以及数据容灾式持久化,往往都需要配合第三方或者额外开发其他的组件去保证数据的吞吐量以及可靠性,例如<code>sqoop</code>,<code>canal</code>.不过这个都不是本文的重点,本文的重点在于:为何现在很多公司都把<code>Kafka</code>作为整个数据链路的<strong>数据总线</strong>,这里很关键的一点是–<strong>吞吐量</strong>.</p>
+<h2 id="常用MQ介绍"><a href="#常用MQ介绍" class="headerlink" title="常用MQ介绍"></a>常用MQ介绍</h2><p>这里我不会对其他MQ做过多的介绍，但是市面上的主流MQ也必须有个大概的了解，之所以流行开来也是有其独特的优势,<code>Kafka</code>也不例外,先放一张<a target="_blank" rel="noopener" href="https://yq.aliyun.com/articles/62834">阿里云栖社区</a>做的MQ对比图:<br><img src="https://blog-1254094716.cos.ap-chengdu.myqcloud.com/Kafka%E6%91%B8%E9%B1%BC%E7%B3%BB%E5%88%9701-%E7%99%BE%E4%B8%87QPS%E5%90%9E%E5%90%90%E9%87%8F01.png" alt="业界主流MQ对比"><br>主要看下吞吐量这个地方,除了和<code>RocketMQ</code>领先的不多，基本上是碾压其他的<code>MQ</code>.一般性能好的<code>MQ</code>吞度量能达到几十万这个量级就非常厉害了,但是可以看到用机械磁盘的<code>Kafka</code>单机<code>TPS</code>差不多可以到200w了,那么对于一个集群而言,几百万的<code>TPS</code>完全不在话下.</p>
+<p><strong>这就引出了本文要讨论的一个重要问题:<code>Kafka</code>为什么这么快,吞吐量为何这么惊人?</strong></p>
+<h2 id="Kafka吞吐量之谜"><a href="#Kafka吞吐量之谜" class="headerlink" title="Kafka吞吐量之谜"></a>Kafka吞吐量之谜</h2><p>这个问题要想回答的好或者说回到的全面，其实并不简单.一个系统设计的这么好,往往是多方面综合考虑的结果,当然在剖析<code>Kafka</code>性能之前，先大概说一下实际使用情况下<code>Kafka</code>性能是否真的如网上说的那么优秀．因为目前BU内部的Kafka是由自己维护,所以规模不是很大,但也支撑了整个BU所有的日常数据业务.</p>
+<h3 id="线上规模"><a href="#线上规模" class="headerlink" title="线上规模"></a>线上规模</h3><p>集群| 版本 | CPU | 内存 | 磁盘 | 网卡   | brokers数量<br>—–|—–|——|——|——–|——–<br>1| 0.8.2.1 | 32核| 64G |2T  |    10Gbps | 5<br>2| 1.0.0 | 32核| 64G |2T  |    10Gbps | 5<br>3| 0.10.2.1 | 32核| 128G |2T  |    1Gbps | 3</p>
+<p>目前主要数据在<code>0.8.2.1</code>,这个集群使用了大概有3年了,一直很稳定,也承载了几乎所有的数据,可以注意到两个上面的机器其实对配置要求不是很高,但是对磁盘(机械磁盘,T级别)和网卡(万兆)要求会稍微高一些.从这里可以看出,<code>Kafka</code>的性能瓶颈一般在磁盘和网卡.对CPU和内存的要求其实不是很高.实际使用也确实是,最开始本来也是千兆网卡,后来发现<code>brokers</code>节点容易出现网卡被打满,性能上不去的情况.还有就是磁盘有时候会不够用．</p>
+<p>下面来说一一介绍一下,为啥<code>Kafka</code>吞吐量能做到这么高.</p>
+<h3 id="存储设计"><a href="#存储设计" class="headerlink" title="存储设计"></a>存储设计</h3><p>单机写入能到百万级别,并且还是廉价的磁盘.要知道读&#x2F;写机械磁盘,寻址操作是一个很耗时的IO操作,这也就是为什么现在的DB或者像ES这样的存储系统都慢慢换成SSD了．<br>那<code>Kafka</code>是怎么做的呢,它在设计之初的一个目标就是:</p>
+<blockquote>
+<p>以时间复杂度为O(1)的方式提供消息持久化能力，即使对TB级以上数据也能保证常数时间复杂度的访问性能.</p>
+</blockquote>
+<p>所以<code>Kafka</code>一开始便被设计成一个日志系统,消息只能<code>append</code>,这使得<code>Kafka</code>非常适合用来作为数据总线,所有的数据根据到来的顺序被顺序序列化到文件末尾,然后消费者也是按顺序消费.<br>实际测试使用中,顺序读写机械磁盘有时候比随机读写内存的吞吐量还要好.当然这个还归功于CPU的工作方式,在加载数据的时候,CPU会预测，连带读取一整块数据,下次读取如果命中,就直接从内存中读,也不用再去加载.</p>
+<h3 id="Producer"><a href="#Producer" class="headerlink" title="Producer"></a>Producer</h3><p>消息的写入主要由<code>producer</code>完成,首先简单说下<code>Kafka</code>的消息结构,每一个主题<code>topic</code>的消息有多个<code>partition</code>组成,每个<code>partition</code>都会有<code>leader</code>,<code>follower</code>.这里强调一下,不管是<code>producer</code>写数据还是<code>consumer</code>读数据,都是跟<code>leader</code>打交到,<code>follower</code>只负责从对应的<code>leader</code>同步数据.<code>follower</code>和<code>leader</code>一起构成了这个<code>partition</code>的<code>ISR</code>(同步复制队列),如果<code>follower</code>复制没有跟上,会被从<code>ISR</code>中剔除.所以只有当<code>leader</code>节点挂掉的时候,<code>ISR</code>中的<code>follower</code>节点才有可能备胎转正,数据的读写有新的<code>leader</code>节点负责.<br>所以说到写数据,就必须要说到<code>Kafka</code>的<code>Ack</code>机制.有时候性能和可靠性本身就是矛盾的,<code>Kafka</code>发送数据光快还不行,还得保证可靠性.<br>Ack机制</p>
+<ol>
+<li>0:表示producer无需等待leader的确认，</li>
+<li>1:代表需要leader确认写入它的本地log并立即确认，</li>
+<li>-1:代表所有的备份都完成后确认</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Kafka/" rel="tag"># Kafka</a>
+              <a href="/tags/%E4%B8%AD%E9%97%B4%E4%BB%B6/" rel="tag"># 中间件</a>
+              <a href="/tags/BigData/" rel="tag"># BigData</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2018/08/11/%E7%BA%BF%E4%B8%8AJstorm%E8%B0%83%E4%BC%98%E5%8F%8A%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5/" rel="prev" title="线上Jstorm调优及问题排查">
+                  <i class="fa fa-angle-left"></i> 线上Jstorm调优及问题排查
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2018/10/13/%E4%B8%83%E7%89%9B%E6%B5%8B%E8%AF%95%E5%9F%9F%E5%90%8D%E5%9B%9E%E6%94%B6%E8%BF%81%E7%A7%BB%E5%8D%9A%E5%AE%A2%E5%9B%BE%E5%BA%8A%E5%88%B0%E8%85%BE%E8%AE%AF%E4%BA%91/" rel="next" title="七牛测试域名回收迁移博客图床到腾讯云">
+                  七牛测试域名回收迁移博客图床到腾讯云 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">LittleQ</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"sjq597.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.18.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Vim虽然很好用,但是平时有时候还不够好,需要自己配置一下,比如说,每次粘贴到vim里一大片内容,可能就会被弄乱,常用的vim配置设置都在~&#x2F;.vimrc里. 基本配置基本配置就是平时的一些简单的配置,会经常用到的,下面都是我从平时工作中需要用到的配置中慢慢总结出来的,下面讲的如果没有特殊说明,都是默认配置在~&#x2F;.vimrc文件中. 设置table的宽度写shell的时候,经常会在if的下一行给我">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Vim 常用配置技巧">
+<meta property="og:url" content="http://sjq597.github.io/2015/11/05/Vim-%E5%B8%B8%E7%94%A8%E9%85%8D%E7%BD%AE%E6%8A%80%E5%B7%A7/index.html">
+<meta property="og:site_name" content="LittleQ">
+<meta property="og:description" content="Vim虽然很好用,但是平时有时候还不够好,需要自己配置一下,比如说,每次粘贴到vim里一大片内容,可能就会被弄乱,常用的vim配置设置都在~&#x2F;.vimrc里. 基本配置基本配置就是平时的一些简单的配置,会经常用到的,下面都是我从平时工作中需要用到的配置中慢慢总结出来的,下面讲的如果没有特殊说明,都是默认配置在~&#x2F;.vimrc文件中. 设置table的宽度写shell的时候,经常会在if的下一行给我">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2015-11-05T12:44:29.000Z">
+<meta property="article:modified_time" content="2023-10-07T06:54:54.000Z">
+<meta property="article:author" content="LittleQ">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="Vim">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://sjq597.github.io/2015/11/05/Vim-%E5%B8%B8%E7%94%A8%E9%85%8D%E7%BD%AE%E6%8A%80%E5%B7%A7/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://sjq597.github.io/2015/11/05/Vim-%E5%B8%B8%E7%94%A8%E9%85%8D%E7%BD%AE%E6%8A%80%E5%B7%A7/","path":"2015/11/05/Vim-常用配置技巧/","title":"Vim 常用配置技巧"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Vim 常用配置技巧 | LittleQ</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">LittleQ</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">爱好：写代码</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E9%85%8D%E7%BD%AE"><span class="nav-number">1.</span> <span class="nav-text">基本配置</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AEtable%E7%9A%84%E5%AE%BD%E5%BA%A6"><span class="nav-number">1.1.</span> <span class="nav-text">设置table的宽度</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE%E7%B2%98%E8%B4%B4%E4%B8%8D%E8%87%AA%E5%8A%A8%E7%BC%A9%E8%BF%9B"><span class="nav-number">1.2.</span> <span class="nav-text">设置粘贴不自动缩进</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9B%B4%E6%94%B9Esc%E6%98%A0%E5%B0%84"><span class="nav-number">1.3.</span> <span class="nav-text">更改Esc映射</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">LittleQ</p>
+  <div class="site-description" itemprop="description">数据开发工程师的成长历程</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">145</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">51</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://sjq597.github.io/2015/11/05/Vim-%E5%B8%B8%E7%94%A8%E9%85%8D%E7%BD%AE%E6%8A%80%E5%B7%A7/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="LittleQ">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LittleQ">
+      <meta itemprop="description" content="数据开发工程师的成长历程">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Vim 常用配置技巧 | LittleQ">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Vim 常用配置技巧
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2015-11-05 20:44:29" itemprop="dateCreated datePublished" datetime="2015-11-05T20:44:29+08:00">2015-11-05</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-10-07 14:54:54" itemprop="dateModified" datetime="2023-10-07T14:54:54+08:00">2023-10-07</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Vim/" itemprop="url" rel="index"><span itemprop="name">Vim</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>Vim虽然很好用,但是平时有时候还不够好,需要自己配置一下,比如说,每次粘贴到vim里一大片内容,可能就会被弄乱,常用的vim配置设置都在<code>~/.vimrc</code>里.</p>
+<h3 id="基本配置"><a href="#基本配置" class="headerlink" title="基本配置"></a>基本配置</h3><p>基本配置就是平时的一些简单的配置,会经常用到的,下面都是我从平时工作中需要用到的配置中慢慢总结出来的,下面讲的如果没有特殊说明,都是默认配置在<code>~/.vimrc</code>文件中.</p>
+<h4 id="设置table的宽度"><a href="#设置table的宽度" class="headerlink" title="设置table的宽度"></a>设置table的宽度</h4><p>写shell的时候,经常会在<code>if</code>的下一行给我空出两个制表符,每个制表符都是8个字符宽度,看着很别扭,<code>ts</code>是一个制表符显示宽度,<code>sw</code>是制表符实际占宽度.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">set ts=4</span><br><span class="line">set sw=4</span><br></pre></td></tr></table></figure>
+
+<h4 id="设置粘贴不自动缩进"><a href="#设置粘贴不自动缩进" class="headerlink" title="设置粘贴不自动缩进"></a>设置粘贴不自动缩进</h4><p>粘贴之前在vim编辑器里先:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">:<span class="built_in">set</span> <span class="built_in">paste</span></span><br></pre></td></tr></table></figure>
+<p>然后再<code>insert</code>,把内容粘贴到vim里即可,粘贴完还需要关闭:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">:<span class="built_in">set</span> nopaste</span><br></pre></td></tr></table></figure>
+<p>相信你也觉得好麻烦,其实这个有个开关模式,只要选择打开开关,关闭开关就能达到我们要的效果,所以利用键盘映射到这个开关,在配置文件里加上:<br>前两行是为了提示的,这样你在粘贴的时候就可以区分<code>paste</code>模式和<code>nopaste</code>模式.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">nnoremap &lt;F2&gt; :set invpaste paste?&lt;CR&gt;</span><br><span class="line">imap &lt;F2&gt; &lt;C-O&gt;:set invpaste paste?&lt;CR&gt;</span><br><span class="line">set pastetoggle=&lt;F2&gt;</span><br></pre></td></tr></table></figure>
+
+<h4 id="更改Esc映射"><a href="#更改Esc映射" class="headerlink" title="更改Esc映射"></a>更改Esc映射</h4><p><code>Vim</code>里使用<code>Esc</code>的频率很高,但是一般的键盘设计使得按<code>Esc</code>很不方便,而且在Vim里,<code>Caps Lock</code>就是多余的,为什么这么说?因为有快捷键可以直接将小写转大写,单个的大写就使用<code>Shift</code>即可.<br>在终端里面执行下面命令:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">xmodmap -e <span class="string">&#x27;clear Lock&#x27;</span> -e <span class="string">&#x27;keycode 0x42 = Escape&#x27;</span></span><br></pre></td></tr></table></figure>
+<p>这样你的建就被映射了,但是每次你重启之后,还得重新做映射,而且我们只想这个功能在Vim里是这样的,当我们退出Vim,键盘的按键恢复正常,可以在<code>.vimrc</code>文件里加上下面的内容:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&quot; 当进入vim的时候将Esc映射成大写键,退出的时候将大写键映射回来</span><br><span class="line">au VimEnter * !xmodmap -e &#x27;clear Lock&#x27; -e &#x27;keycode 0x42 = Escape&#x27;</span><br><span class="line">au VimLeave * !xmodmap -e &#x27;clear Lock&#x27; -e &#x27;keycode 0x42 = Caps_Lock&#x27;</span><br></pre></td></tr></table></figure>
+<p>为了使用更加友好,还可以在<code>.vimrc</code>文件里加上下面这句:<br>在insert模式下,按&lt;Ctrl+u&gt;将光标所在单词变大写,记得要重启vim才会生效.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">inoremap &lt;C-u&gt; &lt;esc&gt;gUiwea</span><br></pre></td></tr></table></figure>
+<p>这个需要安装<code>xorg-xmodmap</code>安装包.</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Linux/" rel="tag"># Linux</a>
+              <a href="/tags/Vim/" rel="tag"># Vim</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2015/11/05/Hive-get-json-object%E7%94%A8%E6%B3%95/" rel="prev" title="Hive get_json_object用法">
+                  <i class="fa fa-angle-left"></i> Hive get_json_object用法
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2015/11/06/Shell-%E5%8F%8D%E5%BC%95%E5%8F%B7%EF%BC%8C%E5%8D%95%E5%BC%95%E5%8F%B7%EF%BC%8C%E5%8F%8C%E5%BC%95%E5%8F%B7/" rel="next" title="Shell 反引号，单引号，双引号">
+                  Shell 反引号，单引号，双引号 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">LittleQ</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

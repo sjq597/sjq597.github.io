@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"sjq597.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.18.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="最近在家里电脑的电脑上git pull的时候，报错。电脑系统是Ubuntu 14.04 64bit，发现项目无法更新，之前都可以把项目拉取下来，现在更新却不行了，具体报错如下： 1234Permission denied (publickey). fatal: Could not read from remote repository. Please make sure you have the">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Permission denied (publickey)">
+<meta property="og:url" content="http://sjq597.github.io/2015/11/21/Permission-denied-publickey/index.html">
+<meta property="og:site_name" content="LittleQ">
+<meta property="og:description" content="最近在家里电脑的电脑上git pull的时候，报错。电脑系统是Ubuntu 14.04 64bit，发现项目无法更新，之前都可以把项目拉取下来，现在更新却不行了，具体报错如下： 1234Permission denied (publickey). fatal: Could not read from remote repository. Please make sure you have the">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2015-11-21T13:41:09.000Z">
+<meta property="article:modified_time" content="2023-10-07T06:54:54.000Z">
+<meta property="article:author" content="LittleQ">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="Git">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://sjq597.github.io/2015/11/21/Permission-denied-publickey/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://sjq597.github.io/2015/11/21/Permission-denied-publickey/","path":"2015/11/21/Permission-denied-publickey/","title":"Permission denied (publickey)"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Permission denied (publickey) | LittleQ</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">LittleQ</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">爱好：写代码</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-overview-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">LittleQ</p>
+  <div class="site-description" itemprop="description">数据开发工程师的成长历程</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">145</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">51</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://sjq597.github.io/2015/11/21/Permission-denied-publickey/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="LittleQ">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LittleQ">
+      <meta itemprop="description" content="数据开发工程师的成长历程">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Permission denied (publickey) | LittleQ">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Permission denied (publickey)
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2015-11-21 21:41:09" itemprop="dateCreated datePublished" datetime="2015-11-21T21:41:09+08:00">2015-11-21</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-10-07 14:54:54" itemprop="dateModified" datetime="2023-10-07T14:54:54+08:00">2023-10-07</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Git/" itemprop="url" rel="index"><span itemprop="name">Git</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>最近在家里电脑的电脑上<code>git pull</code>的时候，报错。电脑系统是<code>Ubuntu 14.04 64bit</code>，发现项目无法更新，之前都可以把项目拉取下来，现在更新却不行了，具体报错如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Permission denied (publickey). </span><br><span class="line">fatal: Could not read from remote repository. </span><br><span class="line">Please make sure you have the correct access rights </span><br><span class="line">and the repository exists.</span><br></pre></td></tr></table></figure>
+<p>网上的说法是<code>SSH key</code>的缘故，但是我之前在gitcafe上都可以clone下来，后来也没改东西，突然就没权限了。没办法，把gitcafe上的<code>SSH key</code>删掉了，又重新生成了一遍，传上去，结果还是不行。后来我重新在另一个目录下拉取项目，发现可以，于是突然想到，会不会是目录的权限问题。于是给项目的目录赋上了最高权限</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 给docment目录赋最高权限</span></span><br><span class="line">sudo <span class="built_in">chmod</span> 777 docment/</span><br></pre></td></tr></table></figure>
+<p>然后重新更新项目，果然好使了。</p>
+<p>但是后来电脑又出现了一个问题，突然就又连不上了，最后折腾了好久才搞定，这次是深入搞明白了，为啥会出现这个问题了，其实，说白了就是秘钥不对，但是网上的说法都太模糊，很多人其实都把密钥上传到了网站上，一开始是可以用的，后来确不行了，所以这里面应该不是密钥没上传导致的，而是本地的密钥出了问题，下面来看看具体的问题解决步骤。<br>一般报错信息是：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Cloning into &#x27;******&#x27;...</span><br><span class="line">Permission denied (publickey).</span><br><span class="line">fatal: Could not read from remote repository.</span><br><span class="line"></span><br><span class="line">Please make sure you have the correct access rights</span><br><span class="line">and the repository exists.</span><br></pre></td></tr></table></figure>
+<p>　　这个时候多半是你的密钥出了问题，而且出现这种问题一般是你使用了多个代码托管账户造成的，这个比较常见，现在很多公司都会搭建自己的代码托管仓库，例如<strong>gitlab</strong>，然后就是大名鼎鼎的<strong>github</strong>,作为程序员这个账户肯定是有的，然后呢，有时候吧，由于国内你懂得一些原因，<strong>github</strong>访问不是很稳定，所以会选择国内的一些代码托管仓库，例如<strong>oschina</strong>或者<strong>gitcafe</strong>。这么多账户一起使用，密钥的问题就来了。再加上我在家里还有个台式机，而且有时候为了能登公司的服务器，还要使用<strong>Window</strong>系统，这样下来，密钥一堆，所以密钥特别乱，慢慢的就产生了这个问题，偶尔就出现了上面这个问题。<br>首先要看看**~&#x2F;.ssh<strong>下面有些啥:一般就是会有一个</strong>id_rsa**,<strong>id_rsa.pub</strong>,<strong>config</strong>这写文件,简单介绍一下这三个文件都是干啥的:<br><strong>id_rsa</strong>是私钥，同理<strong>id_rsa.pub</strong>就是公钥，公钥是要传到服务器上的，每次你连接代码托管服务器，都是用服务器上的公钥去校验你本地的私钥，系统默认会读取你的<strong>～&#x2F;.ssh&#x2F;<strong>目录下的私钥文件，如果读取不到，或者读取到的私钥是错的，就会出现上面的问题，即</strong>Permission denied (publickey).<strong>，<br>这就要说道第三个文件</strong>config</strong>的作用了,先看看他长啥样吧：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Host github.com</span><br><span class="line">    Hostname github.com</span><br><span class="line">    IdentityFile ~/.ssh/id_rsa</span><br><span class="line">    User github_username </span><br><span class="line"></span><br><span class="line">Host gitcafe.com</span><br><span class="line">    Hostname gitcafe.com</span><br><span class="line">    IdentityFile ~/.ssh/id_rsa.gitcafe</span><br><span class="line">    User gitcafe_username</span><br></pre></td></tr></table></figure>
+<p>看到这个文件我想你们大概应该明白了，</p>
+<ol>
+<li><code>Host</code>后面的名字相当于一个别名，真正的Host是Hostname的值,也即你可以使用别名来访问你托管代码的网站,</li>
+<li><code>IdentityFile</code>就是你访问这个网站是，网站上的公钥会校验你的本地私钥的文件位置，这个填错了就无法正确校验了，所以会出错，</li>
+<li><code>User</code>就是你在代码托管网站上的用户名</li>
+</ol>
+<p>另外说一个调试技巧，就是当你出问题，没权限<code>pull/push</code>代码的时候，如何确定是密钥出问题了呢？可以打开调试模式看看是用哪一个私钥文件在校验</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">ssh -vT git@gitcafe.com</span><br><span class="line"></span><br><span class="line">OpenSSH_6.6.1, OpenSSL 1.0.2d 9 Jul 2015</span><br><span class="line">debug1: Reading configuration data /home/zhangsan/.ssh/config</span><br><span class="line">debug1: /home/zhangsan/.ssh/config line 6: Applying options <span class="keyword">for</span> gitcafe.com</span><br><span class="line">debug1: Reading configuration data /etc/ssh/ssh_config</span><br><span class="line">debug1: /etc/ssh/ssh_config line 19: Applying options <span class="keyword">for</span> *</span><br><span class="line">debug1: Connecting to gitcafe.com [124.42.117.218] port 22.</span><br><span class="line">debug1: identity file /home/zhangsan/.ssh/id_rsa.gitcafe <span class="built_in">type</span> 1</span><br><span class="line">debug1: identity file /home/zhangsan/.ssh/id_rsa.gitcafe-cert <span class="built_in">type</span> -1</span><br><span class="line">debug1: Remote protocol version 2.0, remote software version OpenSSH_6.6.1p1 Ubuntu-2ubuntu2.3</span><br><span class="line">debug1: Host <span class="string">&#x27;gitcafe.com&#x27;</span> is known and matches the RSA host key.</span><br><span class="line">debug1: Found key <span class="keyword">in</span> /home/zhangsan/.ssh/known_hosts:1</span><br><span class="line">debug1: Next authentication method: publickey</span><br><span class="line">debug1: Offering RSA public key: /home/zhangsan/.ssh/id_rsa.gitcafe</span><br><span class="line">debug1: Offering RSA public key: zhang.san@163.com</span><br><span class="line">debug1: Authentications that can <span class="built_in">continue</span>: publickey</span><br><span class="line">debug1: Offering RSA public key: zhang.san@gmail.com</span><br><span class="line">debug1: Server accepts key: pkalg ssh-rsa blen 279</span><br><span class="line">debug1: Authentication succeeded (publickey).</span><br><span class="line">Authenticated to gitcafe.com ([124.42.117.218]:22).</span><br><span class="line">Hi zhangsan! You<span class="string">&#x27;ve successfully authenticated, but GitCafe does not provide shell access.</span></span><br><span class="line"><span class="string">debug1: client_input_channel_req: channel 0 rtype exit-status reply 0</span></span><br><span class="line"><span class="string">debug1: client_input_channel_req: channel 0 rtype eow@openssh.com reply 0</span></span><br><span class="line"><span class="string">debug1: channel 0: free: client-session, nchannels 1</span></span><br><span class="line"><span class="string">Transferred: sent 4632, received 3656 bytes, in 1.0 seconds</span></span><br><span class="line"><span class="string">Bytes per second: sent 4642.3, received 3664.1</span></span><br><span class="line"><span class="string">debug1: Exit status 1</span></span><br></pre></td></tr></table></figure>
+<p>这里输出了很多,看第4行，告诉我们加载配置文件的地方就是前面提到的<strong>config</strong>文件，然后第9行，他从配置文件里加载私钥文件，所以你想看你的<strong>git</strong>是加载的哪个文件，看这个就可以了，如果不对，那么按照上面的配置重新配置一下就OK了。</p>
+<p><strong>备注：</strong> 注意，如果在使用<code>sudo git ...</code>的时候仍然提示**Permission denied (publickey).**。记得去掉<code>sudo</code>,或者更改对应的私钥文件的权限。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Linux/" rel="tag"># Linux</a>
+              <a href="/tags/Git/" rel="tag"># Git</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2015/11/17/Hive-cannot-recognize-input-near-EOF-EOF-EOF/" rel="prev" title="Hive cannot recognize input near '<EOF>' '<EOF>' '<EOF>'">
+                  <i class="fa fa-angle-left"></i> Hive cannot recognize input near '<EOF>' '<EOF>' '<EOF>'
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2015/11/21/Ubuntu-14-04-%E5%8D%87%E7%BA%A7%E5%90%8E%E9%94%AE%E7%9B%98%E9%BC%A0%E6%A0%87%E5%A4%B1%E7%81%B5%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/" rel="next" title="Ubuntu 14.04 升级后键盘鼠标失灵解决方案">
+                  Ubuntu 14.04 升级后键盘鼠标失灵解决方案 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">LittleQ</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

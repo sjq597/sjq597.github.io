@@ -1,0 +1,21 @@
+apscheduler.triggers.cron
+API
+Trigger alias for add_job(): cron
+
+class apscheduler.triggers.cron.CronTrigger(year=None, month=None, day=None, week=None, day_of_week=None, hour=None, minute=None, second=None, start_date=None, end_date=None, timezone=None)
+Bases: apscheduler.triggers.base.BaseTrigger
+
+Triggers when current time matches all specified time constraints, similarly to how the UNIX cron scheduler works.
+
+Parameters:	
+year (int|str) – 4-digit year
+month (int|str) – month (1-12)
+day (int|str) – day of the (1-31)
+week (int|str) – ISO week (1-53)
+day_of_week (int|str) – number or name of weekday (0-6 or mon,tue,wed,thu,fri,sat,sun)
+hour (int|str) – hour (0-23)
+minute (int|str) – minute (0-59)
+second (int|str) – second (0-59)
+start_date (datetime|str) – earliest possible date/time to trigger on (inclusive)
+end_date (datetime|str) – latest possible date/time to trigger on (inclusive)
+timezone (datetime.tzinfo|str) – time zone to use for the date/time calculations (defaults to scheduler timezone)
